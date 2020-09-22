@@ -1,0 +1,45 @@
+- [stm32-rs](https://github.com/stm32-rs/stm32-rs): Embedded Rust device crates for STM32 microcontrollers
+- [cortex-m-quickstart](https://github.com/rust-embedded/cortex-m-quickstart/blob/master/examples/hello.rs)
+- [xPack qemu-arm](https://xpack.github.io/qemu-arm/)
+- [Eclipse debugging components](https://gnu-mcu-eclipse.github.io/debug/install/)
+- [qemu-eclipse options](https://gnu-mcu-eclipse.github.io/qemu/options/)
+- [qemu-doc](https://www.qemu.org/docs/master/qemu-doc.html)
+
+- [Rust embedded book](https://rust-embedded.github.io/book/)
+- [embedonomicon](https://docs.rust-embedded.org/embedonomicon/preface.html)
+- [Rust embedded FAQ](https://docs.rust-embedded.org/faq.html#my-program-just-halts-without-connected-debugger-what-am-i-doing-wrong)
+
+- [UART, SPI, RS232, USB, I2C etc.](https://electronics.stackexchange.com/questions/37814/usart-uart-rs232-usb-spi-i2c-ttl-etc-what-are-all-of-these-and-how-do-th)
+
+
+## Commands
+
+Run qemu with gdb
+
+```
+qemu-arm --board STM32F429I-Discovery --gdb tcp::1234 --verbose --verbose -d unimp,guest_errors --semihosting-config enable=on,target=native
+```
+
+Run gdb, check `.gdbinit` for executed commands
+
+```
+arm-none-eabi-gdb
+```
+
+Check the ELF headers
+
+```
+cargo readobj --bin app -- -file-headers
+```
+
+Check the size of the linker sections
+
+```
+cargo size --bin fedra --release -- -A
+```
+
+Diassemble the binary
+
+```
+cargo objdump --bin fedra -- --disassemble
+```
