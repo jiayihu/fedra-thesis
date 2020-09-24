@@ -7,12 +7,18 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# stm32f4 = { version = "0.12.0", features = ["stm32f429", "rt"] }
 cortex-m = "0.6.3"
 cortex-m-rt = "0.6.13"
 cortex-m-semihosting = "0.3.5"
 panic-abort = "0.3.2"
 panic-semihosting = "0.5.3"
+stm32f4 = { version = "0.12.1", features = ["stm32f429"] }
+
+# this lets you use `cargo fix`!
+[[bin]]
+name = "fedra"
+test = false
+bench = false
 
 [profile.release]
 codegen-units = 1 # better optimizations

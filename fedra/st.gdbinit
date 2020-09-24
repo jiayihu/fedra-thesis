@@ -1,6 +1,6 @@
-file "target/thumbv7em-none-eabi/debug/fedra"
+file "./target/thumbv7em-none-eabi/debug/fedra"
 
-target extended-remote :3333
+target extended-remote :4242
 
 # Load symbols
 load
@@ -9,7 +9,7 @@ load
 # list main
 
 # Jump to main function
-break main
+# break main
 
 # Run up to main function
-continue
+# continue

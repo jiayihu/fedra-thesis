@@ -7,11 +7,9 @@ use panic_semihosting as _;
 
 #[entry]
 fn main() -> ! {
-    hprintln!("Hello, world!").unwrap();
+    hprintln!("Hello world").unwrap();
 
     debug::exit(debug::EXIT_SUCCESS);
 
-    loop {
-        hprintln!("Hello, world!").unwrap();
-    }
+    loop {}
 }
