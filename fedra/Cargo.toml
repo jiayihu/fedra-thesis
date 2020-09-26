@@ -11,8 +11,10 @@ cortex-m = "0.6.3"
 cortex-m-rt = "0.6.13"
 cortex-m-semihosting = "0.3.5"
 panic-abort = "0.3.2"
+# panic-semihosting = { version = "0.5.3", features = ["exit"] }
 panic-semihosting = "0.5.3"
-stm32f4 = { version = "0.12.1", features = ["stm32f429"] }
+stm32f4 = { version = "0.12.1", features = ["stm32f429", "rt"] }
+stm32f4xx-hal = { version = "0.8.3", features = ["stm32f429", "rt"]}
 
 # this lets you use `cargo fix`!
 [[bin]]

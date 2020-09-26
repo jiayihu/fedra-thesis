@@ -1,5 +1,3 @@
-- [stm32-rs](https://github.com/stm32-rs/stm32-rs): Embedded Rust device crates for STM32 microcontrollers
-- [cortex-m-quickstart](https://github.com/rust-embedded/cortex-m-quickstart/blob/master/examples/hello.rs)
 - [xPack qemu-arm](https://xpack.github.io/qemu-arm/)
 - [Eclipse debugging components](https://gnu-mcu-eclipse.github.io/debug/install/)
 - [qemu-eclipse options](https://gnu-mcu-eclipse.github.io/qemu/options/)
@@ -19,6 +17,14 @@
 - [Debugonomicon](https://rust-embedded.github.io/debugonomicon/overview.html)
 - [Software vs Hardware breakpoints](https://stackoverflow.com/a/55867982/6860493)
 - [OpenOCD Commands](http://openocd.org/doc/html/General-Commands.html)
+
+- [embedded-time](https://github.com/FluenTech/embedded-time)
+- [Real-time Interrupt-driven Concurrency](https://github.com/rtic-rs/cortex-m-rtic)
+
+- [stm32-rs](https://github.com/stm32-rs/stm32-rs): Embedded Rust device crates for STM32 microcontrollers
+- [cortex-m-quickstart](https://github.com/rust-embedded/cortex-m-quickstart/blob/master/examples/hello.rs)
+- [stm32f429i-disc](https://github.com/stm32-rs/stm32f429i-disc/)
+- [Rust embedded stopwatch](https://www.mcu.by/rust-embedded-stopwatch/)
 
 ## Debugging
 

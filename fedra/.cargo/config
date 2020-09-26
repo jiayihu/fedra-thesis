@@ -1,6 +1,6 @@
 [target.thumbv7em-none-eabi]
 # runner = "arm-none-eabi-gdb -q -x ocd.gdbinit"
-runner = "qemu-system-gnuarmeclipse --board STM32F429I-Discovery --verbose --verbose -d unimp,guest_errors --semihosting-config enable=on,target=native --nographic --image"
+runner = "qemu-system-gnuarmeclipse --board STM32F429I-Discovery -d unimp,guest_errors --semihosting-config enable=on,target=native --nographic --image"
 
 rustflags = [
   "-C", "link-arg=-Tlink.x",
