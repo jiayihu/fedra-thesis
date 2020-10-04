@@ -123,7 +123,7 @@ Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura pre
   - L'algoritmo permette una comparazione come tempo di esecuzione rispetto a soluzioni Volunteer Computing esistenti
   - Per un confronto significativo con benchmark MapReduce serve purtroppo implementare un POC del DFS essendo le applicazioni in genere data-intensive, come anche un semplice Word Count.
 - Un'Application più interessante, rimanendo compute-intensive, è [ExCamera](https://www.usenix.org/system/files/conference/nsdi17/nsdi17-fouladi.pdf) che è un sistema di video processing a bassa latenza basato su migliaia di piccole funzioni parallele. Attualmente è implementato dagli autori usando AWS Lambda, per cui si presta bene ad essere migrato verso Workers. **DA APPROFONDIRE**
-- Se Fedra è il nome del runtime sui nodi Workers, serve un nome per il sistema descritto dall'architettura: Egeo, il mare comprendente le isole a cui appartiene anche Creta.
+- Se Fedra è il nome del runtime sui nodi Workers, serve un nome per il sistema descritto dall'architettura: Arkhpelagos.
 
 ## Implementazioni esistenti
 
