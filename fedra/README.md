@@ -25,7 +25,7 @@
 
 - Una **Application** è un software che ha necessità di risorse per raggiungere un obiettivo. Può essere ad esempio un'applicazione web, mobile o microservice in cloud. Un'applicazione è composta di **Task**, la cui rappresentazione è una **funzione**. Il media type di questa rappresentazione è WASM o un formato comprendente WASM, ad esempio un container.
   - Le funzioni sono registrate nel **Functions Repository** da parte dell'Application.
-  - Un **Requirement** è una descrizione formale delle risorse richieste da una Application. Ad esempio contiene le informazioni sulle funzioni quali i requisiti di memoria RAM di ciascuna funzione, le capabilities richieste (ad esempio TCP handle), e potenzialmente altre informazioni come la descrizione delle dipendenze tra funzioni.
+  - Un **Requirement** è una descrizione formale delle risorse richieste da una Application. Ad esempio contiene le informazioni sulle funzioni quali i requisiti di memoria RAM di ciascuna funzione, le capabilities richieste (ad esempio HTTP server handle), e potenzialmente altre informazioni come la descrizione delle dipendenze tra funzioni.
     - Vi sono diversi modi di specificare le dipendenze tra funzioni, ad esempio come gruppi di Task dipendenti nello stesso nodo (Pod) in Kubernetes, oppure come grafo nel caso di Microsoft Apollo.
     - Un altro esempio di Requirement potrebbe essere [AWS Cloudformation](https://aws.amazon.com/it/cloudformation/), che offre sia API che template statico per fare provisioning automatico delle risorse necessarie in un sistema distribuito su AWS.
     - L'esempio preferito attualmente è il modello **MapReduce** di Google. Permette alle applicazioni di descrivere facilmente una specifica della computazione tramite combinazione di funzioni Map `(key, value) => list(key, value)` e Reduce `(key, list(value)) => list(value)`.
@@ -78,6 +78,7 @@
   - Il **WASM Host** fornisce operazioni sul runtime HOST come risorse REST per l'Application Scheduler o come chiamate API per il Worker Agent.
     - Espone endpoint REST che descrive le proprie risorse
     - Espone anche endpoint REST che permette di aggiungere una funzione URL e relativi dati ad una coda di job. La funzione viene scaricata dal Functions repository e messa in cache in caso di ulteriori richieste future. La coda permette invece di ridurre il tempo di attesa tra un job e l'altra.
+    - Il WASM Host potrebbe essere esteso con una function **Worker Executor** definita dall'Application Scheduler che permetta di semplificare la migrazione di Application Scheduler esistenti come Hadoop che assumono un processo specifico (TaskTracker) nei nodi Worker. Internamente l'Executor utilizza le API fornite dal WASM Host facendo da adapter.
   - Il **WASM Runtime** è l'ambiente di esecuzione virtuale delle funzioni. Se il Worker utilizza un interprete allora la funzione non è istanziata, altrimenti se utilizza un compilatore JIT o AOT l'istanza viene preservata per qualche minuto per permettere riuso più veloce.
     - Può avviare più functions in parallelo sfruttando l'isolamento di memoria offerto da WASM e il meccanismo di concorrenza del runtime.
     - La funzione implementa internamente stack e heap secondo il runtime di linguaggio ed usando la memoria lineare WASM.
@@ -88,20 +89,63 @@
 
 ## Contorno di tesi
 
+![](images/architecture-thesis.png)
+
 Per evitare la "second system syndrome", la tesi cercherà di riusare al più possibili soluzioni software esistenti senza snaturare l'architettura del sistema.
 
-- Implementazioni esistenti:
+Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura precedente:
 
+- Lo stack software all'interno di un nodo Worker su dispositivi embedded (STM32F4).
+  - Il platform runtime per la concorrenza sarà basato ad esempio su [RTIC](https://rtic.rs/0.5/book/en/).
+  - Lo stack IO invece implementerà il protocollo CoAP usando un'implementazione Rust no_std esistente opportuna
+  - Il Worker Agent utilizza [krustlet](https://github.com/deislabs/krustlet), eventualmente collaborando col team che è già interessato a supportare ARM32
+  - WASM Host sarà basato su una versione minimale di [wascc-host](https://github.com/wascc/wascc-host) che funzioni no_std e con supporto basilare a capability come solo `REST server handle`. 
+  - Il WASM runtime utilizza [wasm3](https://github.com/wasm3/wasm3) con requisiti minimali 64Kb flash, 10Kb RAM. Non vi è supporto ad istruzioni SIMD o tail-call optimization
+- Lo stack software all'interno di un browser:
+  - Il platform runtime per la concorrenza sarà basato sui [WebWorker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) molto probabilmente
+  - *Lo stack IO invece cercherà di implementare "REST over WebSockets"*
+  - Il WASM Host sarà scritto da zero sulla base di quello nei dispositivi embedded ed eseguirà nel main thread di JS
+  - Il WASM runtime sarà quello built-in nei browser, con supporto sperimentale in Chrome per istruzioni SIMD
+- Entrambi gli stack software all'interno di nodi Worker avranno un semplice scheduler che assegna la stessa priorità a tutte le funzioni e cerca di ottenere un'esecuzione fair.
+- Il Functions repository sarà invece basato su [Gantry](https://github.com/wascc/gantry) di Wascc
+- Non vi è un'implementazione di DFS. L'Application avrà un caso d'uso CPU-intensive dove i dati possono essere passati interamente durante la richiesta REST.
+- Il Resource Scheduler sarà basato possibilmente su Kubernetes, in particolare [microk8s](https://github.com/ubuntu/microk8s). Si intende sostituire il daemon scheduler con uno custom.
+  - Il motivo per cui si preferisce Kubernetes rispetto a soluzioni esistenti 2-layer, ovvero Mesos e YARN, è dato dalle seguenti motivazioni:
+    - Mesos ha un'architettura offer-based dove è il Resource Scheduler a fare offerte di risorse che gli Application Scheduler accettano oppure attendono in attesa della prossima offerta. Ciò si ritiene sia inadatto per computazioni eteronegee (CPU + GPU) e a basso response time.
+    - YARN è implementato in Java e fortemente integrato nella codebase di Hadoop. *Si ritiene sia difficile integrarlo nell'architettura proposta*.
+    - K8s ha una community molto vasta, in particolare in crescita in Rust
+    - Una forte motivazione è data dalla possibilità di utilizzare `krustlet` come Worker Agent senza doverlo scrivere da zero come è nel caso di YARN. Inoltre gli autori di `krustlet` sono già disponibili ed interessati a supportare dispositivi embedded, rendendo il coordinamento e l'effort più semplice
+- L'Application Scheduler sarà un porting di Hadoop usando il pluggable scheduler. Questo richiederebbe di usare un container per il servizio invece che una function. Inoltre non è chiaro se serva riscrivere il `TaskTracker`, probabilmente come Worker Executor.
+  - Usare un container per il servizio richiederebbe avere nodi con VM Linux ed un registro Docker. Ma l'overhead implementativo probabilmente vale la pena rispetto al migrare un application framework esistente come Hadoop. Sarebbe sicuramente poco pratico per supportare eventualmente in futuro ulteriori scheduler come Spark.
+- L'Application è un'implementazione dell'algoritmo "Rainbow Table Generation" per eseguire un attacco brute force ad una password. Richiede una tabella di hash che può essere salvata in memoria nell'Application Scheduler e i Worker ricevono semplicemente una stringa ed una funzione.
+  - L'algoritmo permette una comparazione come tempo di esecuzione rispetto a soluzioni Volunteer Computing esistenti
+  - Per un confronto significativo con benchmark MapReduce serve purtroppo implementare un POC del DFS essendo le applicazioni in genere data-intensive, come anche un semplice Word Count.
+- Un'Application più interessante, rimanendo compute-intensive, è [ExCamera](https://www.usenix.org/system/files/conference/nsdi17/nsdi17-fouladi.pdf) che è un sistema di video processing a bassa latenza basato su migliaia di piccole funzioni parallele. Attualmente è implementato dagli autori usando AWS Lambda, per cui si presta bene ad essere migrato verso Workers. **DA APPROFONDIRE**
+- Se Fedra è il nome del runtime sui nodi Workers, serve un nome per il sistema descritto dall'architettura: Egeo, il mare comprendente le isole a cui appartiene anche Creta.
 
-        - L'immagine sopra è un lattice globale, dove ogni funzione è un attore e le capabilities sono processi separati con cui gli attori comunicano via messaggio. I messaggi sono inviati via protocollo NATS.
+## Implementazioni esistenti
 
-        ![images/assembly-mechs--beyond-wasmdome-(1).png](images/assembly-mechs--beyond-wasmdome-(1).png)
+  - [FAASM](https://www.usenix.org/conference/atc20/presentation/shillaker)
+    - Orientato per HPC con stato globale condiviso e strategie per condividere anche lo stato locale. Tuttavia è orientato per il serverless, ovvero provisioning delle risorse per una sola funzione per applicazione, mentre lo scenario della tesi presenta diverse funzioni coordinate appartenenti ad un'applicazione.
+    - Esegue come processo Linux, di cui sfrutta i meccanismi di sicurezza come namespace e iptables. Inadatto quindi per embedded.
+    - Seppur abbia un meccanismo di state globale, non ha convinto personalmente dal punto di vista tecnologico. Ad esempio l'utilizzo esplicito di un lock per leggere e scrivere globalmente è sospetto.
+  - [Wascc Lattice](https://wascc.dev/docs/lattice/howitworks/)
 
-        - L'immagine sopra descrive una rete lattice dove i nodi sono orchestrati da Kubernetes tramite la libreria [Krustlet](https://github.com/deislabs/krustlet) installata su ogni nodo. I nodi però comunicano tra di loro via [NATS](https://nats.io/) senza Kubernetes. La rete rappresenta un gioco alla [crobots](https://en.wikipedia.org/wiki/Crobots) con player distribuiti, ognuno avente una strategia diversa.
-        - Il lattice di Wascc è l'implementazione più vicina al sistema dello scenario descritto. Possiede infatti nodi distribuiti nella rete, che eseguono codice portabile WASM. Wascc inoltre supporta anche hot swapping dei moduli attori senza downtime.
-        - I suoi difetti sono tuttavia possibilmente i seguenti:
-            - Non è pensato per il sistema dello scenario, ad esempio non sono presenti nodi browser. Quest'ultimi si limitano a mostrare l'interfaccia del gioco (WebUI in immagine), senza essere parte fondamentale del sistema.
-            - È una libreria e quindi richiede OS sottostante per poter operare. Inoltre significa che ottimizzazioni come uno scheduler pensato appositamente per il sistema devono essere implementate in user-space.
-            - È orchestrato da Kubernetes che si occupa di fare provisioning, non di decidere, comporre e governare i nodi necessari per un workflow. Tuttavia in realtà il lattice Wascc non assume utilizzo necessariamente con Kubernetes.
-            - Comunica via messaggi tramite protocollo NATS. Questa forma di comunicazione non è ricca come REST, che permette di definire in maniera uniforme risorse e servizi assieme ad una interfaccia comune per operare su questi. Ciò è fondamentale per un sistema eterogeneo come quello della tesi. Inoltre non è verificata la bontà del protocollo NATS per dispositivi embedded, rispetto ad esempio [CoAP](https://ieeexplore.ieee.org/document/6159216) che implementa REST su UDP.
-            - Non si può nascondere che comprendere quali siano i reali difetti di Wascc rispetto al sistema dello scenario sia importante. Attualmente sembrerebbe che lo svantaggio principale sia essere una libreria, che quindi non può eseguire bare-metal ed esser compilata senza libreria standard. Questo lo rende quindi non idoneo per l'embedded con dispositivi resource-constrained, però a parte ciò sembra un'implementazione esistente molto interessante da cui prendere spunto.
+    ![images/fig4.png](images/fig4.png)
+
+    - L'immagine sopra è un Lattice globale, dove ogni funzione è un attore e le capabilities sono processi separati con cui gli attori comunicano via messaggio. I messaggi sono inviati via protocollo NATS.
+
+    ![images/assembly-mechs--beyond-wasmdome-(1).png](<images/assembly-mechs--beyond-wasmdome-(1).png>)
+
+    - L'immagine sopra descrive una rete Lattice dove i nodi sono orchestrati da Kubernetes tramite la libreria [Krustlet](https://github.com/deislabs/krustlet) installata su ogni nodo. I nodi però comunicano tra di loro via [NATS](https://nats.io/) senza Kubernetes. Il reticolo rappresenta un gioco alla [crobots](https://en.wikipedia.org/wiki/Crobots) con player distribuiti, ognuno avente una strategia diversa.
+    - Il Lattice di Wascc è l'implementazione più vicina al sistema dello scenario descritto. Possiede infatti nodi distribuiti nella rete, che eseguono codice eterogeneo portabile WASM. Wascc inoltre supporta anche hot swapping dei moduli attori senza downtime.
+    - I suoi difetti sono tuttavia possibilmente i seguenti:
+      - Non è pensato per il sistema dello scenario, ad esempio non sono presenti nodi browser. Quest'ultimi si limitano a mostrare l'interfaccia del gioco (WebUI in immagine), senza essere parte del sistema.
+      - È orchestrato da Kubernetes che si occupa di fare provisioning, non di decidere, comporre e governare i nodi necessari per un workflow come nel caso dell'Application Scheduler.
+        - Tuttavia in realtà il Lattice Wascc non assume utilizzo necessariamente con Kubernetes. I nodi comunicano direttamente tra di loro utilizzando NATS attraverso un Gateway globale.
+      - Comunica via messaggi tramite protocollo NATS. Questa forma di comunicazione non è ricca come REST, che permette di definire in maniera uniforme risorse e servizi assieme ad una interfaccia comune per operare su questi. Ciò è fondamentale per un sistema eterogeneo come quello della tesi. Inoltre non è verificata la bontà del protocollo NATS per dispositivi embedded, rispetto ad esempio CoAP.
+        - Un difetto importante di NATS o comunicazioni message-based come MQTT o AMQP rispetto a REST è la possibilità per quest'ultimi di avere nodi intermediari. I nodi intermediari permettono maggiore flessibilità del sistema e questo è possibile solo tramite REST, via ad esempio HTTP. Un Gateway può ad esempio analizzare solo l'URL della richiesta per decidere l'instradamento oppure trasformarla modificando opportuni Headers. Non è chiaro se questo sia possibile con messaggi, sicuramente trasmessi in binario, ma si ritiene di no o sarebbe meno efficiente. Ad esempio la flessibilità di REST permette di usare WebSocket, HTTP o CoAP in base alle capacità di rete del dispositivo. **DA APPROFONDIRE**
+
+TODO:
+- Calendario
+- Benchmark sintentici
