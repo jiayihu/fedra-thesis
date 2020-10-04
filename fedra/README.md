@@ -148,6 +148,17 @@ Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura pre
       - Comunica via messaggi tramite protocollo NATS. Questa forma di comunicazione non è ricca come REST, che permette di definire in maniera uniforme risorse e servizi assieme ad una interfaccia comune per operare su questi. Ciò è fondamentale per un sistema eterogeneo come quello della tesi. Inoltre non è verificata la bontà del protocollo NATS per dispositivi embedded, rispetto ad esempio CoAP.
         - Un difetto importante di NATS o comunicazioni message-based come MQTT o AMQP rispetto a REST è la possibilità per quest'ultimi di avere nodi intermediari. I nodi intermediari permettono maggiore flessibilità del sistema e questo è possibile solo tramite REST, via ad esempio HTTP. Un Gateway può ad esempio analizzare solo l'URL della richiesta per decidere l'instradamento oppure trasformarla modificando opportuni Headers. Non è chiaro se questo sia possibile con messaggi, sicuramente trasmessi in binario, ma si ritiene di no o sarebbe meno efficiente. Ad esempio la flessibilità di REST permette di usare WebSocket, HTTP o CoAP in base alle capacità di rete del dispositivo. **DA APPROFONDIRE**
 
+## Pianificazione
+
+![](images/gantt.png)
+
+Il gantt mostra una pianificazione grossolana dei tempi stimati. Le milestones sono:
+
+- 30 Ott 2020 Fedra runtime per embedded e Browser
+- 29 Nov 2020 Resource Scheduler
+- 23 Dic 2020 First use case
+- 15 Gen 2021 Real-world use case
+- 10 Feb 2021 Deadline, thesis complete
+
 TODO:
-- Calendario
 - Benchmark sintentici
