@@ -115,8 +115,10 @@ Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura pre
     - YARN è implementato in Java e fortemente integrato nella codebase di Hadoop. *Si ritiene sia difficile integrarlo nell'architettura proposta*.
     - K8s ha una community molto vasta, in particolare in crescita in Rust
     - Una forte motivazione è data dalla possibilità di utilizzare `krustlet` come Worker Agent senza doverlo scrivere da zero come è nel caso di YARN. Inoltre gli autori di `krustlet` sono già disponibili ed interessati a supportare dispositivi embedded, rendendo il coordinamento e l'effort più semplice
+    - Può essere usato `etcd` come stato distribuito consistente per il coordinamento. ZooKeeper ha la fama di essere difficile da usare.
 - L'Application Scheduler sarà un porting di Hadoop usando il pluggable scheduler. Questo richiederebbe di usare un container per il servizio invece che una function. Inoltre non è chiaro se serva riscrivere il `TaskTracker`, probabilmente come Worker Executor.
   - Usare un container per il servizio richiederebbe avere nodi con VM Linux ed un registro Docker. Ma l'overhead implementativo probabilmente vale la pena rispetto al migrare un application framework esistente come Hadoop. Sarebbe sicuramente poco pratico per supportare eventualmente in futuro ulteriori scheduler come Spark.
+  - Implementa una comunicazione via WebSocket con i Worker browser
 - L'Application è un'implementazione dell'algoritmo "Rainbow Table Generation" per eseguire un attacco brute force ad una password. Richiede una tabella di hash che può essere salvata in memoria nell'Application Scheduler e i Worker ricevono semplicemente una stringa ed una funzione.
   - L'algoritmo permette una comparazione come tempo di esecuzione rispetto a soluzioni Volunteer Computing esistenti
   - Per un confronto significativo con benchmark MapReduce serve purtroppo implementare un POC del DFS essendo le applicazioni in genere data-intensive, come anche un semplice Word Count.
