@@ -120,6 +120,7 @@ Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura pre
 - Storage:
   - Il Functions repository sarà invece basato su [Gantry](https://github.com/wascc/gantry) di Wascc
   - Un Distributed Object Storage che permetta ai Workers di salvare lo stato intermedio, ad esempio usando [OpenStack Swift](https://docs.openstack.org/swift/latest/) via REST
+  - Non sarà implementato alcun meccanismo di migrazione/handover
 - Il Resource Scheduler sarà basato possibilmente su Kubernetes, in particolare [microk8s](https://github.com/ubuntu/microk8s). Si intende sostituire il daemon scheduler con uno custom.
   - Il motivo per cui si preferisce Kubernetes rispetto a soluzioni esistenti 2-layer, ovvero Mesos e YARN, è dato dalle seguenti motivazioni:
     - Mesos ha un'architettura offer-based dove è il Resource Scheduler a fare offerte di risorse che gli Application Scheduler accettano oppure attendono in attesa della prossima offerta. Ciò si ritiene sia inadatto per computazioni eteronegee (CPU + GPU) e a basso response time.
