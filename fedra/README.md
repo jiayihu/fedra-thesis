@@ -12,12 +12,25 @@
 - All'improvviso i diversi ragazzi ricevono avvisi sui propri cellulari riguardo ad un imminente pioggia in arrivo grazie ai sensori di meteo di cui sono dotati le loro case. Si dirigono allora verso le proprie case.
 - Nel tragitto uno di loro continua l'editing del video in macchina, senza perdere il lavoro svolto prima. I dispositivi mobile dei ragazzi rimangono partecipanti nella computazione, mentre il cluster degli altri nodi di computazione cambia dinamicamente durante il movimento in base alla loro posizione geografica.
 - Arrivati a casa di uno dei ragazzi, decidono di passare al desktop per avere uno schermo più grande con cui proseguire l'editing. A quel punto è il desktop che definisce i nuovi requisiti della computazione, sostituendo il dispositivo mobile che diviene semplice volunteer aggiuntivo e poiché sono collegati alla rete di casa, perfino il dispositivo IoT usato come sensore meteo può eseguire della computazione extra CPU o GPU.
-- **Elementi innovativi**:
-  - Computazione distribuita a partecipazione dinamica: i nodi dei ragazzi sono volunteer non sono fissi a priori e non conoscono le funzioni prima di unirsi alla computazione. Lavori precedenti di questo genere sono nell'ambito del **Volunteer Computing**.
-  - L'applicazione utente definisce i requisiti della computazione e potenzialmente in futuro sono gli utenti che definiscono i requisiti. I cluster di computazione sono quindi disponibili a chiunque per qualsiasi genere di applicazione. Lavori simili di questo genere sono descritti da Yahoo con **YARN**, che permette agli utenti di sfruttare un cluster condiviso di computazione e il loro Distributed File System per scopi diversi, ad esempio ricerca accademica di algoritmi di indexing o Machine Learning.
-  - Continuità dello stato della computazione. In questo caso il video a cui vengono applicati gli effetti rappresenta lo stato della computazione. Durante il viaggio di ritorno o durante il passaggio a desktop, l'utente prosegue l'editing del video senza interruzione e in maniera trasparente per l'utente.
-  - Trasferimento di dati e funzioni. Le funzioni sono sia scaricabili dalla rete (pull) che trasmissibili da un nodo all'altro (push). **MapReduce** è un'architettura di questo genere, dove tuttavia le funzioni non sono portabili su dispositivi etereogenei con runtime diversi.
-  - Continuità di computazione: la computazione prosegue anche quando gli utenti cambiano luogo geograficamente e coinvolge tutti i nodi della rete, che possono offrire computazione (mobile, desktop, cloud, IoT) o allo stesso tempo scaricare parte di computazione verso altri nodi (mobile, desktop).
+
+
+## Continuum Computing
+
+> Il Continuum of Computing unifica tutti i diversi modelli di computing decentralizzato in un'unica rete continua che offre computazione quando, dove, come vuole e con l'utente.
+
+Unificazione delle architetture di Volunteer Computing, Mobile Edge Computing, Mist Computing, Fog Computing, Cloud Computing, Serverless Computing, Software-defined Computing, oltre che Network Virtualization e Service-centric Networking.
+
+Necessario:
+- Formato di istruzioni CPU e GPU portabili
+- Computazione distribuita virtuale e storage distribuito virtuale
+- Una rete virtuale che connetta le funzioni
+- Migrazione di computazione (handover)
+  - Funzioni, stato, orchestrazione, autenticazione
+  - Funzioni e stato fortemente disaggregato
+- Orchestrazione che tenga in conto della grande scala di dispositivi, eterogeinità di hardware e computazione e dei fattori in gioco quali instabilità di rete, limiti di risorse, località di accesso degli utenti
+- Metodo per specificare i requisiti di funzioni, relazioni tra funzioni, dataflow, hardware necessario
+- Virtualizzazione dell'infrastruttura
+- Distribuzione di orchestrazione
 
 ## Architettura
 
@@ -28,6 +41,7 @@
   - Un **Requirement** è una descrizione formale delle risorse richieste da una Application. Ad esempio contiene le informazioni sulle funzioni quali i requisiti di memoria RAM di ciascuna funzione, le capabilities richieste (ad esempio HTTP server handle), e potenzialmente altre informazioni come la descrizione delle dipendenze tra funzioni.
     - Vi sono diversi modi di specificare le dipendenze tra funzioni, ad esempio come gruppi di Task dipendenti nello stesso nodo (Pod) in Kubernetes, oppure come grafo nel caso di Microsoft Apollo.
     - Un altro esempio di Requirement potrebbe essere [AWS Cloudformation](https://aws.amazon.com/it/cloudformation/), che offre sia API che template statico per fare provisioning automatico delle risorse necessarie in un sistema distribuito su AWS.
+    - Un altro esempio ancora è via state machines come nel caso di [AWS Step Functions](https://aws.amazon.com/it/step-functions/).
     - L'esempio preferito attualmente è il modello **MapReduce** di Google. Permette alle applicazioni di descrivere facilmente una specifica della computazione tramite combinazione di funzioni Map `(key, value) => list(key, value)` e Reduce `(key, list(value)) => list(value)`.
       - Fornisce un modello di programmazione semplice senza che le applicazioni debbano preoccuparsi dei problemi della computazione distribuita.
       - È un modello di computazione distribuita che si è dimostrata flessibile per diverse tipologie di problemi.
@@ -55,6 +69,7 @@
     - L'Application Scheduler **NON** è definito dal sistema, ovvero è definibile dagli utenti per permettere maggiore flessibilità di Applicazioni.
     - Avere l'Application Scheduler disaccoppiato dal Resource Scheduler permette però di coordinare in maniera efficiente dipendenze e comunicazioni tra funzioni, aspetto oggi non possibile con serverless.
     - L'Application Scheduler esegue su un nodo fog del cluster. L'Application richiede al Resource Scheduler di attivare un Application Scheduler scaricando una funzione dal Functions registry ed eseguirli come servizio long-running su un nodo fog del cluster. Le informazioni per contattare il nodo sono quindi ritornate all'Application. L'utente è responsabile della gestione del fault-tolerancy dell'Application Scheduler, ma potrebbe essere almeno aiutato usando una libreria oppure nodi storage fault-tolerant offerti dal Resource Scheduler per salvare e ripristinare lo stato dello scheduling.
+    - La comunicazione tra Application Scheduler e Resource Scheduler è continua, in modo che possano essere richieste ulteriori risorse oppure al contrario deallocate qualora non più necessarie.
   - Il **Resource Scheduler**, su richiesta dell'Application Scheduler, che a sua volta si basa sui Requirements dell'Application, risponde con un **leasing** contenente le informazioni dei nodi Worker che meglio soddisfanno i requisiti. Per fare ciò mantiene un **Registry** dei Worker attivi. Esegue quindi una query verso il Registry per conoscere i Workers disponibili.
     -  Preferisce nodi geograficamente vicino ai dati. Inoltre deve essere cosciente delle capabilities richieste ai Workers. Aggiorna la parte di **Resource Management** del Registry una volta presa una decisione.
     - È consentito condividere un Worker tra più richieste di diversi Application Schedulers.
@@ -101,14 +116,10 @@ Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura pre
   - Il Worker Agent utilizza [krustlet](https://github.com/deislabs/krustlet), eventualmente collaborando col team che è già interessato a supportare ARM32
   - WASM Host sarà basato su una versione minimale di [wascc-host](https://github.com/wascc/wascc-host) che funzioni no_std e con supporto basilare a capability come solo `REST server handle`. 
   - Il WASM runtime utilizza [wasm3](https://github.com/wasm3/wasm3) con requisiti minimali 64Kb flash, 10Kb RAM. Non vi è supporto ad istruzioni SIMD o tail-call optimization
-- Lo stack software all'interno di un browser:
-  - Il platform runtime per la concorrenza sarà basato sui [WebWorker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) molto probabilmente
-  - *Lo stack IO invece cercherà di implementare "REST over WebSockets"*
-  - Il WASM Host sarà scritto da zero sulla base di quello nei dispositivi embedded ed eseguirà nel main thread di JS
-  - Il WASM runtime sarà quello built-in nei browser, con supporto sperimentale in Chrome per istruzioni SIMD
 - Entrambi gli stack software all'interno di nodi Worker avranno un semplice scheduler che assegna la stessa priorità a tutte le funzioni e cerca di ottenere un'esecuzione fair.
-- Il Functions repository sarà invece basato su [Gantry](https://github.com/wascc/gantry) di Wascc
-- Non vi è un'implementazione di DFS. L'Application avrà un caso d'uso CPU-intensive dove i dati possono essere passati interamente durante la richiesta REST.
+- Storage:
+  - Il Functions repository sarà invece basato su [Gantry](https://github.com/wascc/gantry) di Wascc
+  - Un Distributed Object Storage che permetta ai Workers di salvare lo stato intermedio, ad esempio usando [OpenStack Swift](https://docs.openstack.org/swift/latest/) via REST
 - Il Resource Scheduler sarà basato possibilmente su Kubernetes, in particolare [microk8s](https://github.com/ubuntu/microk8s). Si intende sostituire il daemon scheduler con uno custom.
   - Il motivo per cui si preferisce Kubernetes rispetto a soluzioni esistenti 2-layer, ovvero Mesos e YARN, è dato dalle seguenti motivazioni:
     - Mesos ha un'architettura offer-based dove è il Resource Scheduler a fare offerte di risorse che gli Application Scheduler accettano oppure attendono in attesa della prossima offerta. Ciò si ritiene sia inadatto per computazioni eteronegee (CPU + GPU) e a basso response time.
@@ -122,8 +133,7 @@ Premesso ciò, la tesi punta a sviluppare i seguenti punti dell'architettura pre
 - L'Application è un'implementazione dell'algoritmo "Rainbow Table Generation" per eseguire un attacco brute force ad una password. Richiede una tabella di hash che può essere salvata in memoria nell'Application Scheduler e i Worker ricevono semplicemente una stringa ed una funzione.
   - L'algoritmo permette una comparazione come tempo di esecuzione rispetto a soluzioni Volunteer Computing esistenti
   - Per un confronto significativo con benchmark MapReduce serve purtroppo implementare un POC del DFS essendo le applicazioni in genere data-intensive, come anche un semplice Word Count.
-- Un'Application più interessante, rimanendo compute-intensive, è [ExCamera](https://www.usenix.org/system/files/conference/nsdi17/nsdi17-fouladi.pdf) che è un sistema di video processing a bassa latenza basato su migliaia di piccole funzioni parallele. Attualmente è implementato dagli autori usando AWS Lambda, per cui si presta bene ad essere migrato verso Workers. **DA APPROFONDIRE**
-- Se Fedra è il nome del runtime sui nodi Workers, serve un nome per il sistema descritto dall'architettura: Arkhpelagos.
+- Un'Application più interessante, rimanendo compute-intensive, è [ExCamera](https://www.usenix.org/system/files/conference/nsdi17/nsdi17-fouladi.pdf) che è un sistema di video processing a bassa latenza basato su migliaia di piccole funzioni parallele. Attualmente è implementato dagli autori usando AWS Lambda, per cui si presta bene ad essere migrato verso Workers.
 
 ## Implementazioni esistenti
 
