@@ -2,46 +2,72 @@
 #![no_main]
 #![feature(core_intrinsics)]
 
-use cortex_m::peripheral::syst::SystClkSource;
+use cortex_m::peripheral::{syst::SystClkSource, DWT};
 use cortex_m_rt::{exception, ExceptionFrame};
 use cortex_m_semihosting::{debug, hprint, hprintln};
 use hal::prelude::*;
 use panic_semihosting as _;
-use stm32f4::stm32f429::{Interrupt, NVIC};
+use rtic::cyccnt::{Instant, U32Ext as _};
+use stm32f4::stm32f429::{Interrupt, Peripherals, NVIC};
 use stm32f4xx_hal as hal;
 
-#[rtic::app(device = stm32f4xx_hal::stm32, peripherals = true)]
+const PERIOD: u32 = 8_000_000;
+
+#[rtic::app(
+    device = stm32f4xx_hal::stm32,
+    peripherals = true,
+    monotonic = rtic::cyccnt::CYCCNT
+)]
 const APP: () = {
-    #[init]
-    fn init(cx: init::Context) {
+    struct Resources {
+        cp: rtic::Peripherals,
+        dp: hal::stm32::Peripherals,
+    }
+
+    #[init(schedule = [trigger])]
+    fn init(cx: init::Context) -> init::LateResources {
         hprintln!("Hello world").unwrap();
 
-        let cp: cortex_m::Peripherals = cx.core;
+        let mut cp: rtic::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
 
-        let rcc = dp.RCC.constrain();
-        let mut syst = cp.SYST;
+        cp.DCB.enable_trace();
+        DWT::unlock();
+        cp.DWT.enable_cycle_counter();
 
-        setup_clocks(rcc, &mut syst);
+        let now = cx.start;
+        hprintln!("init @ {:?}", now).unwrap();
 
-        unsafe {
-            NVIC::unmask(Interrupt::EXTI0);
-        }
+        cx.schedule.trigger(now + PERIOD.cycles()).unwrap();
 
-        rtic::pend(Interrupt::EXTI0);
+        // let rcc = dp.RCC.constrain();
+        // let mut syst = cp.SYST;
+        // setup_clocks(rcc, &mut syst);
+
+        init::LateResources { cp, dp }
     }
 
     #[idle]
     fn idle(_: idle::Context) -> ! {
         hprintln!("Idle").unwrap();
-        rtic::pend(Interrupt::EXTI0);
 
         loop {}
+    }
+
+    #[task(schedule = [trigger])]
+    fn trigger(cx: trigger::Context) {
+        // hprintln!("trigger @ {:?}", Instant::now()).unwrap();
+        rtic::pend(Interrupt::EXTI0);
+        cx.schedule.trigger(cx.scheduled + PERIOD.cycles()).unwrap();
     }
 
     #[task(binds = EXTI0)]
     fn exti0(_: exti0::Context) {
         hprint!(".").unwrap();
+    }
+
+    extern "C" {
+        fn UART4();
     }
 };
 
