@@ -1,0 +1,12 @@
+[tasks.flash]
+command = "openocd"
+args = [
+    "-f", "board/stm32f4discovery.cfg"
+]
+
+[tasks.gdb]
+command = "arm-none-eabi-gdb"
+args = [
+    "-q",
+    "-x", "ocd.gdbinit"
+]

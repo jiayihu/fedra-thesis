@@ -2,6 +2,7 @@
 - [Eclipse debugging components](https://gnu-mcu-eclipse.github.io/debug/install/)
 - [qemu-eclipse options](https://gnu-mcu-eclipse.github.io/qemu/options/)
 - [qemu-doc](https://www.qemu.org/docs/master/qemu-doc.html)
+- [qemu-nographic](https://web.archive.org/web/20180104171638/http://nairobi-embedded.org/qemu_monitor_console.html)
 
 - [Rust embedded book](https://rust-embedded.github.io/book/)
 - [Rust embedded Discovery](https://github.com/rust-embedded/discovery)
@@ -25,6 +26,9 @@
 - [cortex-m-quickstart](https://github.com/rust-embedded/cortex-m-quickstart/blob/master/examples/hello.rs)
 - [stm32f429i-disc](https://github.com/stm32-rs/stm32f429i-disc/)
 - [Rust embedded stopwatch](https://www.mcu.by/rust-embedded-stopwatch/)
+
+- [STM32L0 Rust Getting Started](https://craigjb.com/2019/12/31/stm32l0-rust/)
+- [How to debug a HardFault](https://interrupt.memfault.com/blog/cortex-m-fault-debug)
 
 ## Debugging
 

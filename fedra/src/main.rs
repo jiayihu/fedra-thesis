@@ -1,51 +1,63 @@
 #![no_std]
 #![no_main]
+#![feature(core_intrinsics)]
 
 use cortex_m::peripheral::syst::SystClkSource;
-use cortex_m_rt::entry;
-use cortex_m_semihosting::{debug, hprint};
+use cortex_m_rt::{exception, ExceptionFrame};
+use cortex_m_semihosting::{debug, hprint, hprintln};
 use hal::prelude::*;
 use panic_semihosting as _;
-use stm32f4::stm32f429::{interrupt, Interrupt, NVIC};
+use stm32f4::stm32f429::Interrupt;
 use stm32f4xx_hal as hal;
 
-#[entry]
-fn main() -> ! {
-    hprint!("Hello world").unwrap();
+#[rtic::app(device = stm32f4::stm32f429, peripherals = true)]
+const APP: () = {
+    #[init]
+    fn init(_: init::Context) {
+        hprintln!("Hello world").unwrap();
 
-    let cortex_peri = cortex_m::Peripherals::take().unwrap();
-    let device_peri = hal::stm32::Peripherals::take().unwrap();
+        rtic::pend(Interrupt::EXTI0);
+    }
 
-    let rcc = device_peri.RCC.constrain();
-    setup_clocks(rcc);
+    #[idle]
+    fn idle(_: idle::Context) -> ! {
+        hprintln!("Idle").unwrap();
+        rtic::pend(Interrupt::EXTI0);
 
-    let mut syst = cortex_peri.SYST;
-    let mut nvic = cortex_peri.NVIC;
+        loop {}
+    }
 
-    nvic.enable(Interrupt::EXTI0);
+    #[task(binds = EXTI0)]
+    fn exti0(_: exti0::Context) {
+        hprint!(".").unwrap();
+    }
+};
+
+#[allow(unused)]
+fn setup_clocks(rcc: hal::rcc::Rcc, syst: &mut cortex_m::peripheral::SYST) {
+    rcc.cfgr.sysclk(180.mhz()).freeze();
 
     syst.set_clock_source(SystClkSource::Core);
     syst.set_reload(180_000_000);
     syst.clear_current();
     syst.enable_counter();
-
-    // exit_qemu();
-    loop {
-        while !syst.has_wrapped() {}
-
-        NVIC::pend(Interrupt::EXTI0);
-    }
 }
 
-#[interrupt]
-fn EXTI0() {
-    hprint!(".").unwrap();
+#[exception]
+fn DefaultHandler(irqn: i16) {
+    hprint!("Exception IRQN {}", irqn).unwrap();
+
+    loop {}
 }
 
-fn setup_clocks(rcc: hal::rcc::Rcc) {
-    rcc.cfgr.sysclk(180.mhz()).freeze();
+#[exception]
+fn HardFault(ef: &ExceptionFrame) -> ! {
+    hprint!("HardFault {:#?}", ef).unwrap();
+
+    loop {}
 }
 
+#[allow(unused)]
 fn nop_loop() -> ! {
     loop {
         cortex_m::asm::nop();
