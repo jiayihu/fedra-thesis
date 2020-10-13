@@ -7,14 +7,26 @@ use cortex_m_rt::{exception, ExceptionFrame};
 use cortex_m_semihosting::{debug, hprint, hprintln};
 use hal::prelude::*;
 use panic_semihosting as _;
-use stm32f4::stm32f429::Interrupt;
+use stm32f4::stm32f429::{Interrupt, NVIC};
 use stm32f4xx_hal as hal;
 
-#[rtic::app(device = stm32f4::stm32f429, peripherals = true)]
+#[rtic::app(device = stm32f4xx_hal::stm32, peripherals = true)]
 const APP: () = {
     #[init]
-    fn init(_: init::Context) {
+    fn init(cx: init::Context) {
         hprintln!("Hello world").unwrap();
+
+        let cp: cortex_m::Peripherals = cx.core;
+        let dp: hal::stm32::Peripherals = cx.device;
+
+        let rcc = dp.RCC.constrain();
+        let mut syst = cp.SYST;
+
+        setup_clocks(rcc, &mut syst);
+
+        unsafe {
+            NVIC::unmask(Interrupt::EXTI0);
+        }
 
         rtic::pend(Interrupt::EXTI0);
     }
