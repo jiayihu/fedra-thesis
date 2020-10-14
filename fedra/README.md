@@ -173,3 +173,15 @@ Il gantt mostra una pianificazione grossolana dei tempi stimati. Le milestones s
 
 TODO:
 - Benchmark sintentici
+
+Stadi di computazione
+- Infrastruttura
+- Service Provider
+- Application via Orchestratore
+
+Già esiste come REST con Gateway
+
+1. Servizi vicini a te: serve service discovery, l'orchestratore sceglie il provider vicino
+2. Lo stato si sposta con te
+
+L'utente può interagire con lo stato nel cellulare

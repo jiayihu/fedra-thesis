@@ -1,14 +1,17 @@
 #![no_std]
 #![no_main]
 #![feature(core_intrinsics)]
+#![feature(asm)]
 
+pub mod qemu;
+
+use core::panic::PanicInfo;
 use cortex_m::peripheral::{syst::SystClkSource, DWT};
 use cortex_m_rt::{exception, ExceptionFrame};
-use cortex_m_semihosting::{debug, hprint, hprintln};
 use hal::prelude::*;
-use panic_semihosting as _;
-use rtic::cyccnt::{Instant, U32Ext as _};
-use stm32f4::stm32f429::{Interrupt, Peripherals, NVIC};
+use rtic::cyccnt::{Instant as _, U32Ext};
+use rtt_target::{rprint, rprintln, rtt_init_print};
+use stm32f4::stm32f429::Interrupt;
 use stm32f4xx_hal as hal;
 
 const PERIOD: u32 = 8_000_000;
@@ -26,7 +29,9 @@ const APP: () = {
 
     #[init(schedule = [trigger])]
     fn init(cx: init::Context) -> init::LateResources {
-        hprintln!("Hello world").unwrap();
+        rtt_init_print!();
+
+        rprintln!("Hello world");
 
         let mut cp: rtic::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
@@ -36,7 +41,7 @@ const APP: () = {
         cp.DWT.enable_cycle_counter();
 
         let now = cx.start;
-        hprintln!("init @ {:?}", now).unwrap();
+        rprintln!("init @ {:?}", now);
 
         cx.schedule.trigger(now + PERIOD.cycles()).unwrap();
 
@@ -49,25 +54,25 @@ const APP: () = {
 
     #[idle]
     fn idle(_: idle::Context) -> ! {
-        hprintln!("Idle").unwrap();
+        rprintln!("Idle");
 
         loop {}
     }
 
     #[task(schedule = [trigger])]
     fn trigger(cx: trigger::Context) {
-        // hprintln!("trigger @ {:?}", Instant::now()).unwrap();
+        // rprintln!("trigger @ {:?}", Instant::now());
         rtic::pend(Interrupt::EXTI0);
         cx.schedule.trigger(cx.scheduled + PERIOD.cycles()).unwrap();
     }
 
     #[task(binds = EXTI0)]
     fn exti0(_: exti0::Context) {
-        hprint!(".").unwrap();
+        rprint!(".");
     }
 
     extern "C" {
-        fn UART4();
+        fn EXTI1();
     }
 };
 
@@ -81,16 +86,22 @@ fn setup_clocks(rcc: hal::rcc::Rcc, syst: &mut cortex_m::peripheral::SYST) {
     syst.enable_counter();
 }
 
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    rprintln!("{}", info);
+    nop_loop()
+}
+
 #[exception]
 fn DefaultHandler(irqn: i16) {
-    hprint!("Exception IRQN {}", irqn).unwrap();
+    rprintln!("Exception IRQN {}", irqn);
 
     loop {}
 }
 
 #[exception]
 fn HardFault(ef: &ExceptionFrame) -> ! {
-    hprint!("HardFault {:#?}", ef).unwrap();
+    rprintln!("HardFault {:#?}", ef);
 
     loop {}
 }
@@ -100,9 +111,4 @@ fn nop_loop() -> ! {
     loop {
         cortex_m::asm::nop();
     }
-}
-
-#[allow(unused)]
-fn exit_qemu() {
-    debug::exit(debug::EXIT_SUCCESS);
 }
