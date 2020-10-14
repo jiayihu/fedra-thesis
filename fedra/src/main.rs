@@ -6,15 +6,15 @@
 pub mod qemu;
 
 use core::panic::PanicInfo;
-use cortex_m::peripheral::{syst::SystClkSource, DWT};
+use cortex_m::peripheral::DWT;
 use cortex_m_rt::{exception, ExceptionFrame};
 use hal::prelude::*;
-use rtic::cyccnt::{Instant as _, U32Ext};
+use rtic::cyccnt::U32Ext;
 use rtt_target::{rprint, rprintln, rtt_init_print};
 use stm32f4::stm32f429::Interrupt;
 use stm32f4xx_hal as hal;
 
-const PERIOD: u32 = 8_000_000;
+const PERIOD: u32 = 180_000_000;
 
 #[rtic::app(
     device = stm32f4xx_hal::stm32,
@@ -24,7 +24,6 @@ const PERIOD: u32 = 8_000_000;
 const APP: () = {
     struct Resources {
         cp: rtic::Peripherals,
-        dp: hal::stm32::Peripherals,
     }
 
     #[init(schedule = [trigger])]
@@ -36,6 +35,9 @@ const APP: () = {
         let mut cp: rtic::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
 
+        let rcc = dp.RCC.constrain();
+        setup_clocks(rcc);
+
         cp.DCB.enable_trace();
         DWT::unlock();
         cp.DWT.enable_cycle_counter();
@@ -45,11 +47,7 @@ const APP: () = {
 
         cx.schedule.trigger(now + PERIOD.cycles()).unwrap();
 
-        // let rcc = dp.RCC.constrain();
-        // let mut syst = cp.SYST;
-        // setup_clocks(rcc, &mut syst);
-
-        init::LateResources { cp, dp }
+        init::LateResources { cp }
     }
 
     #[idle]
@@ -68,7 +66,7 @@ const APP: () = {
 
     #[task(binds = EXTI0)]
     fn exti0(_: exti0::Context) {
-        rprint!(".");
+        rprint!(".\n");
     }
 
     extern "C" {
@@ -77,13 +75,8 @@ const APP: () = {
 };
 
 #[allow(unused)]
-fn setup_clocks(rcc: hal::rcc::Rcc, syst: &mut cortex_m::peripheral::SYST) {
+fn setup_clocks(rcc: hal::rcc::Rcc) {
     rcc.cfgr.sysclk(180.mhz()).freeze();
-
-    syst.set_clock_source(SystClkSource::Core);
-    syst.set_reload(180_000_000);
-    syst.clear_current();
-    syst.enable_counter();
 }
 
 #[panic_handler]
