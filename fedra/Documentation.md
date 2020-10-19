@@ -9,6 +9,8 @@
 - [embedonomicon](https://docs.rust-embedded.org/embedonomicon/preface.html)
 - [Rust embedded FAQ](https://docs.rust-embedded.org/faq.html#my-program-just-halts-without-connected-debugger-what-am-i-doing-wrong)
 
+- [Rust inline asm](https://rust-lang.github.io/rfcs/2873-inline-asm.html)
+
 - [UART, SPI, RS232, USB, I2C etc.](https://electronics.stackexchange.com/questions/37814/usart-uart-rs232-usb-spi-i2c-ttl-etc-what-are-all-of-these-and-how-do-th)
 
 - [GDB cheatsheet](https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf)
@@ -29,6 +31,17 @@
 
 - [STM32L0 Rust Getting Started](https://craigjb.com/2019/12/31/stm32l0-rust/)
 - [How to debug a HardFault](https://interrupt.memfault.com/blog/cortex-m-fault-debug)
+
+- [lld not supported on macOS](https://bugzilla.mozilla.org/show_bug.cgi?id=1538724) 
+- [ARM Cortex-M with LLVM Clang](https://interrupt.memfault.com/blog/arm-cortexm-with-llvm-clang#installing-llvmclang)
+- [Clang crosscompilation](https://clang.llvm.org/docs/CrossCompilation.html)
+- [compiler-rt runtime libraries](https://compiler-rt.llvm.org/)
+- [rust-embedded/book [WIP] Support building against c libraries with libc or newlib / nosys](https://github.com/rust-embedded/book/issues/255)
+- [undefined reference to `__aeabi_ddiv' and friends - building without stdlib but with -mfloat-abi=hard](https://stackoverflow.com/questions/26490587/undefined-reference-to-aeabi-ddiv-and-friends-building-without-stdlib-but)
+
+- [Rust alloc](https://ehsanmkermani.com/2019/07/03/rust-std-study-series-alloc/)
+
+- [Which types are atomic in STM32](https://stackoverflow.com/questions/52784613/which-variable-types-sizes-are-atomic-on-stm32-microcontrollers)
 
 ## Debugging
 
