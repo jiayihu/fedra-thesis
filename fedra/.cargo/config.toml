@@ -3,15 +3,8 @@
 runner = "probe-run --chip STM32F429ZITX"
 
 rustflags = [
-  "-A", "unstable_name_collisions",
   "-C", "link-arg=-Tlink.x",
-  # "-C", "linker=arm-none-eabi-ld",
-  # "-C", "link-arg=-lc",
-  # "-C", "link-arg=-L/usr/local/opt/gcc-arm-none-eabi/arm-none-eabi/lib/thumb/v7e-m/nofp",
 ]
 
 [build]
 target = "thumbv7em-none-eabi"
-
-[unstable]
-build-std = ["core", "compiler_builtins", "alloc"]
