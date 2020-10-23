@@ -4,30 +4,33 @@
 
 ## Scenario
 
-- Degli amici sono in spiaggia a divertirsi. Per immortalare il momento decidono di realizzare una video (story) tutti insieme. Una volta registrato il video, l'applicazione chiede all'utente di aggiungere i tag delle altre persone o di confermare gli utenti suggeriti tramite analisi del video. Confermati i partecipanti del video, l'utente può decidere i filtri da applicare al video.
-- La computazione dei filtri avviene in maniera distribuita tra i partecipanti del video, che divengono volunteer nella computazione previo consenso esplicito da parte loro. Il dispositivo utente da cui avviene l'editing elabora i requisiti della computazione e può partecipare nella computazione nei limiti delle sue risorse. Invia dunque i requisiti ad un orchestratore che si occuperà di trovare le risorse adeguate ed eseguire la computazione fino al raggiungimento dell'obiettivo. La distribuzione della computazione è un compito che richiede trasmissione sia di dati (il video) che di funzioni in quanto i filtri sono scaricabili e realizzabili dagli utenti di Instagram a disposizione per tutti tramite l'applicazione.
-- Tuttavia per accelerare la computazione e risparmiare la batteria degli utenti, il software può richiedere la collaborazione di altri nodi nella rete dotati delle opportune risorse hardware (ad esempio GPU o CPU con istruzioni SIMD) tenendo in conto del vincolo di latenza.
-- Ogni dispositivo del sistema che si registri come disponibile ad offrire computazione descrive le proprie capacità, fornendo informazioni quali potenza di calcolo disponibile e caratteristiche hardware come GPU, encoder/decoder di video/immagini, supporto istruzioni SIMD
-- A seconda dei requisiti, ad esempio del filtro da applicare, un orchestratore decide quali siano i nodi di computazione del sistema più adatti.
-- All'improvviso i diversi ragazzi ricevono avvisi sui propri cellulari riguardo ad un imminente pioggia in arrivo grazie ai sensori di meteo di cui sono dotati le loro case. Si dirigono allora verso le proprie case.
-- Nel tragitto uno di loro continua l'editing del video in macchina, senza perdere il lavoro svolto prima. I dispositivi mobile dei ragazzi rimangono partecipanti nella computazione, mentre il cluster degli altri nodi di computazione cambia dinamicamente durante il movimento in base alla loro posizione geografica.
-- Arrivati a casa di uno dei ragazzi, decidono di passare al desktop per avere uno schermo più grande con cui proseguire l'editing. A quel punto è il desktop che definisce i nuovi requisiti della computazione, sostituendo il dispositivo mobile che diviene semplice volunteer aggiuntivo e poiché sono collegati alla rete di casa, perfino il dispositivo IoT usato come sensore meteo può eseguire della computazione extra CPU o GPU.
+- Degli amici decidono di trovarsi in spiaggia per divertirsi. All'arrivo sul posto, utilizzano un'applicazione da cellulare che si connette ad un servizio locale per sapere quali zone della spiaggia sono più libere.
+- Durante la giornata, per immortalare il momento, decidono di realizzare una video (story) tutti insieme. Una volta registrato il video, l'applicazione chiede all'utente di aggiungere i tag delle altre persone o di confermare gli utenti suggeriti tramite analisi del video. Confermati i partecipanti del video, l'utente può decidere i filtri da applicare in sequenza al video.
+- Il dispositivo utente da cui avviene l'editing elabora i requisiti di servizi per la computazione e può partecipare nella computazione nei limiti delle sue risorse. Invia dunque i requisiti ad un orchestratore che si occuperà di trovare i servizi adeguati ad eseguire la computazione fino al raggiungimento dell'obiettivo. La distribuzione della computazione è un compito che richiede trasmissione sia di dati (il video) che di funzioni in quanto i filtri sono scaricabili e realizzabili dagli utenti di Instagram a disposizione per tutti tramite l'applicazione.
+- L'applicazione mostra all'utente la pipeline di filtri da applicare al video originale. L'utente può interagire con esso, ad esempio annullando filtri intermedi o aggiungendone di nuovi
+- Per accelerare la computazione e risparmiare la batteria degli utenti, il software richiede la collaborazione di altri nodi nella rete dotati delle opportune risorse hardware (ad esempio GPU o CPU con istruzioni SIMD) tenendo in conto del vincolo di latenza.
+- Ogni dispositivo del sistema che si registri come disponibile ad offrire computazione o dati descrive le proprie capacità, fornendo informazioni quali tipologia di dati serviti, potenza di calcolo disponibile e caratteristiche hardware come termometro, telecamera, GPU, encoder/decoder di video/immagini etc.
+- A seconda dei requisiti, ad esempio del filtro da applicare, un orchestratore scopre quali siano i servizi più vicini in grado di offrire tale computazione.
+- All'improvviso i diversi ragazzi ricevono avvisi sui propri cellulari riguardo ad un imminente pioggia in arrivo grazie all'applicazione meteo che usa servizi di sensori locali. Si dirigono allora verso le proprie case.
+- Nel tragitto uno di loro continua l'editing del video in macchina, senza perdere il lavoro svolto prima. I dispositivi mobile dei ragazzi rimangono partecipanti nella computazione qualora fossero coinvolti, mentre i servizi usati possono cambiare dinamicamente durante il movimento in base alla loro posizione geografica.
+- Arrivati a casa di uno dei ragazzi, decidono di passare al desktop per avere uno schermo più grande con cui proseguire l'editing. La computazione continua senza interruzione, diviene semplicemente possibile dal desktop interagire con essa.
 
 
 ## Continuum Computing
 
-> Il Continuum of Computing unifica tutti i diversi modelli di computing decentralizzato in un'unica rete continua che offre computazione quando, dove, come vuole e con l'utente.
+> Il Continuum of Computing unifica tutti i diversi modelli di computing decentralizzato in un unico continuum che offre servizi quando, dove, come vuole e con l'utente.
 
 Unificazione delle architetture di Volunteer Computing, Mobile Edge Computing, Mist Computing, Fog Computing, Cloud Computing, Serverless Computing, Software-defined Computing, oltre che Network Virtualization e Service-centric Networking.
 
 Necessario:
 - Formato di istruzioni CPU e GPU portabili
+- Stile di programmazione basato su servizi distribuiti e reattivo rispetto alla variazione dei dati
 - Computazione distribuita virtuale e storage distribuito virtuale
 - Una rete virtuale che connetta le funzioni
-- Migrazione di computazione (handover)
+- Migrazione di computazione
   - Funzioni, stato, orchestrazione, autenticazione
-  - Funzioni e stato fortemente disaggregato
-- Orchestrazione che tenga in conto della grande scala di dispositivi, eterogeinità di hardware e computazione e dei fattori in gioco quali instabilità di rete, limiti di risorse, località di accesso degli utenti
+  - Funzioni e stato sono fortemente disaggregati
+- Orchestrazione che tenga in conto della grande scala di dispositivi, dell'eterogeneità di hardware/computazione e dei fattori in gioco quali instabilità di rete, limiti di risorse, località di accesso degli utenti
 - Metodo per specificare i requisiti di funzioni, relazioni tra funzioni, dataflow, hardware necessario
 - Virtualizzazione dell'infrastruttura
 - Distribuzione di orchestrazione
