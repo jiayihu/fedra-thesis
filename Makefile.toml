@@ -10,3 +10,21 @@ args = [
     "-q",
     "-x", "ocd.gdbinit"
 ]
+
+[tasks.embed]
+command = "cargo"
+args = [
+    "embed",
+    "--release"
+]
+
+[tasks.run]
+command = "cargo"
+args = [
+    "run",
+    "--release"
+]
+
+[env]
+WASMI_VALUE_STACK_LIMIT = 24
+WASMI_CALL_STACK_LIMIT = 42

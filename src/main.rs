@@ -2,17 +2,22 @@
 #![no_main]
 #![feature(core_intrinsics)]
 #![feature(asm)]
+#![feature(alloc_error_handler)]
 
+extern crate alloc;
+
+mod allocator;
+mod intrinsics;
 pub mod qemu;
 
 use core::panic::PanicInfo;
 use cortex_m::peripheral::DWT;
 use cortex_m_rt::{exception, ExceptionFrame};
 use hal::prelude::*;
-use rtic::cyccnt::U32Ext;
 use rtt_target::{rprint, rprintln, rtt_init_print};
-use stm32f4::stm32f429::Interrupt;
 use stm32f4xx_hal as hal;
+
+use wasmi::{ImportsBuilder, ModuleInstance, NopExternals, RuntimeValue};
 
 #[allow(unused)]
 const PERIOD: u32 = 180_000_000;
@@ -27,31 +32,47 @@ const APP: () = {
         env: i32,
     }
 
-    #[init(schedule = [trigger])]
+    #[init(schedule = [])]
     fn init(cx: init::Context) -> init::LateResources {
         rtt_init_print!();
 
-        let mut cp: rtic::Peripherals = cx.core;
+        let mut cp: cortex_m::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
 
         setup_clocks(&mut cp, dp);
 
-        cx.schedule.trigger(cx.start + PERIOD.cycles()).unwrap();
+        setup_heap();
+
         init::LateResources { env: 0 }
     }
 
     #[idle]
     fn idle(_: idle::Context) -> ! {
-        rprintln!("Idle");
-        rtic::pend(Interrupt::EXTI0);
+        let wasm = include_bytes!("./wasm/add.wasm");
+        let module = wasmi::Module::from_buffer(&wasm).expect("Failed to load wasm");
+        assert!(module.deny_floating_point().is_ok());
+
+        let instance = ModuleInstance::new(&module, &ImportsBuilder::default())
+            .expect("Failed to instantiate wasm module");
+        let instance = instance
+            .run_start(&mut NopExternals)
+            .expect("WASM start function trapped");
+
+        let result = instance
+            .invoke_export(
+                "add",
+                &[RuntimeValue::I32(1), RuntimeValue::I32(2)],
+                &mut NopExternals,
+            )
+            .expect("Failed to execute export");
+
+        match result {
+            Some(RuntimeValue::I32(x)) => rprintln!("1 + 2 = {}", x),
+            Some(_) => rprintln!("Unexpected result"),
+            None => rprintln!("No result"),
+        }
 
         loop {}
-    }
-
-    #[task(schedule = [trigger])]
-    fn trigger(cx: trigger::Context) {
-        rtic::pend(Interrupt::EXTI0);
-        cx.schedule.trigger(cx.scheduled + PERIOD.cycles()).unwrap();
     }
 
     #[task(binds = EXTI0, resources = [])]
@@ -64,13 +85,22 @@ const APP: () = {
     }
 };
 
-fn setup_clocks(cp: &mut rtic::Peripherals, dp: hal::stm32::Peripherals) {
+fn setup_clocks(cp: &mut cortex_m::Peripherals, dp: hal::stm32::Peripherals) {
     let rcc = dp.RCC.constrain();
 
     rcc.cfgr.sysclk(180.mhz()).freeze();
     cp.DCB.enable_trace();
     DWT::unlock();
     cp.DWT.enable_cycle_counter();
+}
+
+fn setup_heap() {
+    let start = cortex_m_rt::heap_start() as usize;
+    let size = 1024 * (192 / 2); // Reserve half RAM
+
+    unsafe {
+        allocator::ALLOCATOR.init(start, size);
+    }
 }
 
 #[panic_handler]
