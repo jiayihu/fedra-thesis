@@ -1,4 +1,4 @@
-file "./target/thumbv7em-none-eabi/debug/fedra"
+file "./target/thumbv7em-none-eabihf/debug/fedra"
 
 target remote :3333
 

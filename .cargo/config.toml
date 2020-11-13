@@ -1,10 +1,10 @@
-[target.thumbv7em-none-eabi]
+[target.thumbv7em-none-eabihf]
 # runner = "qemu-system-gnuarmeclipse --board STM32F429I-Discovery -d unimp,guest_errors --semihosting-config enable=on target=native --nographic --image"
-runner = "probe-run --chip STM32F429ZITX"
+runner = "probe-run --chip STM32F407VGTx"
 
 rustflags = [
   "-C", "link-arg=-Tlink.x",
 ]
 
 [build]
-target = "thumbv7em-none-eabi"
+target = "thumbv7em-none-eabihf"

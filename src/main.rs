@@ -88,7 +88,7 @@ const APP: () = {
 fn setup_clocks(cp: &mut cortex_m::Peripherals, dp: hal::stm32::Peripherals) {
     let rcc = dp.RCC.constrain();
 
-    rcc.cfgr.sysclk(180.mhz()).freeze();
+    rcc.cfgr.sysclk(168.mhz()).freeze();
     cp.DCB.enable_trace();
     DWT::unlock();
     cp.DWT.enable_cycle_counter();
@@ -96,7 +96,7 @@ fn setup_clocks(cp: &mut cortex_m::Peripherals, dp: hal::stm32::Peripherals) {
 
 fn setup_heap() {
     let start = cortex_m_rt::heap_start() as usize;
-    let size = 1024 * (192 / 2); // Reserve half RAM
+    let size = 1024 * (128 / 2); // Reserve half RAM
 
     unsafe {
         allocator::ALLOCATOR.init(start, size);

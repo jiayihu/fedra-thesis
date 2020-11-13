@@ -11,8 +11,8 @@ cortex-m = "0.6.3"
 cortex-m-rt = "0.6.13"
 cortex-m-rtic = "0.5.5"
 rtt-target = {  version = "0.2.2", features = ["cortex-m"]}
-stm32f4 = { version = "0.12.1", features = ["stm32f429", "rt"] }
-stm32f4xx-hal = { version = "0.8.3", features = ["stm32f429", "rt"]}
+stm32f4 = { version = "0.12.1", features = ["stm32f407", "rt"] }
+stm32f4xx-hal = { version = "0.8.3", features = ["stm32f407", "rt"]}
 wasmi = { version = "0.7.0", default-features = false, features = ["core"] }
 alloc-cortex-m = "0.4.0"
 
