@@ -10,6 +10,7 @@
 
 ## GDB
 
+- [Guide to Faster, Less Frustrating Debugging](http://heather.cs.ucdavis.edu/~matloff/UnixAndC/CLanguage/Debug.html)
 - [GDB cheatsheet](https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf)
 - [GDB to LLDB](https://lldb.llvm.org/use/map.html)
 - [GDB print current line](https://stackoverflow.com/questions/14581837/gdb-how-to-print-the-current-line-or-find-the-current-line-number)
@@ -22,6 +23,17 @@
 
 - [UART, SPI, RS232, USB, I2C etc.](https://electronics.stackexchange.com/questions/37814/usart-uart-rs232-usb-spi-i2c-ttl-etc-what-are-all-of-these-and-how-do-th)
 - [What part of microcontroller controls the stack and heap?](https://www.avrfreaks.net/forum/what-part-microcontroller-controls-stack-and-heap)
+- [What is an ethernet PHY](https://youtu.be/JH3cMYErmKI)
+- [Medium access control](https://en.wikipedia.org/wiki/Medium_access_control)
+- [An ethernet PHY for the STM32F4](https://andybrown.me.uk/2012/09/01/ethernet-phy-stm32f107/)
+- [Ethernet on STM32F4DISCOVERY using external PHY](http://blog.tkjelectronics.dk/2012/08/ethernet-on-stm32f4discovery-using-external-phy/)
+- [stm32f1xx-hal COAP](https://github.com/stm32-rs/stm32f1xx-hal/blob/master/examples/enc28j60-coap.rs.disabled)
+- [Connecting to Ethernet on the STM32F429 Discovery](https://www.emcraft.com/stm32f429discovery/connecting-to-ethernet-on-stm32f429)
+- [Using low cost STM32F407VET6 boards with mbed](https://os.mbed.com/users/hudakz/code/STM32F407VET6_Hello/shortlog/)
+- [Library 52- Ethernet peripheral on STM32F4xx](http://stm32f4-discovery.net/2015/02/library-52-ethernet-peripheral-on-stm32f4xx/)
+- [ENC28J60, Ethernet for your microcontroller](https://blog.japaric.io/wd-4-enc28j60/)
+- [ESP32 Ethernet](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_eth.html)
+- [STM32F4 Discovery board: ENC28J60 Ethernet Module Part3- Connect to LAN / Get IP address](https://www.youtube.com/watch?v=A4c0nJudOI0)
 
 ## Embedded toolchain
 
@@ -53,9 +65,11 @@
 
 ## Rust STM32
 
-- [stm32-rs](https://github.com/stm32-rs/stm32-rs): Embedded Rust device crates for STM32 microcontrollers
+- [stm32-rs](https://github.com/stm32-rs/stm32-rs)
 - [cortex-m-quickstart](https://github.com/rust-embedded/cortex-m-quickstart/blob/master/examples/hello.rs)
 - [stm32f429i-disc](https://github.com/stm32-rs/stm32f429i-disc/)
+- [stm32f407g-disc](https://github.com/stm32-rs/stm32f407g-disc)
+- [stm32-eth](https://github.com/stm32-rs/stm32-eth)
 - [Rust embedded stopwatch](https://www.mcu.by/rust-embedded-stopwatch/)
 
 - [STM32L0 Rust Getting Started](https://craigjb.com/2019/12/31/stm32l0-rust/)
