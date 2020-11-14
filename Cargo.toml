@@ -19,10 +19,6 @@ stm32-eth = { version = "*", features = ["stm32f407", "smoltcp-phy"]}
 smoltcp = { version = "0.6.0", default-features = false, features = ["socket-tcp", "socket-icmp"]}
 once_cell = { version = "1.5.2", default-features = false }
 
-[patch.crates-io]
-wasmi = { path = "../patches/wasmi" }
-parity-wasm = { path = "../patches/parity-wasm" }
-stm32-eth = { path = "../patches/stm32-eth" }
 
 # this lets you use `cargo fix`!
 [[bin]]

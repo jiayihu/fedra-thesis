@@ -28,7 +28,6 @@ use stm32_eth::{
     Eth, EthPins, PhyAddress, RingEntry, RxDescriptor, RxRingEntry, TxDescriptor, TxRingEntry,
 };
 use stm32f4xx_hal as hal;
-use wasmi::{ImportsBuilder, ModuleInstance, NopExternals, RuntimeValue};
 
 #[allow(unused)]
 const PERIOD: u32 = 180_000_000;
@@ -142,33 +141,6 @@ mod APP {
     #[idle(resources = [])]
     fn idle(cx: idle::Context) -> ! {
         loop {}
-    }
-
-    #[task]
-    fn wasm(_: wasm::Context) {
-        let wasm = include_bytes!("./wasm/add.wasm");
-        let module = wasmi::Module::from_buffer(&wasm).expect("Failed to load wasm");
-        assert!(module.deny_floating_point().is_ok());
-
-        let instance = ModuleInstance::new(&module, &ImportsBuilder::default())
-            .expect("Failed to instantiate wasm module");
-        let instance = instance
-            .run_start(&mut NopExternals)
-            .expect("WASM start function trapped");
-
-        let result = instance
-            .invoke_export(
-                "add",
-                &[RuntimeValue::I32(1), RuntimeValue::I32(2)],
-                &mut NopExternals,
-            )
-            .expect("Failed to execute export");
-
-        match result {
-            Some(RuntimeValue::I32(x)) => rprintln!("1 + 2 = {}", x),
-            Some(_) => rprintln!("Unexpected result"),
-            None => rprintln!("No result"),
-        }
     }
 
     #[task(resources = [iface, sockets, server_handle])]
