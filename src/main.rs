@@ -21,7 +21,7 @@ use rtt_target::rprintln;
 use stm32f4xx_hal as hal;
 
 #[allow(unused)]
-const PERIOD: u32 = 180_000_000;
+const PERIOD: u32 = 168_000_000;
 
 static TIME: Mutex<RefCell<u64>> = Mutex::new(RefCell::new(0));
 static ETH_PENDING: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
@@ -33,6 +33,7 @@ static ETH_PENDING: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
 )]
 mod APP {
     use core::fmt::Write;
+    use hal::prelude::*;
     use once_cell::unsync::OnceCell;
     use rtt_target::{rprintln, rtt_init_print};
     use smoltcp::iface::{EthernetInterface, EthernetInterfaceBuilder, NeighborCache};
@@ -74,7 +75,7 @@ mod APP {
         let dp: hal::stm32::Peripherals = cx.device;
         let rcc = dp.RCC.constrain();
 
-        let clocks = setup_clocks(&mut cp, rcc);
+        let clocks = super::setup_clocks(&mut cp, rcc);
 
         let gpioa = dp.GPIOA.split();
         let gpiob = dp.GPIOB.split();
