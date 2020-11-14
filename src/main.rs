@@ -11,22 +11,13 @@ mod intrinsics;
 pub mod qemu;
 
 use core::cell::RefCell;
-use core::fmt::Write;
 use core::panic::PanicInfo;
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::SYST;
 use cortex_m_rt::{exception, ExceptionFrame};
 use hal::prelude::*;
-use once_cell::unsync::OnceCell;
-use rtt_target::{rprintln, rtt_init_print};
-use smoltcp::iface::{EthernetInterface, EthernetInterfaceBuilder, NeighborCache};
-use smoltcp::socket::{SocketHandle, SocketSet, TcpSocket, TcpSocketBuffer};
-use smoltcp::time::Instant;
-use smoltcp::wire::{EthernetAddress, IpAddress, IpCidr, Ipv4Address};
-use smoltcp::Error;
-use stm32_eth::{
-    Eth, EthPins, PhyAddress, RingEntry, RxDescriptor, RxRingEntry, TxDescriptor, TxRingEntry,
-};
+use rtt_target::rprintln;
+
 use stm32f4xx_hal as hal;
 
 #[allow(unused)]
@@ -41,9 +32,25 @@ static ETH_PENDING: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
     dispatchers = [EXTI1]
 )]
 mod APP {
+    use core::fmt::Write;
+    use once_cell::unsync::OnceCell;
+    use rtt_target::{rprintln, rtt_init_print};
+    use smoltcp::iface::{EthernetInterface, EthernetInterfaceBuilder, NeighborCache};
+    use smoltcp::socket::{SocketHandle, SocketSet, TcpSocket, TcpSocketBuffer};
+    use smoltcp::time::Instant;
+    use smoltcp::wire::{EthernetAddress, IpAddress, IpCidr, Ipv4Address};
+    use smoltcp::Error;
+    use stm32_eth::{Eth, EthPins, PhyAddress, RingEntry, RxDescriptor, TxDescriptor};
+    use stm32f4xx_hal as hal;
+    use wasmi::{ImportsBuilder, ModuleInstance, NopExternals, RuntimeValue};
+
+    #[resources]
     struct Resources {
+        #[task_local]
         iface: EthernetInterface<'static, 'static, 'static, &'static mut Eth<'static, 'static>>,
+        #[task_local]
         sockets: SocketSet<'static, 'static, 'static>,
+        #[task_local]
         server_handle: SocketHandle,
     }
 
@@ -61,7 +68,7 @@ mod APP {
         static mut server_handle_cell: OnceCell<SocketHandle> = OnceCell::new();
 
         rtt_init_print!();
-        setup_heap();
+        super::setup_heap();
 
         let mut cp: cortex_m::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
@@ -75,66 +82,84 @@ mod APP {
         let ethernet_mac = dp.ETHERNET_MAC;
         let ethernet_dma = dp.ETHERNET_DMA;
 
-        let rx_ring: &'static mut [RingEntry<RxDescriptor>; 8] =
-            rx_ring_cell.get_or_init(|| Default::default());
-        let tx_ring: &'static mut [RingEntry<TxDescriptor>; 2] =
-            tx_ring_cell.get_or_init(|| Default::default());
+        unsafe {
+            let rx_ring: &'static mut [RingEntry<RxDescriptor>; 8] =
+                rx_ring_cell.get_or_init(|| Default::default());
+            let tx_ring: &'static mut [RingEntry<TxDescriptor>; 2] =
+                tx_ring_cell.get_or_init(|| Default::default());
 
-        let eth = eth_cell.get_or_init(|| {
-            let mut eth = setup_ethernet(
-                gpioa,
-                gpiob,
-                gpioc,
-                ethernet_mac,
-                ethernet_dma,
-                clocks,
-                rx_ring,
-                tx_ring,
-            );
+            let eth = eth_cell.get_or_init(|| {
+                rprintln!("Enabling ethernet...");
 
-            eth
-        });
+                let eth_pins = EthPins {
+                    ref_clk: gpioa.pa1,
+                    md_io: gpioa.pa2,
+                    md_clk: gpioc.pc1,
+                    crs: gpioa.pa7,
+                    tx_en: gpiob.pb11,
+                    tx_d0: gpiob.pb12,
+                    tx_d1: gpiob.pb13,
+                    rx_d0: gpioc.pc4,
+                    rx_d1: gpioc.pc5,
+                };
 
-        let iface = iface_cell.get_or_init(|| {
-            const SRC_MAC: [u8; 6] = [0x00, 0x00, 0xDE, 0xAD, 0xBE, 0xEF];
-            let local_addr = Ipv4Address::new(192, 168, 1, 100);
-            let ip_addr = IpCidr::new(IpAddress::from(local_addr), 24);
-            let mut ip_addrs = [ip_addr];
-            let mut neighbor_storage = [None; 16];
-            let neighbor_cache = NeighborCache::new(&mut neighbor_storage[..]);
-            let ethernet_addr = EthernetAddress(SRC_MAC);
-            let iface = EthernetInterfaceBuilder::new(&mut *eth)
-                .ethernet_addr(ethernet_addr)
-                .ip_addrs(&mut ip_addrs[..])
-                .neighbor_cache(neighbor_cache)
-                .finalize();
+                let eth = Eth::new(
+                    ethernet_mac,
+                    ethernet_dma,
+                    &mut rx_ring[..],
+                    &mut tx_ring[..],
+                    PhyAddress::_1,
+                    clocks,
+                    eth_pins,
+                )
+                .unwrap();
+                rprintln!("Ethernet created");
+                eth.enable_interrupt();
 
-            iface
-        });
+                eth
+            });
 
-        let sockets = sockets_cell.get_or_init(|| {
-            let mut sockets_storage = [None, None];
-            let mut sockets = SocketSet::new(&mut sockets_storage[..]);
+            let iface = iface_cell.get_or_init(|| {
+                const SRC_MAC: [u8; 6] = [0x00, 0x00, 0xDE, 0xAD, 0xBE, 0xEF];
+                let local_addr = Ipv4Address::new(192, 168, 1, 100);
+                let ip_addr = IpCidr::new(IpAddress::from(local_addr), 24);
+                let mut ip_addrs = [ip_addr];
+                let mut neighbor_storage = [None; 16];
+                let neighbor_cache = NeighborCache::new(&mut neighbor_storage[..]);
+                let ethernet_addr = EthernetAddress(SRC_MAC);
+                let iface = EthernetInterfaceBuilder::new(&mut *eth)
+                    .ethernet_addr(ethernet_addr)
+                    .ip_addrs(&mut ip_addrs[..])
+                    .neighbor_cache(neighbor_cache)
+                    .finalize();
 
-            sockets
-        });
+                iface
+            });
 
-        let server_handle = server_handle_cell.get_or_init(|| {
-            let server_socket = TcpSocket::new(
-                TcpSocketBuffer::new(&mut server_rx_buffer[..]),
-                TcpSocketBuffer::new(&mut server_tx_buffer[..]),
-            );
-            let server_handle = sockets.add(server_socket);
+            let sockets = sockets_cell.get_or_init(|| {
+                let mut sockets_storage = [None, None];
+                let mut sockets = SocketSet::new(&mut sockets_storage[..]);
 
-            rprintln!("Listening at :80");
+                sockets
+            });
 
-            server_handle
-        });
+            let server_handle = server_handle_cell.get_or_init(|| {
+                let server_socket = TcpSocket::new(
+                    TcpSocketBuffer::new(&mut server_rx_buffer[..]),
+                    TcpSocketBuffer::new(&mut server_tx_buffer[..]),
+                );
+                let server_handle = sockets.add(server_socket);
 
-        init::LateResources {
-            iface: *iface,
-            sockets: *sockets,
-            server_handle: *server_handle,
+                rprintln!("Listening at :80");
+
+                server_handle
+            });
+
+            init::LateResources {
+                iface: *iface,
+                sockets: *sockets,
+                server_handle: *server_handle,
+            }
         }
     }
 
@@ -143,16 +168,43 @@ mod APP {
         loop {}
     }
 
+    #[task]
+    fn wasm(_: wasm::Context) {
+        let wasm = include_bytes!("./wasm/add.wasm");
+        let module = wasmi::Module::from_buffer(&wasm).expect("Failed to load wasm");
+        assert!(module.deny_floating_point().is_ok());
+
+        let instance = ModuleInstance::new(&module, &ImportsBuilder::default())
+            .expect("Failed to instantiate wasm module");
+        let instance = instance
+            .run_start(&mut NopExternals)
+            .expect("WASM start function trapped");
+
+        let result = instance
+            .invoke_export(
+                "add",
+                &[RuntimeValue::I32(1), RuntimeValue::I32(2)],
+                &mut NopExternals,
+            )
+            .expect("Failed to execute export");
+
+        match result {
+            Some(RuntimeValue::I32(x)) => rprintln!("1 + 2 = {}", x),
+            Some(_) => rprintln!("Unexpected result"),
+            None => rprintln!("No result"),
+        }
+    }
+
     #[task(resources = [iface, sockets, server_handle])]
     fn server(cx: server::Context) {
         let iface = cx.resources.iface;
         let sockets = cx.resources.sockets;
         let server_handle = cx.resources.server_handle;
 
-        let time: u64 = cortex_m::interrupt::free(|cs| *TIME.borrow(cs).borrow());
+        let time: u64 = cortex_m::interrupt::free(|cs| *super::TIME.borrow(cs).borrow());
 
         cortex_m::interrupt::free(|cs| {
-            let mut eth_pending = ETH_PENDING.borrow(cs).borrow_mut();
+            let mut eth_pending = super::ETH_PENDING.borrow(cs).borrow_mut();
             *eth_pending = false;
         });
 
@@ -188,7 +240,7 @@ mod APP {
     #[task(binds = ETH, resources = [])]
     fn eth(_: eth::Context) {
         cortex_m::interrupt::free(|cs| {
-            let mut eth_pending = ETH_PENDING.borrow(cs).borrow_mut();
+            let mut eth_pending = super::ETH_PENDING.borrow(cs).borrow_mut();
             *eth_pending = true;
         });
 
@@ -208,46 +260,6 @@ fn setup_clocks(cp: &mut cortex_m::Peripherals, rcc: hal::rcc::Rcc) -> hal::rcc:
     syst.enable_interrupt();
 
     return clocks;
-}
-
-fn setup_ethernet<'rx, 'tx>(
-    gpioa: hal::gpio::gpioa::Parts,
-    gpiob: hal::gpio::gpiob::Parts,
-    gpioc: hal::gpio::gpioc::Parts,
-    ethernet_mac: hal::stm32::ETHERNET_MAC,
-    ethernet_dma: hal::stm32::ETHERNET_DMA,
-    clocks: hal::rcc::Clocks,
-    rx_ring: &'rx mut [RxRingEntry],
-    tx_ring: &'tx mut [TxRingEntry],
-) -> Eth<'rx, 'tx> {
-    rprintln!("Enabling ethernet...");
-
-    let eth_pins = EthPins {
-        ref_clk: gpioa.pa1,
-        md_io: gpioa.pa2,
-        md_clk: gpioc.pc1,
-        crs: gpioa.pa7,
-        tx_en: gpiob.pb11,
-        tx_d0: gpiob.pb12,
-        tx_d1: gpiob.pb13,
-        rx_d0: gpioc.pc4,
-        rx_d1: gpioc.pc5,
-    };
-
-    let eth = Eth::new(
-        ethernet_mac,
-        ethernet_dma,
-        &mut rx_ring[..],
-        &mut tx_ring[..],
-        PhyAddress::_1,
-        clocks,
-        eth_pins,
-    )
-    .unwrap();
-    rprintln!("Ethernet created");
-    eth.enable_interrupt();
-
-    return eth;
 }
 
 fn setup_heap() {
