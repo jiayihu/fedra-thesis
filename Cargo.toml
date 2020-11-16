@@ -15,7 +15,7 @@ stm32f4 = { version = "0.12.1", features = ["stm32f407", "rt"] }
 stm32f4xx-hal = { version = "0.8.3", features = ["stm32f407", "rt"]}
 wasmi = { version = "0.7.0", default-features = false, features = ["core"] }
 alloc-cortex-m = "0.4.0"
-stm32-eth = { version = "*", features = ["stm32f407", "smoltcp-phy"]}
+stm32-eth = { git = "https://github.com/stm32-rs/stm32-eth", features = ["stm32f407", "smoltcp-phy"]}
 smoltcp = { version = "0.6.0", default-features = false, features = ["socket-tcp", "socket-icmp"]}
 once_cell = { version = "1.5.2", default-features = false }
 
