@@ -19,6 +19,8 @@ stm32-eth = { git = "https://github.com/stm32-rs/stm32-eth", features = ["stm32f
 smoltcp = { version = "0.6.0", default-features = false, features = ["socket-tcp", "socket-icmp"]}
 once_cell = { version = "1.5.2", default-features = false }
 
+# These patches can be removed and it will compile nevertheless. But the runtime will crush because
+# wasmi allocates 1GB of heap by default
 [patch.crates-io]
 wasmi = { path = "../patches/wasmi" }
 parity-wasm = { path = "../patches/parity-wasm" }
