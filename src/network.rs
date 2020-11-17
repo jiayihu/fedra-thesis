@@ -13,8 +13,8 @@ use stm32f4xx_hal as hal;
 
 static ETH_PENDING: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
 
-static mut RX_RING: Lazy<[RingEntry<RxDescriptor>; 8]> = Lazy::new(|| Default::default());
-static mut TX_RING: Lazy<[RingEntry<TxDescriptor>; 2]> = Lazy::new(|| Default::default());
+static mut RX_RING: Lazy<[RingEntry<RxDescriptor>; 8]> = Lazy::new(Default::default);
+static mut TX_RING: Lazy<[RingEntry<TxDescriptor>; 2]> = Lazy::new(Default::default);
 static mut ETH: OnceCell<Eth<'static, 'static>> = OnceCell::new();
 
 static mut IP_ADDRS: Lazy<[IpCidr; 1]> = Lazy::new(|| {
@@ -128,7 +128,7 @@ pub fn handle_request() {
                 }
 
                 if socket.can_send() {
-                    write!(socket, "hello\n")
+                    writeln!(socket, "hello")
                         .map(|_| {
                             socket.close();
                         })

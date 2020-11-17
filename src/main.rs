@@ -129,7 +129,7 @@ fn setup_clocks(cp: &mut cortex_m::Peripherals, rcc: hal::rcc::Rcc) -> hal::rcc:
     syst.enable_counter();
     syst.enable_interrupt();
 
-    return clocks;
+    clocks
 }
 
 fn setup_heap() {
