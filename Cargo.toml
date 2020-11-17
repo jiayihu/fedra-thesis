@@ -19,6 +19,9 @@ stm32-eth = { git = "https://github.com/stm32-rs/stm32-eth", features = ["stm32f
 smoltcp = { version = "0.6.0", default-features = false, features = ["socket-tcp", "socket-icmp"]}
 once_cell = { version = "1.5.2", default-features = false }
 
+[patch.crates-io]
+wasmi = { path = "../patches/wasmi" }
+parity-wasm = { path = "../patches/parity-wasm" }
 
 # this lets you use `cargo fix`!
 [[bin]]
