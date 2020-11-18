@@ -1,3 +1,4 @@
+use crate::time;
 use core::cell::RefCell;
 use core::fmt::Write;
 use cortex_m::interrupt::Mutex;
@@ -107,20 +108,24 @@ pub fn create_sockets() {
     }
 }
 
-pub fn handle_request() {
-    const PORT: u16 = 80;
+pub fn handle_request<'a, F>(f: F)
+where
+    F: FnOnce() -> &'a str,
+{
+    const PORT: u16 = 3000;
 
     unsafe {
         let iface = IFACE.get_mut().expect("IFACE not initialized");
         let sockets = SOCKETS.get_mut().expect("SOCKETS not initialized");
         let server_handle = SERVER_HANDLE.get().expect("SERVER_HANDLE not initialized");
-        let time: u64 = cortex_m::interrupt::free(|cs| *super::TIME.borrow(cs).borrow());
+        let time = time::now();
 
         clear_pending();
 
         match iface.poll(sockets, Instant::from_millis(time as i64)) {
             Ok(true) => {
                 let mut socket = sockets.get::<TcpSocket>(*server_handle);
+
                 if !socket.is_open() {
                     socket
                         .listen(PORT)
@@ -128,7 +133,7 @@ pub fn handle_request() {
                 }
 
                 if socket.can_send() {
-                    writeln!(socket, "hello")
+                    writeln!(socket, "{}", f())
                         .map(|_| {
                             socket.close();
                         })
