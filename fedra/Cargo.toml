@@ -1,0 +1,28 @@
+[package]
+name = "fedra"
+version = "0.1.0"
+authors = ["Jiayi Hu <jiayi.ghu@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m = "0.6.3"
+cortex-m-rt = "0.6.13"
+cortex-m-rtic = "0.6.0-alpha.0"
+rtt-target = {  version = "0.2.2", features = ["cortex-m"]}
+stm32f4 = { version = "0.12.1", features = ["stm32f407", "rt"] }
+stm32f4xx-hal = { version = "0.8.3", features = ["stm32f407", "rt"]}
+wasmi = { version = "0.7.0", default-features = false, features = ["core"] }
+alloc-cortex-m = "0.4.0"
+stm32-eth = { git = "https://github.com/stm32-rs/stm32-eth", features = ["stm32f407", "smoltcp-phy"]}
+smoltcp = { version = "0.6.0", default-features = false, features = ["socket-tcp", "socket-icmp"]}
+once_cell = { version = "1.5.2", default-features = false }
+
+# this lets you use `cargo fix`!
+[[bin]]
+name = "fedra"
+test = false
+bench = false
+
+
