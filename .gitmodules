@@ -1,0 +1,9 @@
+[submodule "patches/coap-lite"]
+	path = patches/coap-lite
+	url = https://github.com/jiayihu/coap-lite.git
+[submodule "patches/wasmi"]
+	path = patches/wasmi
+	url = https://github.com/jiayihu/wasmi.git
+[submodule "patches/parity-wasm"]
+	path = patches/parity-wasm
+	url = https://github.com/jiayihu/parity-wasm.git
