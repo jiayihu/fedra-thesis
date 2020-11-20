@@ -77,6 +77,24 @@
 
 - [Which types are atomic in STM32](https://stackoverflow.com/questions/52784613/which-variable-types-sizes-are-atomic-on-stm32-microcontrollers)
 
+## Raspberry Pi
+
+- [Getting started videos](https://www.raspberrypi.org/help/videos/)
+
 ## WASM
 
 - [WASM 1.0 Spec](https://www.w3.org/TR/wasm-core-1/)
+- [Embedding TCP/IP](https://www.embedded.com/embedding-tcp-ip/)
+
+## Network
+
+### TCP/IP
+
+- [Introduction to TCP/IP, Part 1](https://web.archive.org/web/20100209115907/https://www.embedded.com/1999/9912/9912ia1.htm)
+- [CS 60 Computer Networks - Socket Programming](https://www.cs.dartmouth.edu/~campbell/cs60/socketprogramming.html)
+
+### CoAP
+
+- [Hands-on with CoAP](https://docs.google.com/presentation/d/1dDZ7VTdjBZxnqcIt6qoX742d6dHbzap-D_H8Frf3LRE/edit?pli=1#slide=id.g3740c9df4_5_225)
+- [RFC7252](https://tools.ietf.org/html/rfc7252)
+- [CoAP Cheatsheet](https://github.com/markushx/coap-cheatsheet/blob/master/coap-cheatsheet.pdf)

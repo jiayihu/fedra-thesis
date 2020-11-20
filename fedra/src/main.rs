@@ -23,7 +23,6 @@ use rtt_target::rprintln;
 )]
 mod app {
     use super::{memory, network, time};
-    use core::fmt::Write;
     use hal::prelude::*;
     use rtt_target::{rprintln, rtt_init_print};
     use stm32f4xx_hal as hal;
@@ -52,7 +51,7 @@ mod app {
         let ethernet_dma = dp.ETHERNET_DMA;
 
         network::setup_eth(gpioa, gpiob, gpioc, clocks, ethernet_mac, ethernet_dma);
-        network::setup_iface();
+        network::setup_net();
         network::create_sockets();
 
         init::LateResources { noop: 0 }
@@ -92,7 +91,15 @@ mod app {
 
     #[task(resources = [])]
     fn server(_: server::Context) {
-        network::handle_request(|| "hello");
+        network::handle_request(|request| {
+            return match request.response {
+                Some(mut response) => {
+                    response.message.set_payload(b"OK".to_vec());
+                    Some(response)
+                }
+                _ => None,
+            };
+        });
     }
 
     #[task(binds = ETH, resources = [])]
