@@ -16,5 +16,11 @@ coap-lite = { path = "./patches/coap-lite" }
 [profile.release]
 codegen-units = 1 # better optimizations
 debug = true # symbols are nice and they don't increase the size on Flash
-lto = "off" # better optimizations
+lto = "on" # better optimizations
+opt-level = "z"
+
+[profile.dev]
+opt-level = "s"
+
+[profile.dev.package."*"]
 opt-level = "s"

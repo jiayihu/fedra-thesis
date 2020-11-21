@@ -62,6 +62,7 @@
 - [embedded-time](https://github.com/FluenTech/embedded-time)
 - [Real-time Interrupt-driven Concurrency](https://github.com/rtic-rs/cortex-m-rtic)
 - [Rust alloc](https://ehsanmkermani.com/2019/07/03/rust-std-study-series-alloc/)
+- [Optimizations: the speed size tradeoff](https://rust-embedded.github.io/book/unsorted/speed-vs-size.html)
 
 ## Rust STM32
 

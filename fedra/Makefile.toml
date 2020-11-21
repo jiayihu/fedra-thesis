@@ -14,15 +14,13 @@ args = [
 [tasks.embed]
 command = "cargo"
 args = [
-    "embed",
-    "--release"
+    "embed"
 ]
 
 [tasks.run]
 command = "cargo"
 args = [
-    "run",
-    "--release"
+    "run"
 ]
 
 [env]

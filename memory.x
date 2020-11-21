@@ -8,7 +8,7 @@ MEMORY
 /* This is where the call stack will be allocated. */
 /* The stack is of the full descending type. */
 /* NOTE Do NOT modify `_stack_start` unless you know what you are doing */
-_stack_start = ORIGIN(RAM) + LENGTH(RAM);
+_stack_start = ORIGIN(RAM) + LENGTH(RAM); /* 0x20020000 */
 
 /* Advanced users can place the stack inthe CCRAM */
 /* which is smaller but faster. */

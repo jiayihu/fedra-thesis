@@ -12,7 +12,7 @@ monitor reset init
 load
 
 # Enable semihosting
-monitor arm semihosting enable
+# monitor arm semihosting enable
 
 # detect unhandled exceptions, hard faults and panics
 break DefaultHandler
@@ -20,4 +20,4 @@ break HardFault
 break rust_begin_unwind
 
 # start the process but immediately halt the processor
-stepi
+# stepi
