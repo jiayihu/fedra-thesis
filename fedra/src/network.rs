@@ -39,32 +39,33 @@ static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 2048] = [0; 2048];
 static mut SOCKETS: OnceCell<SocketSet<'static, 'static, 'static>> = OnceCell::new();
 static mut SERVER_HANDLE: OnceCell<SocketHandle> = OnceCell::new();
 
-pub fn setup_eth(
-    gpioa: hal::gpio::gpioa::Parts,
-    gpiob: hal::gpio::gpiob::Parts,
-    gpioc: hal::gpio::gpioc::Parts,
-    clocks: hal::rcc::Clocks,
-    ethernet_mac: hal::stm32::ETHERNET_MAC,
-    ethernet_dma: hal::stm32::ETHERNET_DMA,
-) {
+pub struct EthPeripherals {
+    pub gpioa: hal::gpio::gpioa::Parts,
+    pub gpiob: hal::gpio::gpiob::Parts,
+    pub gpioc: hal::gpio::gpioc::Parts,
+    pub ethernet_mac: hal::stm32::ETHERNET_MAC,
+    pub ethernet_dma: hal::stm32::ETHERNET_DMA,
+}
+
+pub fn setup_eth(eth_p: EthPeripherals, clocks: hal::rcc::Clocks) {
     rprintln!("Enabling ethernet...");
 
     let eth_pins = EthPins {
-        ref_clk: gpioa.pa1,
-        md_io: gpioa.pa2,
-        md_clk: gpioc.pc1,
-        crs: gpioa.pa7,
-        tx_en: gpiob.pb11,
-        tx_d0: gpiob.pb12,
-        tx_d1: gpiob.pb13,
-        rx_d0: gpioc.pc4,
-        rx_d1: gpioc.pc5,
+        ref_clk: eth_p.gpioa.pa1,
+        md_io: eth_p.gpioa.pa2,
+        md_clk: eth_p.gpioc.pc1,
+        crs: eth_p.gpioa.pa7,
+        tx_en: eth_p.gpiob.pb11,
+        tx_d0: eth_p.gpiob.pb12,
+        tx_d1: eth_p.gpiob.pb13,
+        rx_d0: eth_p.gpioc.pc4,
+        rx_d1: eth_p.gpioc.pc5,
     };
 
     unsafe {
         let eth = Eth::new(
-            ethernet_mac,
-            ethernet_dma,
+            eth_p.ethernet_mac,
+            eth_p.ethernet_dma,
             &mut RX_RING[..],
             &mut TX_RING[..],
             PhyAddress::_1,

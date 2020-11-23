@@ -11,6 +11,7 @@ mod memory;
 mod network;
 pub mod qemu;
 mod time;
+mod wasm_host;
 
 use core::panic::PanicInfo;
 use cortex_m_rt::{exception, ExceptionFrame};
@@ -19,18 +20,30 @@ use rtt_target::rprintln;
 #[rtic::app(
     device = stm32f4xx_hal::stm32,
     peripherals = true,
-    dispatchers = [EXTI1]
+    monotonic = rtic::cyccnt::CYCCNT,
+    dispatchers = [EXTI1, EXTI2]
 )]
 mod app {
-    use super::{memory, network, time};
+    use super::{memory, network, time, wasm_host};
+    use alloc::string::ToString;
+    use coap_lite::{ContentFormat, MessageClass, ResponseType};
     use hal::prelude::*;
+    use rtic::cyccnt::U32Ext;
     use rtt_target::{rprintln, rtt_init_print};
     use stm32f4xx_hal as hal;
-    use wasmi::{ImportsBuilder, ModuleInstance, NopExternals, RuntimeValue};
+    use wasmi::RuntimeValue;
+
+    const PERIOD: u32 = 160_000_000;
+
+    // Relative offset of task activation after initial elaboration
+    const ACTIVATION_OFFSET: u32 = PERIOD;
 
     #[resources]
     struct Resources {
-        noop: u32,
+        #[task_local]
+        host: wasm_host::WasmHost<'static>,
+
+        runtime: wasm_host::Runtime,
     }
 
     #[init]
@@ -38,59 +51,69 @@ mod app {
         rtt_init_print!();
         memory::setup_heap();
 
-        let mut cp: cortex_m::Peripherals = cx.core;
+        let mut cp: rtic::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
         let rcc = dp.RCC.constrain();
+        let tim2 = dp.TIM2;
 
-        let clocks = time::setup_clocks(&mut cp, rcc);
+        time::setup_cycle_counter(&mut cp);
+        let clocks = time::setup_clocks(rcc, tim2);
 
-        let gpioa = dp.GPIOA.split();
-        let gpiob = dp.GPIOB.split();
-        let gpioc = dp.GPIOC.split();
-        let ethernet_mac = dp.ETHERNET_MAC;
-        let ethernet_dma = dp.ETHERNET_DMA;
+        let eth_p = network::EthPeripherals {
+            gpioa: dp.GPIOA.split(),
+            gpiob: dp.GPIOB.split(),
+            gpioc: dp.GPIOC.split(),
+            ethernet_mac: dp.ETHERNET_MAC,
+            ethernet_dma: dp.ETHERNET_DMA,
+        };
 
-        network::setup_eth(gpioa, gpiob, gpioc, clocks, ethernet_mac, ethernet_dma);
+        network::setup_eth(eth_p, clocks);
         network::setup_net();
         network::create_sockets();
 
-        init::LateResources { noop: 0 }
+        let mut host = wasm_host::WasmHost::default();
+        let runtime = wasm_host::Runtime::default();
+        wasm_host::setup_default(&mut host);
+
+        temp::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
+
+        init::LateResources { host, runtime }
     }
 
     #[idle(resources = [])]
-    fn idle(_: idle::Context) -> ! {
+    fn idle(_cx: idle::Context) -> ! {
         super::nop_loop();
     }
 
-    #[task]
-    fn wasm(_: wasm::Context) {
-        let wasm = include_bytes!("./wasm/add.wasm");
-        let module = wasmi::Module::from_buffer(&wasm).expect("Failed to load wasm");
-        assert!(module.deny_floating_point().is_ok());
+    #[task(resources = [host, runtime], priority = 2)]
+    fn temp(cx: temp::Context) {
+        temp::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
 
-        let instance = ModuleInstance::new(&module, &ImportsBuilder::default())
-            .expect("Failed to instantiate wasm module");
-        let instance = instance
-            .run_start(&mut NopExternals)
-            .expect("WASM start function trapped");
+        let host = cx.resources.host;
+        let mut runtime = cx.resources.runtime;
 
-        let result = instance
-            .invoke_export(
+        runtime.lock(|runtime| {
+            let result = host.invoke(
                 "add",
-                &[RuntimeValue::I32(1), RuntimeValue::I32(2)],
-                &mut NopExternals,
-            )
-            .expect("Failed to execute export");
+                &[RuntimeValue::I32(runtime.temp), RuntimeValue::I32(1)],
+                runtime,
+            );
 
-        match result {
-            Some(RuntimeValue::I32(x)) => rprintln!("1 + 2 = {}", x),
-            Some(_) => rprintln!("Unexpected result"),
-            None => rprintln!("No result"),
-        }
+            match result {
+                Some(RuntimeValue::I32(temp)) => {
+                    runtime.temp = temp;
+                    rprintln!("Temp {}", temp);
+                }
+                Some(_) => rprintln!("Unexpected result"),
+                None => rprintln!("No result"),
+            }
+        })
     }
 
-    #[task(resources = [], priority = 1)]
-    fn server(_: server::Context) {
+    #[task(resources = [runtime], priority = 1)]
+    fn server(cx: server::Context) {
+        let mut runtime = cx.resources.runtime;
+
         network::handle_request(|request| {
             let path = request.get_path();
             let mut response = request.response?;
@@ -99,7 +122,10 @@ mod app {
 
             match path.as_str() {
                 "sensors/temp" => {
-                    wasm::spawn().unwrap();
+                    runtime.lock(|runtime| {
+                        let temp = runtime.temp.to_string();
+                        response.message.set_payload(temp.into_bytes());
+                    });
                 }
                 "well-known/core" => {
                     response
@@ -125,7 +151,7 @@ mod app {
         });
     }
 
-    #[task(binds = ETH, resources = [])]
+    #[task(binds = ETH, resources = [], priority = 10)]
     fn eth(_: eth::Context) {
         network::set_pending();
 
@@ -134,6 +160,11 @@ mod app {
         stm32_eth::eth_interrupt_handler(&p.ETHERNET_DMA);
 
         server::spawn().unwrap();
+    }
+
+    #[task(binds = TIM2, priority = 14)]
+    fn tim2(_: tim2::Context) {
+        time::handle_tim2_interrupt();
     }
 }
 
