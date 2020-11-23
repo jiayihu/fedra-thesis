@@ -89,16 +89,39 @@ mod app {
         }
     }
 
-    #[task(resources = [])]
+    #[task(resources = [], priority = 1)]
     fn server(_: server::Context) {
         network::handle_request(|request| {
-            return match request.response {
-                Some(mut response) => {
-                    response.message.set_payload(b"OK".to_vec());
-                    Some(response)
+            let path = request.get_path();
+            let mut response = request.response?;
+
+            rprintln!("Request path {}", path);
+
+            match path.as_str() {
+                "sensors/temp" => {
+                    wasm::spawn().unwrap();
                 }
-                _ => None,
-            };
+                "well-known/core" => {
+                    response
+                        .message
+                        .set_content_format(ContentFormat::ApplicationLinkFormat);
+                    response.message.set_payload(
+                        b"\
+                    </sensors/temp>;rt=\"oic.r.temperature\";if=\"sensor\"
+                    "
+                        .to_vec(),
+                    );
+                }
+                "ping" => {
+                    response.message.set_payload(b"pong".to_vec());
+                }
+                _ => {
+                    response.message.header.code = MessageClass::Response(ResponseType::NotFound);
+                    response.message.set_payload(b"Not found".to_vec());
+                }
+            }
+
+            Some(response)
         });
     }
 

@@ -99,3 +99,4 @@
 - [Hands-on with CoAP](https://docs.google.com/presentation/d/1dDZ7VTdjBZxnqcIt6qoX742d6dHbzap-D_H8Frf3LRE/edit?pli=1#slide=id.g3740c9df4_5_225)
 - [RFC7252](https://tools.ietf.org/html/rfc7252)
 - [CoAP Cheatsheet](https://github.com/markushx/coap-cheatsheet/blob/master/coap-cheatsheet.pdf)
+- [Constrained RESTful Environments (CoRE) Parameters](https://www.iana.org/assignments/core-parameters/core-parameters.xhtml)

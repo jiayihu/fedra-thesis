@@ -166,14 +166,14 @@ where
                             let packet = response
                                 .message
                                 .to_bytes()
-                                .expect("Cannot convert respone to bytes");
+                                .expect("Cannot convert response to bytes");
 
                             socket
                                 .send_slice(&packet[..], source)
                                 .unwrap_or_else(|e| rprintln!("UDP send error: {:?}", e));
                         }
                         None => {
-                            // No response
+                            rprintln!("No response");
                         }
                     }
                 }
