@@ -1,3 +1,6 @@
+- [ ] Proper error handling
+- [ ] Standardize WASM SDK
+
 ## Wasmi size
 
 Unoptimized

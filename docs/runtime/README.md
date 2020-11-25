@@ -84,13 +84,15 @@
 
 ## WASM
 
-- [WASM 1.0 Spec](https://www.w3.org/TR/wasm-core-1/)
-- [Embedding TCP/IP](https://www.embedded.com/embedding-tcp-ip/)
+- [WASM Spec](https://webassembly.github.io/spec/core/index.html)
+- [W3 WASM 1.0 Spec](https://www.w3.org/TR/wasm-core-1/)
+- [twiggy - code size profiler](https://github.com/rustwasm/twiggy)
 
 ## Network
 
 ### TCP/IP
 
+- [Embedding TCP/IP](https://www.embedded.com/embedding-tcp-ip/)
 - [Introduction to TCP/IP, Part 1](https://web.archive.org/web/20100209115907/https://www.embedded.com/1999/9912/9912ia1.htm)
 - [CS 60 Computer Networks - Socket Programming](https://www.cs.dartmouth.edu/~campbell/cs60/socketprogramming.html)
 

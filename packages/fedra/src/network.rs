@@ -119,7 +119,7 @@ pub fn create_sockets() {
     }
 }
 
-pub fn handle_request<'a, F>(mut handler: F)
+pub fn handle_request<F>(mut handler: F)
 where
     F: FnMut(CoapRequest<IpEndpoint>) -> Option<CoapResponse>,
 {

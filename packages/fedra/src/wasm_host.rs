@@ -5,20 +5,26 @@ use wasmi::{
     Signature, Trap, ValueType,
 };
 
-pub fn setup_default(host: &mut WasmHost) {
-    let wasm = include_bytes!("./wasm/add.wasm");
-    let module = wasmi::Module::from_buffer(&wasm).expect("Failed to load wasm");
-    assert!(module.deny_floating_point().is_ok());
-
-    host.set_instance(&module);
-}
-
 pub struct WasmHost<'a> {
     imports: ImportsBuilder<'a>,
     instance: Option<ModuleRef>,
 }
 
 impl<'a> WasmHost<'a> {
+    pub fn create_module(buffer: &[u8]) -> Module {
+        let module = wasmi::Module::from_buffer(buffer).expect("Failed to load wasm");
+
+        module
+            .deny_floating_point_64()
+            .expect("WASM Module validation error");
+
+        module
+            .validate_memory_size(1)
+            .expect("WASM Module validation error");
+
+        module
+    }
+
     pub fn set_instance(&mut self, module: &Module) {
         let instance =
             ModuleInstance::new(module, &self.imports).expect("Failed to instantiate wasm module");
@@ -30,28 +36,30 @@ impl<'a> WasmHost<'a> {
         self.instance = Some(instance);
     }
 
-    pub fn invoke<E: Externals>(
-        &self,
-        name: &str,
-        args: &[RuntimeValue],
-        runtime: &mut E,
-    ) -> Option<RuntimeValue> {
+    pub fn invoke<E: Externals>(&self, name: &str, runtime: &mut E) -> Option<RuntimeValue> {
         let instance = self
             .instance
             .as_ref()
             .expect("No module instance initialized");
         let result = instance
-            .invoke_export(name, args, runtime)
+            .invoke_export(name, &[], runtime)
             .expect("Failed to invoke the export");
 
         result
+    }
+
+    pub fn setup_default(&mut self) {
+        let wasm = include_bytes!("./wasm/functions.wasm");
+        let module = Self::create_module(wasm);
+
+        self.set_instance(&module);
     }
 }
 
 impl<'a> Default for WasmHost<'a> {
     fn default() -> Self {
         let mut imports = ImportsBuilder::default();
-        imports.push_resolver("host", &RuntimeImportResolver);
+        imports.push_resolver("env", &RuntimeImportResolver);
 
         WasmHost {
             imports,
@@ -62,7 +70,6 @@ impl<'a> Default for WasmHost<'a> {
 
 unsafe impl Send for WasmHost<'static> {}
 
-#[derive(Default)]
 pub struct Runtime {
     pub temp: i32,
 }
@@ -86,6 +93,12 @@ impl Externals for Runtime {
             }
             _ => panic!("Unknown function index"),
         }
+    }
+}
+
+impl Default for Runtime {
+    fn default() -> Self {
+        Runtime { temp: 1 }
     }
 }
 

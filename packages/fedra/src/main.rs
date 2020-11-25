@@ -31,7 +31,6 @@ mod app {
     use rtic::cyccnt::U32Ext;
     use rtt_target::{rprintln, rtt_init_print};
     use stm32f4xx_hal as hal;
-    use wasmi::RuntimeValue;
 
     const PERIOD: u32 = 160_000_000;
 
@@ -73,7 +72,7 @@ mod app {
 
         let mut host = wasm_host::WasmHost::default();
         let runtime = wasm_host::Runtime::default();
-        wasm_host::setup_default(&mut host);
+        host.setup_default();
 
         temp::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
 
@@ -92,21 +91,10 @@ mod app {
         let host = cx.resources.host;
         let mut runtime = cx.resources.runtime;
 
-        runtime.lock(|runtime| {
-            let result = host.invoke(
-                "add",
-                &[RuntimeValue::I32(runtime.temp), RuntimeValue::I32(1)],
-                runtime,
-            );
+        runtime.lock(|runtime: &mut wasm_host::Runtime| {
+            host.invoke("main", runtime);
 
-            match result {
-                Some(RuntimeValue::I32(temp)) => {
-                    runtime.temp = temp;
-                    rprintln!("Temp {}", temp);
-                }
-                Some(_) => rprintln!("Unexpected result"),
-                None => rprintln!("No result"),
-            }
+            rprintln!("Temp {}", runtime.temp);
         })
     }
 
@@ -178,14 +166,14 @@ fn panic(info: &PanicInfo) -> ! {
 fn DefaultHandler(irqn: i16) {
     rprintln!("Exception IRQN {}", irqn);
 
-    loop {}
+    nop_loop()
 }
 
 #[exception]
 fn HardFault(ef: &ExceptionFrame) -> ! {
     rprintln!("HardFault {:#?}", ef);
 
-    loop {}
+    nop_loop()
 }
 
 fn nop_loop() -> ! {

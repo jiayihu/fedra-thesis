@@ -5,6 +5,8 @@ static ALLOCATOR: CortexMHeap = CortexMHeap::empty();
 
 #[alloc_error_handler]
 fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    rtt_target::rprintln!("Heap used {}, free {}", ALLOCATOR.used(), ALLOCATOR.free());
+
     panic!("Allocation error: {:?}", layout);
 }
 

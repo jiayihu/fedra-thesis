@@ -1,27 +1,3 @@
-//! Interacting with debugging agent
-//!
-//! # Example
-//!
-//! This example will show how to terminate the QEMU session. The program
-//! should be running under QEMU with semihosting enabled
-//! (use `-semihosting` flag).
-//!
-//! Target program:
-//!
-//! ```no_run
-//! use cortex_m_semihosting::debug::{self, EXIT_SUCCESS, EXIT_FAILURE};
-//!
-//! fn main() {
-//!     if 2 == 2 {
-//!         // report success
-//!         debug::exit(EXIT_SUCCESS);
-//!     } else {
-//!         // report failure
-//!         debug::exit(EXIT_FAILURE);
-//!     }
-//! }
-//!
-
 /// This values are taken from section 5.5.2 of
 /// ADS Debug Target Guide (DUI0058).
 // TODO document
