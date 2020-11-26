@@ -112,26 +112,24 @@ mod app {
                 "sensors/temp" => {
                     runtime.lock(|runtime| {
                         let temp = runtime.temp.to_string();
-                        response.message.set_payload(temp.into_bytes());
+                        response.message.payload = temp.into_bytes();
                     });
                 }
                 "well-known/core" => {
                     response
                         .message
                         .set_content_format(ContentFormat::ApplicationLinkFormat);
-                    response.message.set_payload(
-                        b"\
+                    response.message.payload = b"\
                     </sensors/temp>;rt=\"oic.r.temperature\";if=\"sensor\"
                     "
-                        .to_vec(),
-                    );
+                    .to_vec();
                 }
                 "ping" => {
-                    response.message.set_payload(b"pong".to_vec());
+                    response.message.payload = b"pong".to_vec();
                 }
                 _ => {
                     response.message.header.code = MessageClass::Response(ResponseType::NotFound);
-                    response.message.set_payload(b"Not found".to_vec());
+                    response.message.payload = b"Not found".to_vec();
                 }
             }
 
