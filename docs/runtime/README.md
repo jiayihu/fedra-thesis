@@ -26,10 +26,12 @@
 - [What is an ethernet PHY](https://youtu.be/JH3cMYErmKI)
 - [Medium access control](https://en.wikipedia.org/wiki/Medium_access_control)
 - [An ethernet PHY for the STM32F4](https://andybrown.me.uk/2012/09/01/ethernet-phy-stm32f107/)
-- [Ethernet on STM32F4DISCOVERY using external PHY](http://blog.tkjelectronics.dk/2012/08/ethernet-on-stm32f4discovery-using-external-phy/)
-- [stm32f1xx-hal COAP](https://github.com/stm32-rs/stm32f1xx-hal/blob/master/examples/enc28j60-coap.rs.disabled)
-- [Connecting to Ethernet on the STM32F429 Discovery](https://www.emcraft.com/stm32f429discovery/connecting-to-ethernet-on-stm32f429)
 - [Using low cost STM32F407VET6 boards with mbed](https://os.mbed.com/users/hudakz/code/STM32F407VET6_Hello/shortlog/)
+
+- [Semaphore and Mutex on ARM Cortex-M](http://www.atakansarioglu.com/simple-semaphore-mutex-arm-cortex-m-implementation/)
+
+- [Ethernet on STM32F4DISCOVERY using external PHY](http://blog.tkjelectronics.dk/2012/08/ethernet-on-stm32f4discovery-using-external-phy/)
+- [Connecting to Ethernet on the STM32F429 Discovery](https://www.emcraft.com/stm32f429discovery/connecting-to-ethernet-on-stm32f429)
 - [Library 52- Ethernet peripheral on STM32F4xx](http://stm32f4-discovery.net/2015/02/library-52-ethernet-peripheral-on-stm32f4xx/)
 - [ENC28J60, Ethernet for your microcontroller](https://blog.japaric.io/wd-4-enc28j60/)
 - [ESP32 Ethernet](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_eth.html)
@@ -43,6 +45,7 @@
 - [compiler-rt runtime libraries](https://compiler-rt.llvm.org/)
 - [rust-embedded/book [WIP] Support building against c libraries with libc or newlib / nosys](https://github.com/rust-embedded/book/issues/255)
 - [undefined reference to `__aeabi_ddiv' and friends - building without stdlib but with -mfloat-abi=hard](https://stackoverflow.com/questions/26490587/undefined-reference-to-aeabi-ddiv-and-friends-building-without-stdlib-but)
+- [Beginner's Guide to Linkers](https://www.lurklurk.org/linkers/linkers.html)
 
 - [From Zero to main(): Bare metal C](https://interrupt.memfault.com/blog/zero-to-main-1)
 - [From Zero to main(): Bare metal Rust](https://interrupt.memfault.com/blog/zero-to-main-rust-1)
