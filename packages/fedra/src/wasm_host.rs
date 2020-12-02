@@ -1,9 +1,38 @@
+use alloc::boxed::Box;
+use alloc::fmt::Formatter;
 use alloc::format;
+use alloc::string::String;
 use wasmi::{
-    Error as InterpreterError, Externals, FuncInstance, FuncRef, ImportsBuilder, Module,
-    ModuleImportResolver, ModuleInstance, ModuleRef, NopExternals, RuntimeArgs, RuntimeValue,
-    Signature, Trap, ValueType,
+    Error as InterpreterError, Externals, FuncInstance, FuncRef, HostError as WasmiHostError,
+    ImportsBuilder, Module, ModuleImportResolver, ModuleInstance, ModuleRef, NopExternals,
+    RuntimeArgs, RuntimeValue, Signature, Trap, TrapKind, ValueType,
 };
+
+#[derive(Debug)]
+pub enum HostError {
+    Interpreter(InterpreterError),
+    UnknownFunctionIndex(String),
+}
+
+impl alloc::fmt::Display for HostError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> alloc::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl From<InterpreterError> for HostError {
+    fn from(e: InterpreterError) -> Self {
+        HostError::Interpreter(e)
+    }
+}
+
+impl From<Trap> for HostError {
+    fn from(e: Trap) -> Self {
+        HostError::Interpreter(InterpreterError::from(e))
+    }
+}
+
+impl WasmiHostError for HostError {}
 
 pub struct WasmHost<'a> {
     imports: ImportsBuilder<'a>,
@@ -11,48 +40,47 @@ pub struct WasmHost<'a> {
 }
 
 impl<'a> WasmHost<'a> {
-    pub fn create_module(buffer: &[u8]) -> Module {
-        let module = wasmi::Module::from_buffer(buffer).expect("Failed to load wasm");
+    pub fn create_module(buffer: &[u8]) -> Result<Module, HostError> {
+        let module = wasmi::Module::from_buffer(buffer)?;
 
-        module
-            .deny_floating_point_64()
-            .expect("WASM Module validation error");
+        module.deny_floating_point_64()?;
+        module.validate_memory_size(1)?;
 
-        module
-            .validate_memory_size(1)
-            .expect("WASM Module validation error");
-
-        module
+        Ok(module)
     }
 
-    pub fn set_instance(&mut self, module: &Module) {
-        let instance =
-            ModuleInstance::new(module, &self.imports).expect("Failed to instantiate wasm module");
-
-        let instance = instance
-            .run_start(&mut NopExternals)
-            .expect("WASM start function trapped");
+    pub fn set_instance(&mut self, module: &Module) -> Result<(), HostError> {
+        let instance = ModuleInstance::new(module, &self.imports)?;
+        let instance = instance.run_start(&mut NopExternals)?;
 
         self.instance = Some(instance);
+
+        Ok(())
     }
 
-    pub fn invoke<E: Externals>(&self, name: &str, runtime: &mut E) -> Option<RuntimeValue> {
+    pub fn invoke<E: Externals>(
+        &self,
+        name: &str,
+        runtime: &mut E,
+    ) -> Result<Option<RuntimeValue>, HostError> {
         let instance = self
             .instance
             .as_ref()
-            .expect("No module instance initialized");
-        let result = instance
-            .invoke_export(name, &[], runtime)
-            .expect("Failed to invoke the export");
+            .ok_or(InterpreterError::Function(String::from(
+                "Cannot invoke without an instance",
+            )))?;
+        let result = instance.invoke_export(name, &[], runtime)?;
 
-        result
+        Ok(result)
     }
 
-    pub fn setup_default(&mut self) {
+    pub fn setup_default(&mut self) -> Result<(), HostError> {
         let wasm = include_bytes!("./wasm/functions.wasm");
-        let module = Self::create_module(wasm);
+        let module = Self::create_module(wasm)?;
 
-        self.set_instance(&module);
+        self.set_instance(&module)?;
+
+        Ok(())
     }
 }
 
@@ -91,7 +119,13 @@ impl Externals for Runtime {
 
                 Ok(None)
             }
-            _ => panic!("Unknown function index"),
+            _ => Err(
+                TrapKind::Host(Box::new(HostError::UnknownFunctionIndex(format!(
+                    "Cannot invoke function with index {}",
+                    index
+                ))))
+                .into(),
+            ),
         }
     }
 }

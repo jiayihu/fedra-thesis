@@ -72,7 +72,7 @@ mod app {
 
         let mut host = wasm_host::WasmHost::default();
         let runtime = wasm_host::Runtime::default();
-        host.setup_default();
+        host.setup_default().expect("Could not setup the WAST Host");
 
         temp::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
 
@@ -92,7 +92,8 @@ mod app {
         let mut runtime = cx.resources.runtime;
 
         runtime.lock(|runtime: &mut wasm_host::Runtime| {
-            host.invoke("main", runtime);
+            host.invoke("main", runtime)
+                .expect("Cannot invoke main in the WASM module"); // TODO: Handle as CoAP response
 
             rprintln!("Temp {}", runtime.temp);
         })
