@@ -105,3 +105,16 @@
 - [RFC7252](https://tools.ietf.org/html/rfc7252)
 - [CoAP Cheatsheet](https://github.com/markushx/coap-cheatsheet/blob/master/coap-cheatsheet.pdf)
 - [Constrained RESTful Environments (CoRE) Parameters](https://www.iana.org/assignments/core-parameters/core-parameters.xhtml)
+
+## Kubernetes
+
+- [K8s Client Libs](https://kubernetes.io/docs/reference/using-api/client-libraries/)
+- [Pod v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#pod-v1-core)
+- [Kubectl docs](https://kubectl.docs.kubernetes.io/guides/introduction/)
+- [APIserver Anonymous requests](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#anonymous-requests)
+- [Kubelet TLS Bootstrapping](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/)
+- [K8s examples - guestbook](https://github.com/kubernetes/examples/blob/master/guestbook/all-in-one/guestbook-all-in-one.yaml)
+
+- [A Comprehensive Container Runtime Comparison](https://www.capitalone.com/tech/cloud/container-runtime/)
+- [Build an OctaPi](https://projects.raspberrypi.org/en/projects/build-an-octapi)
+- [How I Built a Raspberry Pi Cluster for Cheap](https://medium.com/swlh/how-i-built-a-raspberry-pi-cluster-for-cheap-38ab661bd641)
