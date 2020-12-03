@@ -3,7 +3,7 @@
   "rust-analyzer.checkOnSave.allTargets": false,
   "rust-analyzer.checkOnSave.command": "clippy",
   "rust-analyzer.linkedProjects": [
-    "packages/fedra/Cargo.toml",
+    "packages/fedra-iot/Cargo.toml",
     "packages/functions/Cargo.toml"
   ]
 }

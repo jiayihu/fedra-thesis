@@ -1,5 +1,5 @@
 [package]
-name = "fedra"
+name = "fedra-iot"
 version = "0.1.0"
 authors = ["Jiayi Hu <jiayi.ghu@gmail.com>"]
 edition = "2018"
