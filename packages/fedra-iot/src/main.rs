@@ -6,6 +6,7 @@
 
 extern crate alloc;
 
+mod coap_server;
 mod intrinsics;
 mod memory;
 mod network;
@@ -24,9 +25,9 @@ use rtt_target::rprintln;
     dispatchers = [EXTI1, EXTI2]
 )]
 mod app {
-    use super::{memory, network, time, wasm_host};
+    use super::{coap_server, memory, network, time, wasm_host};
     use alloc::string::ToString;
-    use coap_lite::{ContentFormat, MessageClass, ResponseType};
+    use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
     use hal::prelude::*;
     use rtic::cyccnt::U32Ext;
     use rtt_target::{rprintln, rtt_init_print};
@@ -41,6 +42,9 @@ mod app {
     struct Resources {
         #[task_local]
         host: wasm_host::WasmHost<'static>,
+
+        #[task_local]
+        coap_server: coap_server::CoapServer,
 
         runtime: wasm_host::Runtime,
     }
@@ -70,13 +74,19 @@ mod app {
         network::setup_net();
         network::create_sockets();
 
+        let coap_server = coap_server::CoapServer::default();
+
         let mut host = wasm_host::WasmHost::default();
         let runtime = wasm_host::Runtime::default();
         host.setup_default().expect("Could not setup the WAST Host");
 
         temp::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
 
-        init::LateResources { host, runtime }
+        init::LateResources {
+            host,
+            runtime,
+            coap_server,
+        }
     }
 
     #[idle(resources = [])]
@@ -99,24 +109,26 @@ mod app {
         })
     }
 
-    #[task(resources = [runtime], priority = 1)]
+    #[task(resources = [runtime, coap_server], priority = 1)]
     fn server(cx: server::Context) {
         let mut runtime = cx.resources.runtime;
+        let coap_server: &mut coap_server::CoapServer = cx.resources.coap_server;
 
-        network::handle_request(|request| {
+        coap_server.handle_request(|request| {
+            let method = request.get_method().clone();
             let path = request.get_path();
             let mut response = request.response?;
 
             rprintln!("Request path {}", path);
 
-            match path.as_str() {
-                "sensors/temp" => {
+            match (method, path.as_str()) {
+                (Method::Get, "sensors/temp") => {
                     runtime.lock(|runtime| {
                         let temp = runtime.temp.to_string();
                         response.message.payload = temp.into_bytes();
                     });
                 }
-                "well-known/core" => {
+                (Method::Get, "well-known/core") => {
                     response
                         .message
                         .set_content_format(ContentFormat::ApplicationLinkFormat);
@@ -125,11 +137,11 @@ mod app {
                     "
                     .to_vec();
                 }
-                "ping" => {
+                (Method::Get, "ping") => {
                     response.message.payload = b"pong".to_vec();
                 }
                 _ => {
-                    response.message.header.code = MessageClass::Response(ResponseType::NotFound);
+                    response.set_status(Status::NotFound);
                     response.message.payload = b"Not found".to_vec();
                 }
             }

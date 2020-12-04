@@ -1,5 +1,5 @@
 use crate::time;
-use coap_lite::{CoapRequest, CoapResponse, Packet};
+use alloc::vec::Vec;
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
 use once_cell::unsync::{Lazy, OnceCell};
@@ -121,7 +121,7 @@ pub fn create_sockets() {
 
 pub fn handle_request<F>(mut handler: F)
 where
-    F: FnMut(CoapRequest<IpEndpoint>) -> Option<CoapResponse>,
+    F: FnMut(&[u8], IpEndpoint) -> Option<Vec<u8>>, // TODO: Fn should be enough
 {
     const PORT: u16 = 5683;
 
@@ -143,41 +143,27 @@ where
                         .unwrap_or_else(|e| rprintln!("UDP bind error: {:?}", e));
                 }
 
-                let request = match socket.recv() {
-                    Ok((data, endpoint)) => {
-                        rprintln!("UDP recv from {}", endpoint);
-
-                        let packet = Packet::from_bytes(data).unwrap();
-                        let request = CoapRequest::from_packet(packet, endpoint);
-
-                        Some(request)
-                    }
-                    Err(_) => None,
-                };
-
                 if !socket.can_send() {
                     return;
                 }
 
-                if let Some(request) = request {
-                    let source = request.source.unwrap();
+                match socket.recv() {
+                    Ok((data, endpoint)) => {
+                        rprintln!("UDP recv from {}", endpoint);
 
-                    match handler(request) {
-                        Some(response) => {
-                            let packet = response
-                                .message
-                                .to_bytes()
-                                .expect("Cannot convert response to bytes");
-
-                            socket
-                                .send_slice(&packet[..], source)
-                                .unwrap_or_else(|e| rprintln!("UDP send error: {:?}", e));
-                        }
-                        None => {
-                            rprintln!("No response");
+                        match handler(data, endpoint.clone()) {
+                            Some(response) => {
+                                socket
+                                    .send_slice(response.as_slice(), endpoint)
+                                    .unwrap_or_else(|e| rprintln!("UDP send error: {:?}", e));
+                            }
+                            None => {
+                                rprintln!("No response");
+                            }
                         }
                     }
-                }
+                    Err(_) => {}
+                };
             }
             Ok(false) => {
                 // Sleep task if no ethernet work is pending
