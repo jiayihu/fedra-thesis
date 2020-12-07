@@ -43,7 +43,6 @@ mod app {
         #[task_local]
         host: wasm_host::WasmHost<'static>,
 
-        #[task_local]
         coap_server: coap_server::CoapServer,
 
         runtime: wasm_host::Runtime,
@@ -106,48 +105,64 @@ mod app {
                 .expect("Cannot invoke main in the WASM module"); // TODO: Handle as CoAP response
 
             rprintln!("Temp {}", runtime.temp);
-        })
+
+            notify::spawn("sensors/temp", runtime.temp).unwrap();
+        });
+    }
+
+    #[task(resources = [coap_server], capacity = 2, priority = 1)]
+    fn notify(cx: notify::Context, resource: &'static str, value: i32) {
+        let mut coap_server = cx.resources.coap_server;
+        let payload = value.to_string().into_bytes();
+
+        coap_server.lock(|coap_server: &mut coap_server::CoapServer| {
+            coap_server.notify_observers(resource, payload);
+        });
+
+        rprintln!("Notified");
     }
 
     #[task(resources = [runtime, coap_server], priority = 1)]
     fn server(cx: server::Context) {
         let mut runtime = cx.resources.runtime;
-        let coap_server: &mut coap_server::CoapServer = cx.resources.coap_server;
+        let mut coap_server = cx.resources.coap_server;
 
-        coap_server.handle_request(|request| {
-            let method = request.get_method().clone();
-            let path = request.get_path();
-            let mut response = request.response?;
+        coap_server.lock(|coap_server: &mut coap_server::CoapServer| {
+            coap_server.handle_request(|request| {
+                let method = request.get_method().clone();
+                let path = request.get_path();
+                let mut response = request.response?;
 
-            rprintln!("Request path {}", path);
+                rprintln!("Request path {}", path);
 
-            match (method, path.as_str()) {
-                (Method::Get, "sensors/temp") => {
-                    runtime.lock(|runtime| {
-                        let temp = runtime.temp.to_string();
-                        response.message.payload = temp.into_bytes();
-                    });
-                }
-                (Method::Get, "well-known/core") => {
-                    response
-                        .message
-                        .set_content_format(ContentFormat::ApplicationLinkFormat);
-                    response.message.payload = b"\
+                match (method, path.as_str()) {
+                    (Method::Get, "sensors/temp") => {
+                        runtime.lock(|runtime| {
+                            let temp = runtime.temp.to_string();
+                            response.message.payload = temp.into_bytes();
+                        });
+                    }
+                    (Method::Get, "well-known/core") => {
+                        response
+                            .message
+                            .set_content_format(ContentFormat::ApplicationLinkFormat);
+                        response.message.payload = b"\
                     </sensors/temp>;rt=\"oic.r.temperature\";if=\"sensor\"
                     "
-                    .to_vec();
+                        .to_vec();
+                    }
+                    (Method::Get, "ping") => {
+                        response.message.payload = b"pong".to_vec();
+                    }
+                    _ => {
+                        response.set_status(Status::NotFound);
+                        response.message.payload = b"Not found".to_vec();
+                    }
                 }
-                (Method::Get, "ping") => {
-                    response.message.payload = b"pong".to_vec();
-                }
-                _ => {
-                    response.set_status(Status::NotFound);
-                    response.message.payload = b"Not found".to_vec();
-                }
-            }
 
-            Some(response)
-        });
+                Some(response)
+            });
+        })
     }
 
     #[task(binds = ETH, resources = [], priority = 10)]

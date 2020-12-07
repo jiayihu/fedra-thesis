@@ -1,9 +1,9 @@
+use crate::network;
 use alloc::vec::Vec;
 use coap_lite::{
     CoapRequest, CoapResponse, MessageClass, MessageType, ObserveOption, Packet,
     ResponseType as Status, Subject,
 };
-use rtt_target::rprintln;
 use smoltcp::wire::IpEndpoint;
 
 pub struct CoapServer {
@@ -25,7 +25,12 @@ impl CoapServer {
                 return None;
             }
 
-            let observe = request.get_observe();
+            if request.message.header.get_type() == MessageType::Reset {
+                self.subject.deregister(&request);
+                return None;
+            }
+
+            let observe = request.get_observe_flag();
 
             if let Some(observe_flag) = observe {
                 match observe_flag {
@@ -33,7 +38,7 @@ impl CoapServer {
                         self.subject.register(&request);
 
                         if let Some(response) = request.response.as_mut() {
-                            response.set_observe(ObserveOption::Register);
+                            response.set_observe_flag(ObserveOption::Register);
                         }
                     }
                     ObserveOption::Deregister => {
@@ -69,6 +74,8 @@ impl CoapServer {
                 })
             }
         }
+
+        self.subject.resource_changed(resource_path);
     }
 
     fn create_notification(
@@ -80,12 +87,20 @@ impl CoapServer {
     ) -> Packet {
         let mut packet = Packet::new();
 
+        packet.header.set_version(1);
         packet.header.set_type(MessageType::Confirmable);
         packet.header.code = MessageClass::Response(Status::Content);
         packet.header.message_id = message_id;
         packet.set_token(token);
-        packet.set_observe(sequence.to_be_bytes().to_vec());
         packet.payload = payload;
+
+        let mut sequence_bytes = sequence.to_be_bytes().to_vec();
+        let first_non_zero = sequence_bytes
+            .iter()
+            .position(|&x| x > 0)
+            .unwrap_or(sequence_bytes.len());
+        sequence_bytes.drain(0..first_non_zero);
+        packet.set_observe(sequence_bytes);
 
         packet
     }
@@ -95,8 +110,12 @@ impl CoapServer {
         return self.message_id;
     }
 
-    pub fn send_message(&self, _endpoint: IpEndpoint, _message: Packet) {
-        rprintln!("Sending the message");
+    fn send_message(&self, endpoint: IpEndpoint, message: Packet) {
+        let data = message
+            .to_bytes()
+            .expect("Cannot convert response to bytes");
+
+        network::send(endpoint, data.as_slice());
     }
 }
 

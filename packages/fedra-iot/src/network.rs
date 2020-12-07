@@ -32,10 +32,12 @@ static mut NET: OnceCell<
 > = OnceCell::new();
 
 static mut SOCKETS_STORAGE: [Option<SocketSetItem>; 2] = [None, None];
+
 static mut SERVER_RX_METADATA_BUFFER: [UdpPacketMetadata; 10] = [UdpPacketMetadata::EMPTY; 10];
 static mut SERVER_TX_METADATA_BUFFER: [UdpPacketMetadata; 10] = [UdpPacketMetadata::EMPTY; 10];
 static mut SERVER_RX_PAYLOAD_BUFFER: [u8; 2048] = [0; 2048];
-static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 2048] = [0; 2048];
+static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 128] = [0; 128]; // Should be enough for CoAP
+
 static mut SOCKETS: OnceCell<SocketSet<'static, 'static, 'static>> = OnceCell::new();
 static mut SERVER_HANDLE: OnceCell<SocketHandle> = OnceCell::new();
 
@@ -175,6 +177,44 @@ where
                 }
             }
         }
+    }
+}
+
+pub fn send(endpoint: IpEndpoint, data: &[u8]) {
+    const PORT: u16 = 5683;
+
+    unsafe {
+        let net = NET.get_mut().expect("NET not initialized");
+        let sockets = SOCKETS.get_mut().expect("SOCKETS not initialized");
+        let server_handle = SERVER_HANDLE.get().expect("SERVER_HANDLE not initialized");
+        let time = time::now();
+
+        match net.poll(sockets, Instant::from_millis(time as i64)) {
+            Ok(_) => {}
+            Err(e) => {
+                // Ignore malformed packets, they are pretty common
+                if e != Error::Unrecognized {
+                    rprintln!("Error: {:?}", e);
+                }
+            }
+        }
+
+        let mut socket = sockets.get::<UdpSocket>(*server_handle);
+
+        if !socket.is_open() {
+            socket
+                .bind(PORT)
+                .unwrap_or_else(|e| rprintln!("UDP bind error: {:?}", e));
+        }
+
+        if !socket.can_send() {
+            rprintln!("Cannot send on the UDP socket");
+            return;
+        }
+
+        socket
+            .send_slice(data, endpoint)
+            .unwrap_or_else(|e| rprintln!("UDP send error: {:?}", e));
     }
 }
 

@@ -1,19 +1,21 @@
 const coap = require('coap');
 
-const HOST = 'coap://192.168.1.100';
+const HOST = '192.168.1.100';
 const PORT = 5683;
-const [, , resource] = process.argv;
+const [, , resource, observe] = process.argv;
 
-let req;
+`${HOST}:${PORT}/${resource}`;
 
-switch (resource) {
-  default:
-    req = coap.request(`${HOST}:${PORT}/${resource}`);
-}
+const req = coap.request({
+  host: HOST,
+  port: PORT,
+  pathname: resource,
+  observe: !!observe,
+});
 
 req.on('response', (res) => {
   res.pipe(process.stdout);
-  res.on('end', () => process.exit(0));
+  // res.on('end', () => process.exit(0));
 });
 
 req.end();
