@@ -1,9 +1,13 @@
 {
   "rust-analyzer.cargo.target": "thumbv7em-none-eabihf",
   "rust-analyzer.checkOnSave.allTargets": false,
-  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.checkOnSave.command": "check",
   "rust-analyzer.linkedProjects": [
     "packages/fedra-iot/Cargo.toml",
     "packages/functions/Cargo.toml"
-  ]
+  ],
+  "rust-analyzer.cargo.loadOutDirsFromCheck": true,
+  "search.exclude": {
+    "**/patches": true
+  }
 }
