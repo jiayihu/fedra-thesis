@@ -84,6 +84,7 @@
 ## Raspberry Pi
 
 - [Getting started videos](https://www.raspberrypi.org/help/videos/)
+- [RPi Hardware](https://elinux.org/RPi_Hardware)
 
 ## WASM
 
@@ -106,7 +107,7 @@
 - [CoAP Cheatsheet](https://github.com/markushx/coap-cheatsheet/blob/master/coap-cheatsheet.pdf)
 - [Constrained RESTful Environments (CoRE) Parameters](https://www.iana.org/assignments/core-parameters/core-parameters.xhtml)
 
-## Kubernetes
+# Kubernetes
 
 - [K8s Client Libs](https://kubernetes.io/docs/reference/using-api/client-libraries/)
 - [Pod v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#pod-v1-core)
@@ -118,3 +119,4 @@
 - [A Comprehensive Container Runtime Comparison](https://www.capitalone.com/tech/cloud/container-runtime/)
 - [Build an OctaPi](https://projects.raspberrypi.org/en/projects/build-an-octapi)
 - [How I Built a Raspberry Pi Cluster for Cheap](https://medium.com/swlh/how-i-built-a-raspberry-pi-cluster-for-cheap-38ab661bd641)
+- [How to build a Raspberry Pi Kubernetes cluster using MicroK8s](https://discourse.ubuntu.com/t/how-to-build-a-raspberry-pi-kubernetes-cluster-using-microk8s/14792)
