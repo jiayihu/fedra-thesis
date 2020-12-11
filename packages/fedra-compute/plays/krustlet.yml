@@ -1,0 +1,67 @@
+- hosts: node
+  gather_facts: no
+  tasks:
+  - name: Download the krustlet binary
+    get_url:
+      url: https://krustlet.blob.core.windows.net/releases/krustlet-canary-linux-aarch64.tar.gz
+      dest: /home/ubuntu/krustlet-canary-linux-aarch64.tar.gz
+
+  - name: Create krustlet directory
+    file: 
+      path: /home/ubuntu/krustlet
+      state: directory
+
+  - name: Unarchive the binary
+    unarchive:
+      src: /home/ubuntu/krustlet-canary-linux-aarch64.tar.gz
+      dest: /home/ubuntu/krustlet
+      remote_src: yes
+      creates: /home/ubuntu/krustlet/krustlet-wasi
+
+  - name: Move to the /usr/local/bin
+    become: yes
+    command: "mv /home/ubuntu/krustlet/krustlet-wasi /usr/local/bin/krustlet-wasi"
+    args:
+      creates: /usr/local/bin/krustlet-wasi
+
+  # - set_fact:
+  #     token_user: "{{ token_user }}"
+  #     token_secret: "{{ token_secret }}"
+  #     token: "{{ token_user }}.{{ token_secret }}"
+
+  - name: Create .krustlet directory
+    file: 
+      path: /home/ubuntu/.krustlet/config/
+      state: directory
+
+  # - name: Copy the bootstrap.conf
+  #   template:
+  #     src: "bootstrap.conf.j2"
+  #     dest: /home/ubuntu/.krustlet/config/bootstrap.conf
+
+  - name: Copy the kube-config
+    copy:
+      src: /Users/jiayihu/Desktop/Repo/fedra-thesis/packages/fedra-compute/.kube/config.yml
+      dest: /home/ubuntu/.krustlet/config/kubeconfig
+
+  - name: Copy the service file
+    become: yes
+    template:
+      src: "krustlet.service.j2"
+      dest: "{{ systemd_dir }}/krustlet.service"
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Enable and check K3s service
+    become: yes
+    systemd:
+      name: krustlet
+      daemon_reload: yes
+      state: restarted
+      enabled: yes
+
+  vars:
+    # bootstrap_file: /home/ubuntu/.krustlet/config/bootstrap.conf
+    # token_user: "{{ lookup('password', '/dev/null length=6 chars=ascii_lowercase') }}"
+    # token_secret: "{{ lookup('password', '/dev/null length=16 chars=ascii_lowercase') }}"

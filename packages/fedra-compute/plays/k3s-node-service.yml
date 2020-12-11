@@ -1,0 +1,10 @@
+---
+- name: Set k3s-node service state
+  hosts: node
+  gather_facts: no
+  become: yes
+  tasks:
+  - systemd:
+      name: k3s-node
+      state: "{{ state }}"
+      enabled: no

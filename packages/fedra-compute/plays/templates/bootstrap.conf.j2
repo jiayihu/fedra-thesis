@@ -1,0 +1,19 @@
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJWakNCL3FBREFnRUNBZ0VBTUFvR0NDcUdTTTQ5QkFNQ01DTXhJVEFmQmdOVkJBTU1HR3N6Y3kxelpYSjIKWlhJdFkyRkFNVFl3TnpVMU16YzRNREFlRncweU1ERXlNRGt5TWpRek1EQmFGdzB6TURFeU1EY3lNalF6TURCYQpNQ014SVRBZkJnTlZCQU1NR0dzemN5MXpaWEoyWlhJdFkyRkFNVFl3TnpVMU16YzRNREJaTUJNR0J5cUdTTTQ5CkFnRUdDQ3FHU000OUF3RUhBMElBQk81cEJac09aN2oxL3dBaFNvQlcvN2RxNXBIUCthZ3gxRzBOZ3JiYUo1VS8KVUdVdndUTWZQVG82a2tuaW1qNjlRTEhMMVU5VlJjYVJBSFhFWDdRUzJ6aWpJekFoTUE0R0ExVWREd0VCL3dRRQpBd0lDcERBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUFvR0NDcUdTTTQ5QkFNQ0EwY0FNRVFDSUJaLzBoMGtMcWFICmFTUkJqUm5VQTkya3FiWk1HWkREeVRXK1F0L1NqelRhQWlBdWNPU3ZMZ042Ni9wU3NCV3dlRzQ0WkpETDNUeDkKWE9HUWduOTc2UmUzOUE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    server: https://192.168.1.143:6443
+  name: default
+contexts:
+- context:
+    cluster: default
+    namespace: kube-system
+    user: kubelet-bootstrap
+  name: default
+current-context: default
+kind: Config
+preferences: {}
+users:
+- name: kubelet-bootstrap
+  user:
+    token: {{ token }}

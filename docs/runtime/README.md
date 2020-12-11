@@ -66,6 +66,7 @@
 - [Real-time Interrupt-driven Concurrency](https://github.com/rtic-rs/cortex-m-rtic)
 - [Rust alloc](https://ehsanmkermani.com/2019/07/03/rust-std-study-series-alloc/)
 - [Optimizations: the speed size tradeoff](https://rust-embedded.github.io/book/unsorted/speed-vs-size.html)
+- [Measuring memory usage in Rust](https://rust-analyzer.github.io/blog/2020/12/04/measuring-memory-usage-in-rust.html)
 
 ## Rust STM32
 
@@ -113,10 +114,29 @@
 - [Pod v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#pod-v1-core)
 - [Kubectl docs](https://kubectl.docs.kubernetes.io/guides/introduction/)
 - [APIserver Anonymous requests](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#anonymous-requests)
-- [Kubelet TLS Bootstrapping](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/)
 - [K8s examples - guestbook](https://github.com/kubernetes/examples/blob/master/guestbook/all-in-one/guestbook-all-in-one.yaml)
+
+- [Authenticating with Bootstrap Tokens](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/)
+- [Kubelet TLS Bootstrapping](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/)
 
 - [A Comprehensive Container Runtime Comparison](https://www.capitalone.com/tech/cloud/container-runtime/)
 - [Build an OctaPi](https://projects.raspberrypi.org/en/projects/build-an-octapi)
 - [How I Built a Raspberry Pi Cluster for Cheap](https://medium.com/swlh/how-i-built-a-raspberry-pi-cluster-for-cheap-38ab661bd641)
 - [How to build a Raspberry Pi Kubernetes cluster using MicroK8s](https://discourse.ubuntu.com/t/how-to-build-a-raspberry-pi-kubernetes-cluster-using-microk8s/14792)
+
+- [Debugging DNS resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)
+
+## K3s
+
+- [Ingress Documentation](https://github.com/k3s-io/k3s/issues/436#issuecomment-489737289)
+- [Node token lifetime and scope](https://github.com/k3s-io/k3s/issues/2645)
+- [CPU usage](https://github.com/k3s-io/k3s/issues/294)
+- [CPU and memory usage](https://github.com/k3s-io/k3s/issues/2278)
+
+# Ansible
+
+[Ad-hoc commands](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html)
+
+# Linux
+
+- [Linux ate my RAM](https://www.linuxatemyram.com/)

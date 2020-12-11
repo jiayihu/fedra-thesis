@@ -1,0 +1,25 @@
+---
+- hosts: node
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: Disable services
+    systemd:
+      name: krustlet
+      state: stopped
+      enabled: no
+
+  - name: Remove service files, binaries and data
+    file:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - "{{ systemd_dir }}/krustlet.service"
+      - /home/ubuntu/.krustlet
+      - /home/ubuntu/krustlet
+      - /home/ubuntu/krustlet-canary-linux-aarch64.tar.gz
+      - /usr/local/bin/krustlet-wasi
+
+  - name: daemon_reload
+    systemd:
+      daemon_reload: yes

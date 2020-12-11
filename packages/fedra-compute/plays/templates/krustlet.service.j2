@@ -1,0 +1,14 @@
+[Unit]
+Description=Krustlet
+Documentation=https://github.com/deislabs/krustlet
+After=network-online.target
+
+[Service]
+Environment=KUBECONFIG=/home/ubuntu/.krustlet/config/kubeconfig
+Environment=KRUSTLET_DATA_DIR=/home/ubuntu/.krustlet
+ExecStart=/usr/local/bin/krustlet-wasi --node-ip {{ ansible_host }}
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
