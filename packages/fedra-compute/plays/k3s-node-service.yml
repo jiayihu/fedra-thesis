@@ -1,10 +1,10 @@
 ---
-- name: Set k3s-node service state
+- name: Stop k3s-node service
   hosts: node
   gather_facts: no
   become: yes
   tasks:
   - systemd:
       name: k3s-node
-      state: "{{ state }}"
+      state: stopped
       enabled: no
