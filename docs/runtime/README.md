@@ -140,3 +140,7 @@
 # Linux
 
 - [Linux ate my RAM](https://www.linuxatemyram.com/)
+- [An introduction to the Linux boot and startup processes](https://opensource.com/article/17/2/linux-boot-and-startup)
+- [Overlay filesystem](https://wiki.archlinux.org/index.php/Overlay_filesystem)
+- [OpenRC Service Script Writing Guide](https://github.com/OpenRC/openrc/blob/master/service-script-guide.md)
+- [What are pid and lock files for?](https://unix.stackexchange.com/questions/12815/what-are-pid-and-lock-files-for)
