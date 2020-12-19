@@ -133,6 +133,13 @@
 - [CPU usage](https://github.com/k3s-io/k3s/issues/294)
 - [CPU and memory usage](https://github.com/k3s-io/k3s/issues/2278)
 
+## OCI
+
+- [Open Container Initiative Distribution Specification](https://github.com/opencontainers/distribution-spec/blob/master/spec.md)
+- [OCI Image Manifest Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/manifest.md)
+- [Image Layer Filesystem Changeset](https://github.com/opencontainers/image-spec/blob/v1.0.1/layer.md)
+- [OCI Artifacts](https://github.com/opencontainers/artifacts/blob/master/artifact-authors.md)
+
 # Ansible
 
 [Ad-hoc commands](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html)

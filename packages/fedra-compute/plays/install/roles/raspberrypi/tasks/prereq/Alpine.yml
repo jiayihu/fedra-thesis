@@ -18,6 +18,7 @@
         cpu = /cgroup/cpu;
       }
     dest: /etc/cgconfig.conf
+    mode: 0644
 
 - name: Enable cgroup via boot commandline if not already enabled
   lineinfile:

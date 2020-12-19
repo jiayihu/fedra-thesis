@@ -3,26 +3,36 @@
   tasks:
   - name: Download the krustlet binary
     get_url:
-      url: https://krustlet.blob.core.windows.net/releases/krustlet-canary-linux-aarch64.tar.gz
-      dest: /home/ubuntu/krustlet-canary-linux-aarch64.tar.gz
+      url: https://storage.googleapis.com/fedra-thesis/krustlet-wasi-openssl
+      dest: /usr/local/bin/krustlet-wasi
+      owner: root
+      group: root
+      mode: 0755
 
-  - name: Create krustlet directory
-    file: 
-      path: /home/ubuntu/krustlet
-      state: directory
+  # - name: Download the krustlet binary
+  #   get_url:
+  #     url: https://krustlet.blob.core.windows.net/releases/krustlet-canary-linux-aarch64.tar.gz
+  #     dest: ~{{ ansible_user }}/krustlet-canary-linux-aarch64.tar.gz
 
-  - name: Unarchive the binary
-    unarchive:
-      src: /home/ubuntu/krustlet-canary-linux-aarch64.tar.gz
-      dest: /home/ubuntu/krustlet
-      remote_src: yes
-      creates: /home/ubuntu/krustlet/krustlet-wasi
+  # - name: Create krustlet directory
+  #   file: 
+  #     path: ~{{ ansible_user }}/krustlet
+  #     state: directory
 
-  - name: Move to the /usr/local/bin
-    become: yes
-    command: "mv /home/ubuntu/krustlet/krustlet-wasi /usr/local/bin/krustlet-wasi"
-    args:
-      creates: /usr/local/bin/krustlet-wasi
+  # - name: Unarchive the binary
+  #   command: tar -xzf krustlet-canary-linux-aarch64.tar.gz -C krustlet
+  #   args:
+  #     creates: ~{{ ansible_user }}/krustlet/krustlet-wasi
+
+  # - name: Move to the /usr/local/bin
+  #   become: yes
+  #   copy:
+  #     src: ~{{ ansible_user }}/krustlet/krustlet-wasi
+  #     dest: /usr/local/bin/krustlet-wasi
+  #     remote_src: yes
+  #     owner: root
+  #     group: root
+  #     mode: 0755
 
   # - set_fact:
   #     token_user: "{{ token_user }}"
@@ -31,37 +41,52 @@
 
   - name: Create .krustlet directory
     file: 
-      path: /home/ubuntu/.krustlet/config/
+      path: ~{{ ansible_user }}/.krustlet/config/
       state: directory
 
   # - name: Copy the bootstrap.conf
   #   template:
   #     src: "bootstrap.conf.j2"
-  #     dest: /home/ubuntu/.krustlet/config/bootstrap.conf
+  #     dest: ~{{ ansible_user }}/.krustlet/config/bootstrap.conf
 
   - name: Copy the kube-config
     copy:
       src: /Users/jiayihu/Desktop/Repo/fedra-thesis/packages/fedra-compute/.kube/config.yml
-      dest: /home/ubuntu/.krustlet/config/kubeconfig
+      dest: ~{{ ansible_user }}/.krustlet/config/kubeconfig
 
-  - name: Copy the service file
-    become: yes
-    template:
-      src: "krustlet.service.j2"
-      dest: "{{ systemd_dir }}/krustlet.service"
+  - name: Copy K3s service file
+    register: k3s_service
+    copy:
+      content: |
+        #!/sbin/openrc-run
+
+        export KUBECONFIG=~{{ ansible_user }}/.krustlet/config/kubeconfig
+        export KRUSTLET_DATA_DIR=~{{ ansible_user }}/.krustlet
+        name="krustlet"
+        command="/usr/local/bin/krustlet-wasi"
+        command_args="--node-ip {{ ansible_host }}"
+        command_background=true
+        pidfile="/run/${RC_SVCNAME}.pid"
+        output_log="/var/log/krustlet.log"
+        error_log="/var/log/krustlet.err"
+      dest: /etc/init.d/krustlet
       owner: root
       group: root
       mode: 0755
 
+  - name: Create K3s service symlink
+    file:
+      src: /etc/init.d/krustlet
+      dest: /etc/runlevels/default/krustlet
+      state: link
+
   - name: Enable and check K3s service
-    become: yes
-    systemd:
+    service:
       name: krustlet
-      daemon_reload: yes
       state: restarted
       enabled: yes
 
   vars:
-    # bootstrap_file: /home/ubuntu/.krustlet/config/bootstrap.conf
+    # bootstrap_file: ~{{ ansible_user }}/.krustlet/config/bootstrap.conf
     # token_user: "{{ lookup('password', '/dev/null length=6 chars=ascii_lowercase') }}"
     # token_secret: "{{ lookup('password', '/dev/null length=16 chars=ascii_lowercase') }}"

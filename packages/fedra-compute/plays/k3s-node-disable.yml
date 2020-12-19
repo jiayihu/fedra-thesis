@@ -1,10 +1,10 @@
 ---
-- name: Stop k3s-node service
+- name: Stop k3s service
   hosts: node
   gather_facts: no
   become: yes
   tasks:
-  - systemd:
-      name: k3s-node
+  - service:
+      name: k3s
       state: stopped
       enabled: no
