@@ -4,7 +4,7 @@
   become: yes
   tasks:
   - name: Disable services
-    systemd:
+    service:
       name: krustlet
       state: stopped
       enabled: no
@@ -14,12 +14,7 @@
       name: "{{ item }}"
       state: absent
     with_items:
-      - "{{ systemd_dir }}/krustlet.service"
-      - /home/ubuntu/.krustlet
-      - /home/ubuntu/krustlet
-      - /home/ubuntu/krustlet-canary-linux-aarch64.tar.gz
+      - /etc/init.d/krustlet
+      - /etc/runlevels/default/krustlet
+      - ~{{ ansible_user }}/.krustlet
       - /usr/local/bin/krustlet-wasi
-
-  - name: daemon_reload
-    systemd:
-      daemon_reload: yes
