@@ -1,4 +1,4 @@
-- hosts: node
+- hosts: krustlet
   gather_facts: no
   tasks:
   - name: Download the krustlet binary

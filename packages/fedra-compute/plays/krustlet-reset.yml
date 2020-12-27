@@ -1,5 +1,5 @@
 ---
-- hosts: node
+- hosts: krustlet
   gather_facts: no
   become: yes
   tasks:
