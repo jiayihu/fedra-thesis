@@ -140,6 +140,7 @@
 - [Image Layer Filesystem Changeset](https://github.com/opencontainers/image-spec/blob/v1.0.1/layer.md)
 - [OCI Artifacts](https://github.com/opencontainers/artifacts/blob/master/artifact-authors.md)
 - [Distributing WebAssembly modules using OCI registries](https://radu-matei.com/blog/wasm-to-oci/)
+- [Containerd Architecture](https://github.com/containerd/containerd/blob/master/design/architecture.md)
 
 # Ansible
 
