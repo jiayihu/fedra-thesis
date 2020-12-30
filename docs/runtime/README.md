@@ -125,6 +125,7 @@
 - [How to build a Raspberry Pi Kubernetes cluster using MicroK8s](https://discourse.ubuntu.com/t/how-to-build-a-raspberry-pi-kubernetes-cluster-using-microk8s/14792)
 
 - [Debugging DNS resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)
+- [Container Network Interface (CNI) Providers](https://rancher.com/docs/rancher/v2.x/en/faq/networking/cni-providers/)
 
 ## K3s
 
@@ -153,3 +154,4 @@
 - [Overlay filesystem](https://wiki.archlinux.org/index.php/Overlay_filesystem)
 - [OpenRC Service Script Writing Guide](https://github.com/OpenRC/openrc/blob/master/service-script-guide.md)
 - [What are pid and lock files for?](https://unix.stackexchange.com/questions/12815/what-are-pid-and-lock-files-for)
+- [How containers work: overlayfs](https://jvns.ca/blog/2019/11/18/how-containers-work--overlayfs/)

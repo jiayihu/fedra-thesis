@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "hello-wasi.fullname" . }}
+  labels:
+    {{- include "hello-wasi.labels" . | nindent 4 }}
+spec:
+  containers:
+    - name: hello-wasi
+      image: eu.gcr.io/fedra-thesis/hello-wasi:latest
+  nodeSelector:
+    kubernetes.io/arch: "wasm32-wasi"
+  tolerations:
+    - key: "kubernetes.io/arch"
+      operator: "Equal"
+      value: "wasm32-wasi"
+      effect: "NoExecute"
+    - key: "kubernetes.io/arch"
+      operator: "Equal"
+      value: "wasm32-wasi"
+      effect: "NoSchedule"
