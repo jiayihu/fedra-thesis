@@ -1,8 +1,8 @@
 ---
-k3s_version: v1.19.5+k3s2
+k3s_version: v1.20.0+k3s2
 ansible_user: root
 systemd_dir: /etc/systemd/system
 master_ip: 192.168.1.143
-extra_server_args: "--disable-agent --snapshotter native"
-extra_agent_args: "--snapshotter native"
+extra_server_args: "--disable-agent"
+extra_agent_args: ""
 ansible_python_interpreter: /usr/bin/python3
