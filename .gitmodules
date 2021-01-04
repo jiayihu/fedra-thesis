@@ -7,3 +7,6 @@
 [submodule "patches/parity-wasm"]
 	path = patches/parity-wasm
 	url = https://github.com/jiayihu/parity-wasm.git
+[submodule "packages/brokerapi-rs"]
+	path = packages/brokerapi-rs
+	url = https://github.com/jiayihu/brokerapi-rs

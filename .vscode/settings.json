@@ -5,7 +5,8 @@
   "rust-analyzer.linkedProjects": [
     "packages/fedra-iot/Cargo.toml",
     "packages/functions/Cargo.toml",
-    "packages/modules/Cargo.toml"
+    "packages/modules/Cargo.toml",
+    "packages/brokerapi-rs/Cargo.toml"
   ],
   "rust-analyzer.cargo.loadOutDirsFromCheck": true,
   "search.exclude": {
