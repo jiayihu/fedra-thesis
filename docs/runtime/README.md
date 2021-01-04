@@ -112,9 +112,7 @@
 
 - [K8s Client Libs](https://kubernetes.io/docs/reference/using-api/client-libraries/)
 - [Pod v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#pod-v1-core)
-- [Kubectl docs](https://kubectl.docs.kubernetes.io/guides/introduction/)
 - [APIserver Anonymous requests](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#anonymous-requests)
-- [K8s examples - guestbook](https://github.com/kubernetes/examples/blob/master/guestbook/all-in-one/guestbook-all-in-one.yaml)
 
 - [Authenticating with Bootstrap Tokens](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/)
 - [Kubelet TLS Bootstrapping](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/)
@@ -122,10 +120,14 @@
 - [A Comprehensive Container Runtime Comparison](https://www.capitalone.com/tech/cloud/container-runtime/)
 - [Build an OctaPi](https://projects.raspberrypi.org/en/projects/build-an-octapi)
 - [How I Built a Raspberry Pi Cluster for Cheap](https://medium.com/swlh/how-i-built-a-raspberry-pi-cluster-for-cheap-38ab661bd641)
-- [How to build a Raspberry Pi Kubernetes cluster using MicroK8s](https://discourse.ubuntu.com/t/how-to-build-a-raspberry-pi-kubernetes-cluster-using-microk8s/14792)
+
+## Kubernetes networking
 
 - [Debugging DNS resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)
+- [Debugging Services](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/)
 - [Container Network Interface (CNI) Providers](https://rancher.com/docs/rancher/v2.x/en/faq/networking/cni-providers/)
+- [Kubernetes: Flannel networking](https://blog.laputa.io/kubernetes-flannel-networking-6a1cb1f8ec7c)
+- [How a Kubernetes Pod Gets an IP Address](https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/#container-networking)
 
 ## K3s
 

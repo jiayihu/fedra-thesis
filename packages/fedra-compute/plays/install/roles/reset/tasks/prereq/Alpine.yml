@@ -25,4 +25,5 @@
     - /etc/rancher/k3s
     - /var/lib/rancher/k3s
     - /var/lib/kubelet
+    - /var/log/k3s.err
     - /usr/local/bin/k3s
