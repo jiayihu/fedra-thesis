@@ -3,10 +3,7 @@
   "rust-analyzer.checkOnSave.allTargets": false,
   "rust-analyzer.checkOnSave.command": "check",
   "rust-analyzer.linkedProjects": [
-    "packages/fedra-iot/Cargo.toml",
-    "packages/functions/Cargo.toml",
-    "packages/modules/Cargo.toml",
-    "packages/brokerapi-rs/Cargo.toml"
+    "packages/fedra-broker/Cargo.toml"
   ],
   "rust-analyzer.cargo.loadOutDirsFromCheck": true,
   "search.exclude": {
