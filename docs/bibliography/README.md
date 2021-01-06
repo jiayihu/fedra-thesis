@@ -82,6 +82,10 @@
 
 - [Which types are atomic in STM32](https://stackoverflow.com/questions/52784613/which-variable-types-sizes-are-atomic-on-stm32-microcontrollers)
 
+## Rust async
+
+- [Streams](https://blog.yoshuawuyts.com/rust-streams/#:~:text=in%20the%20future.-,The%20stream%20traits,sequence%2C%20and%20blocks%20in%20between.&text=It%20behaves%20very%20similar%20to,to%20run%20while%20it%20waits.)
+
 ## Raspberry Pi
 
 - [Getting started videos](https://www.raspberrypi.org/help/videos/)
@@ -108,7 +112,7 @@
 - [CoAP Cheatsheet](https://github.com/markushx/coap-cheatsheet/blob/master/coap-cheatsheet.pdf)
 - [Constrained RESTful Environments (CoRE) Parameters](https://www.iana.org/assignments/core-parameters/core-parameters.xhtml)
 
-# Kubernetes
+## Kubernetes
 
 - [K8s Client Libs](https://kubernetes.io/docs/reference/using-api/client-libraries/)
 - [Pod v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#pod-v1-core)
@@ -121,22 +125,23 @@
 - [Build an OctaPi](https://projects.raspberrypi.org/en/projects/build-an-octapi)
 - [How I Built a Raspberry Pi Cluster for Cheap](https://medium.com/swlh/how-i-built-a-raspberry-pi-cluster-for-cheap-38ab661bd641)
 
-## Kubernetes networking
+### Kubernetes networking
 
 - [Debugging DNS resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)
 - [Debugging Services](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/)
 - [Container Network Interface (CNI) Providers](https://rancher.com/docs/rancher/v2.x/en/faq/networking/cni-providers/)
 - [Kubernetes: Flannel networking](https://blog.laputa.io/kubernetes-flannel-networking-6a1cb1f8ec7c)
 - [How a Kubernetes Pod Gets an IP Address](https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/#container-networking)
+- [Project Calico, the CNI way](https://cotigao.medium.com/project-calico-the-cni-way-659d057566ce)
 
-## K3s
+### K3s
 
 - [Ingress Documentation](https://github.com/k3s-io/k3s/issues/436#issuecomment-489737289)
 - [Node token lifetime and scope](https://github.com/k3s-io/k3s/issues/2645)
 - [CPU usage](https://github.com/k3s-io/k3s/issues/294)
 - [CPU and memory usage](https://github.com/k3s-io/k3s/issues/2278)
 
-## OCI
+### OCI
 
 - [Open Container Initiative Distribution Specification](https://github.com/opencontainers/distribution-spec/blob/master/spec.md)
 - [OCI Image Manifest Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/manifest.md)
@@ -145,11 +150,11 @@
 - [Distributing WebAssembly modules using OCI registries](https://radu-matei.com/blog/wasm-to-oci/)
 - [Containerd Architecture](https://github.com/containerd/containerd/blob/master/design/architecture.md)
 
-# Ansible
+## Ansible
 
 [Ad-hoc commands](https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html)
 
-# Linux
+## Linux
 
 - [Linux ate my RAM](https://www.linuxatemyram.com/)
 - [An introduction to the Linux boot and startup processes](https://opensource.com/article/17/2/linux-boot-and-startup)
@@ -157,3 +162,4 @@
 - [OpenRC Service Script Writing Guide](https://github.com/OpenRC/openrc/blob/master/service-script-guide.md)
 - [What are pid and lock files for?](https://unix.stackexchange.com/questions/12815/what-are-pid-and-lock-files-for)
 - [How containers work: overlayfs](https://jvns.ca/blog/2019/11/18/how-containers-work--overlayfs/)
+- [An introduction to using tcpdump at the Linux command line](https://opensource.com/article/18/10/introduction-tcpdump)
