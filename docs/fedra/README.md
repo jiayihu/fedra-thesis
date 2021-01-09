@@ -39,6 +39,8 @@ Necessario:
 
 ![](images/architecture.png)
 
+![](images/architecture-k8s.png)
+
 - Una **Application** è un software che ha necessità di risorse per raggiungere un obiettivo. Può essere ad esempio un'applicazione web, mobile o microservice in cloud. Un'applicazione è composta di **Task**, la cui rappresentazione è una **funzione**. Il media type di questa rappresentazione è WASM o un formato comprendente WASM, ad esempio un container.
   - Le funzioni sono registrate nel **Functions Repository** da parte dell'Application.
   - Un **Requirement** è una descrizione formale delle risorse richieste da una Application. Ad esempio contiene le informazioni sulle funzioni quali i requisiti di memoria RAM di ciascuna funzione, le capabilities richieste (ad esempio HTTP server handle), e potenzialmente altre informazioni come la descrizione delle dipendenze tra funzioni.
