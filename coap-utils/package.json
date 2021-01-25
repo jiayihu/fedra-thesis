@@ -10,6 +10,7 @@
   "author": "Jiayi Hu <jiayi.ghu@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "coap": "^0.24.0"
+    "coap": "^0.24.0",
+    "yargs": "^16.2.0"
   }
 }
