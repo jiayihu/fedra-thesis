@@ -1,0 +1,22 @@
+- hosts: k3s_cluster
+  gather_facts: no
+  tasks:
+  - name: Download crictl
+    get_url:
+      url: https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.20.0/crictl-v1.20.0-linux-arm64.tar.gz
+      checksum: sha256:eda6879710eb046d335162d4afe8494c6f8161142ad3188022852f64b92806a8
+      dest: ~{{ ansible_user }}/crictl-v1.20.0-linux-arm64.tar.gz
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Unarchive crictl
+    command: tar -xzf ~{{ ansible_user }}/crictl-v1.20.0-linux-arm64.tar.gz -C /usr/local/bin
+    args:
+      creates: /usr/local/bin/crictl
+
+  - name: Set KUBECONFIG env variable
+    lineinfile:
+      path: /root/.profile
+      line: export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+      create: true
