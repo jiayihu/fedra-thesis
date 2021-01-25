@@ -82,10 +82,6 @@
 
 - [Which types are atomic in STM32](https://stackoverflow.com/questions/52784613/which-variable-types-sizes-are-atomic-on-stm32-microcontrollers)
 
-## Rust async
-
-- [Streams](https://blog.yoshuawuyts.com/rust-streams/#:~:text=in%20the%20future.-,The%20stream%20traits,sequence%2C%20and%20blocks%20in%20between.&text=It%20behaves%20very%20similar%20to,to%20run%20while%20it%20waits.)
-
 ## Raspberry Pi
 
 - [Getting started videos](https://www.raspberrypi.org/help/videos/)
@@ -149,6 +145,8 @@
 - [OCI Artifacts](https://github.com/opencontainers/artifacts/blob/master/artifact-authors.md)
 - [Distributing WebAssembly modules using OCI registries](https://radu-matei.com/blog/wasm-to-oci/)
 - [Containerd Architecture](https://github.com/containerd/containerd/blob/master/design/architecture.md)
+- [Docker volume cached or delegated](https://stackoverflow.com/questions/43844639/how-do-i-add-cached-or-delegated-into-a-docker-compose-yml-volumes-list)
+- [Writing a Kubernetes CRD Controller in Rust](http://technosophos.com/2019/08/07/writing-a-kubernetes-controller-in-rust.html)
 
 ## Ansible
 
@@ -163,3 +161,11 @@
 - [What are pid and lock files for?](https://unix.stackexchange.com/questions/12815/what-are-pid-and-lock-files-for)
 - [How containers work: overlayfs](https://jvns.ca/blog/2019/11/18/how-containers-work--overlayfs/)
 - [An introduction to using tcpdump at the Linux command line](https://opensource.com/article/18/10/introduction-tcpdump)
+
+## Rust async
+
+- [Streams](https://blog.yoshuawuyts.com/rust-streams/#:~:text=in%20the%20future.-,The%20stream%20traits,sequence%2C%20and%20blocks%20in%20between.&text=It%20behaves%20very%20similar%20to,to%20run%20while%20it%20waits.)
+
+## Go
+
+- [Go by example](https://gobyexample.com/)

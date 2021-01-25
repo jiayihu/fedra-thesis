@@ -146,10 +146,8 @@ mod app {
                         response
                             .message
                             .set_content_format(ContentFormat::ApplicationLinkFormat);
-                        response.message.payload = b"\
-                    </sensors/temp>;rt=\"oic.r.temperature\";if=\"sensor\"
-                    "
-                        .to_vec();
+                        response.message.payload =
+                            br#"</sensors/temp>;rt="oic.r.temperature";if="sensor""#.to_vec();
                     }
                     (Method::Get, "ping") => {
                         response.message.payload = b"pong".to_vec();

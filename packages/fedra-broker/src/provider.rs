@@ -47,7 +47,6 @@ impl FedraProvider {
     }
 
     pub async fn provision_service(&self, _service_id: String, _plan_id: String) -> Result<PodKey> {
-        log::info!("Provisioning the service");
         let manifest: Pod = serde_json::from_value(json!({
             "apiVersion": "v1",
             "kind": "Pod",
