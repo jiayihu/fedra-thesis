@@ -1,0 +1,16 @@
+{
+  "name": "dataset",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Jiayi Hu <jiayi.ghu@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "date-fns": "^2.16.1",
+    "lodash": "^4.17.20"
+  }
+}
