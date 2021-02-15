@@ -121,6 +121,8 @@
 - [Build an OctaPi](https://projects.raspberrypi.org/en/projects/build-an-octapi)
 - [How I Built a Raspberry Pi Cluster for Cheap](https://medium.com/swlh/how-i-built-a-raspberry-pi-cluster-for-cheap-38ab661bd641)
 
+- [How kubectl exec works](https://erkanerol.github.io/post/how-kubectl-exec-works/)
+
 ### Kubernetes networking
 
 - [Debugging DNS resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)
@@ -129,6 +131,9 @@
 - [Kubernetes: Flannel networking](https://blog.laputa.io/kubernetes-flannel-networking-6a1cb1f8ec7c)
 - [How a Kubernetes Pod Gets an IP Address](https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/#container-networking)
 - [Project Calico, the CNI way](https://cotigao.medium.com/project-calico-the-cni-way-659d057566ce)
+- [Kubernetes Networking: How to Write Your Own CNI Plug-in with Bash](https://www.altoros.com/blog/kubernetes-networking-writing-your-own-simple-cni-plug-in-with-bash/)
+- [Container Network Interface Specification 0.4.0](https://github.com/containernetworking/cni/blob/spec-v0.4.0/SPEC.md)
+- [Flannel Kubernetes](https://github.com/coreos/flannel/blob/master/Documentation/kubernetes.md)
 
 ### K3s
 
