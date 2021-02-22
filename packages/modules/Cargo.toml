@@ -11,3 +11,8 @@ edition = "2018"
 [[bin]]
 name = "hello-wasi"
 path = "src/hello-wasi.rs"
+
+[lib]
+name = "add"
+path = "src/add.rs"
+crate-type = ["cdylib"]

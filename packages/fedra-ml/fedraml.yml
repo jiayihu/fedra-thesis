@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fedra-ml
+spec:
+  containers:
+    - name: fedraml
+      image: eu.gcr.io/fedra-301320/fedraml:latest
+  nodeSelector:
+    kubernetes.io/arch: "wasm32-wasi"
+  tolerations:
+    - key: "kubernetes.io/arch"
+      operator: "Equal"
+      value: "wasm32-wasi"
+      effect: "NoExecute"
+    - key: "kubernetes.io/arch"
+      operator: "Equal"
+      value: "wasm32-wasi"
+      effect: "NoSchedule"

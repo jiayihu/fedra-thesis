@@ -9,3 +9,15 @@ edition = "2018"
 [dependencies]
 tract-core = "0.12.5"
 tract-onnx = "0.12.5"
+
+[lib]
+name = "fedra_ml"
+crate-type = ["cdylib"]
+
+[[bin]]
+name = "predict"
+path = "src/predict.rs"
+
+[profile.release]
+lto = true
+opt-level = "z"
