@@ -1,5 +1,13 @@
 const coap = require('coap');
 
+function reply(req, res, data) {
+  if (req.headers['Observe'] !== 0) return res.end(data());
+
+  const interval = setInterval(() => res.write(data()), 3000);
+
+  res.on('finish', (err) => clearInterval(interval));
+}
+
 function spawnServer(listenCb) {
   const server = coap.createServer();
 
@@ -13,9 +21,9 @@ function spawnServer(listenCb) {
           </sensors/rainfall>;rt="rainfall";if="sensor",
           </sensors/flow>;rt="flow";if="sensor"`);
     } else if (url === '/sensors/rainfall') {
-      res.end('20\n');
+      reply(req, res, () => String(Math.random() * 10));
     } else if (url === '/sensors/flow') {
-      res.end('1000\n');
+      reply(req, res, () => String(Math.random() * 100));
     } else {
       console.log(`Unknown resource ${url}`);
       res.code = '5.01';

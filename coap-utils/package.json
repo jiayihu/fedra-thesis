@@ -12,6 +12,7 @@
   "dependencies": {
     "coap": "^0.24.0",
     "json-server": "^0.16.3",
+    "ws": "^7.4.3",
     "yargs": "^16.2.0"
   }
 }
