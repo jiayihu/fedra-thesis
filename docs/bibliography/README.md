@@ -92,6 +92,7 @@
 - [WASM Spec](https://webassembly.github.io/spec/core/index.html)
 - [W3 WASM 1.0 Spec](https://www.w3.org/TR/wasm-core-1/)
 - [twiggy - code size profiler](https://github.com/rustwasm/twiggy)
+- [Wasm needs a better memory management story](https://github.com/WebAssembly/design/issues/1397)
 
 ## Network
 
