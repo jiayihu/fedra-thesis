@@ -1,10 +1,12 @@
 use std::collections::HashMap;
 
 use anyhow::{anyhow, Result};
+use k8s_openapi::api::core::v1::Pod;
 use kube::api::{ListParams, Meta, ObjectList};
 use kube::{Api, Client, CustomResource};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use tokio::io::AsyncReadExt;
 use tokio::task::JoinHandle;
 use websocket::client::ClientBuilder;
 use websocket::OwnedMessage;
@@ -17,15 +19,53 @@ async fn main() -> Result<()> {
         .await
         .map_err(|e| anyhow!("Cannot create the k8s client from env config: {}", e))?;
 
-    let temperature_svc = get_resource_service(client.clone(), &String::from("rainfall")).await?;
+    connect_krustlet(client.clone()).await?;
 
-    match temperature_svc {
+    // connect_akri(client.clone());
+
+    Ok(())
+}
+
+const POD_NAME: &str = "fedra-ml";
+const CONTAINER_NAME: &str = "fedraml";
+
+async fn connect_krustlet(client: Client) -> Result<()> {
+    let pods: Api<Pod> = Api::namespaced(client, "default");
+    let mut ap = kube::api::AttachParams::default();
+    ap.container = Some(CONTAINER_NAME.to_string());
+
+    let input_f32: Vec<f32> = vec![0.31375358, 0.13323782, 0.1658887];
+    let mut input_str: Vec<String> = input_f32
+        .into_iter()
+        .map(|x| f32_to_u32(x).to_string())
+        .collect();
+    let mut command = vec![String::from("run")];
+    command.append(&mut input_str);
+
+    let mut process = pods.exec(POD_NAME, command, &ap).await?;
+    let mut output = process.stdout().unwrap();
+    let mut buffer = [0; 10];
+    let n = output.read(&mut buffer[..]).await?;
+    let result = String::from_utf8_lossy(&buffer[..n]);
+    let result = result.parse::<u32>()?;
+    let result = f32::from_bits(result);
+
+    log::info!("Result of exec {}", result);
+
+    Ok(())
+}
+
+fn f32_to_u32(x: f32) -> u32 {
+    unsafe { std::mem::transmute::<f32, u32>(x) }
+}
+
+async fn connect_akri(client: Client) -> Result<()> {
+    let resource_svc = get_resource_service(client, &String::from("rainfall")).await?;
+
+    match resource_svc {
         Some(svc) => {
             log::info!("Svc {} resource {}", svc.0, svc.1);
-            request_resource(&svc.0, &svc.1).await?;
-
             let handle = subscribe_resource(&svc.0, &svc.1).await?;
-
             handle.await??;
         }
         None => {
