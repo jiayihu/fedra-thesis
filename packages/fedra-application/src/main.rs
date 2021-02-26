@@ -46,69 +46,83 @@ async fn main() -> Result<()> {
     let r_state = state.clone();
     let f_state = state.clone();
 
-    tokio::task::spawn(async move {
-        loop {
-            match rainfall_rx.recv().await {
-                Some(data) => {
-                    log::info!("Received rainfall data {}", data);
+    std::thread::spawn(move || {
+        let tokio_rt = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
 
-                    let value = data.parse::<f32>().unwrap();
-                    let state = {
-                        let mut state = r_state.lock().unwrap();
-                        state.rainfall_ytd = state.rainfall_td;
-                        state.rainfall_td = Some(value);
+        tokio_rt.block_on(async {
+            loop {
+                match rainfall_rx.recv().await {
+                    Some(data) => {
+                        log::info!("Received rainfall data {}", data);
 
-                        // Release the Mutex lock ASAP
-                        state.clone()
-                    };
+                        let value = data.parse::<f32>().unwrap();
+                        let state = {
+                            let mut state = r_state.lock().unwrap();
+                            state.rainfall_ytd = state.rainfall_td;
+                            state.rainfall_td = Some(value);
 
-                    match krustlet::predict(&pod_api, &state).await {
-                        Ok(predicted_flow) => {
-                            log::info!("The predicted flow is {}", predicted_flow);
-                        }
-                        Err(e) => {
-                            log::error!("Prediction using WASM module failed: {}", e);
+                            // Release the Mutex lock ASAP
+                            state.clone()
+                        };
+
+                        match krustlet::predict(&pod_api, &state).await {
+                            Ok(predicted_flow) => {
+                                log::info!("The predicted rainfall is {}", predicted_flow);
+                            }
+                            Err(e) => {
+                                log::error!("Prediction using WASM module failed: {}", e);
+                            }
                         }
                     }
-                }
-                None => {
-                    log::error!("rainfall channel closed");
-                    break;
+                    None => {
+                        log::error!("rainfall channel closed");
+                        break;
+                    }
                 }
             }
-        }
+        });
     });
 
-    tokio::task::spawn(async move {
-        loop {
-            match flow_rx.recv().await {
-                Some(data) => {
-                    log::info!("Received flow data {}", data);
+    std::thread::spawn(move || {
+        let tokio_rt = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
 
-                    let value = data.parse::<f32>().unwrap();
-                    let state = {
-                        let mut state = f_state.lock().unwrap();
-                        state.flow_td = Some(value);
+        tokio_rt.block_on(async {
+            loop {
+                match flow_rx.recv().await {
+                    Some(data) => {
+                        log::info!("Received flow data {}", data);
 
-                        // Release the Mutex lock ASAP
-                        state.clone()
-                    };
+                        let value = data.parse::<f32>().unwrap();
+                        let state = {
+                            let mut state = f_state.lock().unwrap();
+                            state.flow_td = Some(value);
 
-                    match krustlet::predict(&f_pod_api, &state).await {
-                        Ok(predicted_flow) => {
-                            log::info!("The predicted flow is {}", predicted_flow);
-                        }
-                        Err(e) => {
-                            log::error!("Prediction using WASM module failed: {}", e);
+                            // Release the Mutex lock ASAP
+                            state.clone()
+                        };
+
+                        match krustlet::predict(&f_pod_api, &state).await {
+                            Ok(predicted_flow) => {
+                                log::info!("The predicted flow is {}", predicted_flow);
+                            }
+                            Err(e) => {
+                                log::error!("Prediction using WASM module failed: {}", e);
+                            }
                         }
                     }
-                }
-                None => {
-                    log::error!("flow channel closed");
-                    break;
+                    None => {
+                        log::error!("flow channel closed");
+                        break;
+                    }
                 }
             }
-        }
+        });
     });
 
     rainfall_handle.await??;
