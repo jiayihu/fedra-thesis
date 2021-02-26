@@ -1,15 +1,13 @@
-use std::collections::HashMap;
+mod akri;
+mod krustlet;
+
+use std::sync::{Arc, Mutex};
 
 use anyhow::{anyhow, Result};
 use k8s_openapi::api::core::v1::Pod;
-use kube::api::{ListParams, Meta, ObjectList};
-use kube::{Api, Client, CustomResource};
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
-use tokio::io::AsyncReadExt;
-use tokio::task::JoinHandle;
-use websocket::client::ClientBuilder;
-use websocket::OwnedMessage;
+use krustlet::State;
+use kube::{Api, Client};
+use tokio::sync::mpsc::channel;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -18,151 +16,103 @@ async fn main() -> Result<()> {
     let client = Client::try_default()
         .await
         .map_err(|e| anyhow!("Cannot create the k8s client from env config: {}", e))?;
+    let pod_api: Api<Pod> = Api::namespaced(client.clone(), "default");
 
-    connect_krustlet(client.clone()).await?;
+    // connect_krustlet(client.clone()).await?;
 
-    // connect_akri(client.clone());
+    let instances = akri::get_instances(client.clone()).await?;
+    let rainfall_svc = akri::find_resource_service(&instances, &String::from("rainfall"))
+        .await
+        .unwrap();
+    let flow_svc = akri::find_resource_service(&instances, &String::from("flow"))
+        .await
+        .unwrap();
 
-    Ok(())
-}
+    let (rainfall_tx, mut rainfall_rx) = channel(1);
+    let (flow_tx, mut flow_rx) = channel(1);
 
-const POD_NAME: &str = "fedra-ml";
-const CONTAINER_NAME: &str = "fedraml";
+    let rainfall_handle =
+        akri::subscribe_resource(&rainfall_svc.0, &rainfall_svc.1, rainfall_tx).await?;
+    let flow_handle = akri::subscribe_resource(&flow_svc.0, &flow_svc.1, flow_tx).await?;
 
-async fn connect_krustlet(client: Client) -> Result<()> {
-    let pods: Api<Pod> = Api::namespaced(client, "default");
-    let mut ap = kube::api::AttachParams::default();
-    ap.container = Some(CONTAINER_NAME.to_string());
+    let state = Arc::new(Mutex::new(State {
+        rainfall_ytd: None,
+        rainfall_td: None,
+        flow_td: None,
+    }));
 
-    let input_f32: Vec<f32> = vec![0.31375358, 0.13323782, 0.1658887];
-    let mut input_str: Vec<String> = input_f32
-        .into_iter()
-        .map(|x| f32_to_u32(x).to_string())
-        .collect();
-    let mut command = vec![String::from("run")];
-    command.append(&mut input_str);
+    let f_pod_api = pod_api.clone();
 
-    let mut process = pods.exec(POD_NAME, command, &ap).await?;
-    let mut output = process.stdout().unwrap();
-    let mut buffer = [0; 10];
-    let n = output.read(&mut buffer[..]).await?;
-    let result = String::from_utf8_lossy(&buffer[..n]);
-    let result = result.parse::<u32>()?;
-    let result = f32::from_bits(result);
+    let r_state = state.clone();
+    let f_state = state.clone();
 
-    log::info!("Result of exec {}", result);
+    tokio::task::spawn(async move {
+        loop {
+            match rainfall_rx.recv().await {
+                Some(data) => {
+                    log::info!("Received rainfall data {}", data);
 
-    Ok(())
-}
+                    let value = data.parse::<f32>().unwrap();
+                    let state = {
+                        let mut state = r_state.lock().unwrap();
+                        state.rainfall_ytd = state.rainfall_td;
+                        state.rainfall_td = Some(value);
 
-fn f32_to_u32(x: f32) -> u32 {
-    unsafe { std::mem::transmute::<f32, u32>(x) }
-}
+                        // Release the Mutex lock ASAP
+                        state.clone()
+                    };
 
-async fn connect_akri(client: Client) -> Result<()> {
-    let resource_svc = get_resource_service(client, &String::from("rainfall")).await?;
-
-    match resource_svc {
-        Some(svc) => {
-            log::info!("Svc {} resource {}", svc.0, svc.1);
-            let handle = subscribe_resource(&svc.0, &svc.1).await?;
-            handle.await??;
-        }
-        None => {
-            log::info!("No service found for the resource")
-        }
-    }
-
-    Ok(())
-}
-
-#[derive(CustomResource, Deserialize, Serialize, JsonSchema, Clone, Debug)]
-#[kube(
-    struct = "AkriInstance",
-    apiextensions = "v1",
-    group = "akri.sh",
-    version = "v0",
-    kind = "Instance",
-    namespaced,
-    shortname = "akrii"
-)]
-#[serde(rename_all = "camelCase")]
-pub struct AkriInstanceSpec {
-    configuration_name: String,
-    metadata: HashMap<String, String>,
-    shared: bool,
-    nodes: Vec<String>,
-    device_usage: HashMap<String, String>,
-    rbac: String,
-}
-
-async fn get_resource_service(
-    client: Client,
-    resource_name: &String,
-) -> Result<Option<(String, String)>> {
-    let akrii: Api<AkriInstance> = Api::namespaced(client, "default");
-    let lp = ListParams::default();
-    let instances: ObjectList<AkriInstance> = akrii.list(&lp).await?;
-
-    for instance in instances {
-        let resource = instance.spec.metadata.get(resource_name);
-        if let Some(resource) = resource {
-            let mut name = instance.name();
-            name.push_str("-svc");
-
-            return Ok(Some((name, resource.to_owned())));
-        }
-    }
-
-    Ok(None)
-}
-
-async fn request_resource(service: &String, resource: &String) -> Result<()> {
-    let url = format!("http://{}:80{}", service, resource);
-
-    log::info!("Requesting the resource to url {}", url);
-    let resp = reqwest::get(&url).await?;
-    let content = resp.text().await?;
-
-    log::info!("Service replied with content {}", content);
-
-    Ok(())
-}
-
-async fn subscribe_resource(service: &String, resource: &String) -> Result<JoinHandle<Result<()>>> {
-    let url = format!("ws://{}:80{}", service, resource);
-
-    log::info!("Subscribing to the resource at url {}", url);
-
-    let client = ClientBuilder::new(url.as_str())?.connect_insecure()?;
-
-    let (mut receiver, mut sender) = client.split().unwrap();
-
-    let handle = tokio::spawn(async move {
-        for message in receiver.incoming_messages() {
-            let message = message.map_err(|e| anyhow!("Received error in websocket: {}", e))?;
-
-            match message {
-                OwnedMessage::Close(reason) => {
-                    log::info!("Websocket connection closed with reason: {:?}", reason);
-
-                    sender.send_message(&OwnedMessage::Close(None))?;
+                    match krustlet::predict(&pod_api, &state).await {
+                        Ok(predicted_flow) => {
+                            log::info!("The predicted flow is {}", predicted_flow);
+                        }
+                        Err(e) => {
+                            log::error!("Prediction using WASM module failed: {}", e);
+                        }
+                    }
                 }
-                OwnedMessage::Binary(content) => {
-                    let content = String::from_utf8_lossy(&content[..]);
-                    log::info!("Received binary content from resource {}", content);
-                }
-                OwnedMessage::Text(content) => {
-                    log::info!("Received text content from resource {}", content);
-                }
-                m => {
-                    log::info!("Received unknown content from resource: {:?}", m);
+                None => {
+                    log::error!("rainfall channel closed");
+                    break;
                 }
             }
         }
-
-        Ok(())
     });
 
-    Ok(handle)
+    tokio::task::spawn(async move {
+        loop {
+            match flow_rx.recv().await {
+                Some(data) => {
+                    log::info!("Received flow data {}", data);
+
+                    let value = data.parse::<f32>().unwrap();
+                    let state = {
+                        let mut state = f_state.lock().unwrap();
+                        state.flow_td = Some(value);
+
+                        // Release the Mutex lock ASAP
+                        state.clone()
+                    };
+
+                    match krustlet::predict(&f_pod_api, &state).await {
+                        Ok(predicted_flow) => {
+                            log::info!("The predicted flow is {}", predicted_flow);
+                        }
+                        Err(e) => {
+                            log::error!("Prediction using WASM module failed: {}", e);
+                        }
+                    }
+                }
+                None => {
+                    log::error!("flow channel closed");
+                    break;
+                }
+            }
+        }
+    });
+
+    rainfall_handle.await??;
+    flow_handle.await??;
+
+    Ok(())
 }
