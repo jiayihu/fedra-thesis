@@ -63,7 +63,7 @@ mysql:
   embedded: false
   # Required if not embedded, the hostname or IP address of the MySQL database
   # to connect to.
-  host: 'fedra-thesis:europe-west1:gcp-broker'
+  host: 'fedra-301320:europe-west1:gcp-broker'
   # Database port.
   port: 3306
   # Username for the service broker on the database.

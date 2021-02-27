@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use k8s_openapi::api::core::v1::Pod;
 use kube::Api;
 use tokio::io::AsyncReadExt;
@@ -6,28 +6,31 @@ use tokio::io::AsyncReadExt;
 const POD_NAME: &str = "fedra-ml";
 const CONTAINER_NAME: &str = "fedraml";
 
+pub type Sample = (f32, f32, f32);
+
 #[derive(Debug, Clone)]
 pub struct State {
     pub rainfall_ytd: Option<f32>,
     pub rainfall_td: Option<f32>,
-    pub flow_td: Option<f32>,
+    pub flow_ytd: Option<f32>,
 }
 
-pub async fn predict(api: &Api<Pod>, state: &State) -> Result<f32> {
-    let rainfall_ytd = state
-        .rainfall_ytd
-        .ok_or_else(|| anyhow!("No rainfall_ytd, skipping predict"))?;
-    let rainfall_td = state
-        .rainfall_td
-        .ok_or_else(|| anyhow!("No rainfall_td, skipping predict"))?;
-    let flow_td = state
-        .flow_td
-        .ok_or_else(|| anyhow!("No flow_td, skipping predict"))?;
+impl State {
+    pub fn as_sample(&self) -> Option<Sample> {
+        self.rainfall_ytd.and_then(|rainfall_ytd| {
+            self.rainfall_td.and_then(|rainfall_td| {
+                self.flow_ytd
+                    .and_then(|flow_ytd| Some((rainfall_ytd, rainfall_td, flow_ytd)))
+            })
+        })
+    }
+}
 
+pub async fn predict(api: &Api<Pod>, sample: Sample) -> Result<f32> {
     let mut ap = kube::api::AttachParams::default();
     ap.container = Some(CONTAINER_NAME.to_string());
 
-    let input_f32: Vec<f32> = vec![rainfall_ytd, rainfall_td, flow_td];
+    let input_f32: Vec<f32> = vec![sample.0, sample.1, sample.2];
     let mut input_str: Vec<String> = input_f32
         .into_iter()
         .map(|x| f32_to_u32(x).to_string())

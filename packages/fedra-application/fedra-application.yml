@@ -7,6 +7,13 @@ spec:
   containers:
     - name: fedra-application
       image: eu.gcr.io/fedra-301320/fedra-application:arm64v8
+      imagePullPolicy: Always
+      env:
+      - name: GCP_CREDENTIALS
+        valueFrom:
+          secretKeyRef:
+            name: datastore-binding
+            key: PrivateKeyData
 ---
 apiVersion: v1
 kind: ServiceAccount
