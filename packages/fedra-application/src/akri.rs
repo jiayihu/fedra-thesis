@@ -4,7 +4,7 @@ use kube::{Api, Client, CustomResource};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tokio::sync::mpsc::Sender;
+use tokio::sync::mpsc::UnboundedSender;
 use tokio::task::JoinHandle;
 use websocket::client::ClientBuilder;
 use websocket::OwnedMessage;
@@ -57,7 +57,7 @@ pub async fn find_resource_service(
 pub async fn subscribe_resource(
     _service: &String,
     resource: &String,
-    tx: Sender<String>,
+    tx: UnboundedSender<String>,
 ) -> Result<JoinHandle<Result<()>>> {
     // let url = format!("ws://{}:80{}", service, resource);
     let url = format!("ws://192.168.1.126:8083{}", resource);
@@ -78,7 +78,7 @@ pub async fn subscribe_resource(
 
                     sender.send_message(&OwnedMessage::Close(None))?;
                 }
-                OwnedMessage::Text(content) => match tx.send(content).await {
+                OwnedMessage::Text(content) => match tx.send(content) {
                     Ok(_) => {}
                     Err(e) => {
                         log::error!("Error sending to the resource channel {}", e);
