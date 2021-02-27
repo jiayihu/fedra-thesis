@@ -5,10 +5,15 @@ use google_cloud::authorize::ApplicationCredentials;
 use google_cloud::datastore::{self, Client as GClient, Key};
 
 pub async fn get_client() -> Result<GClient> {
+    #[cfg(feature = "dev")]
     let creds = std::env::var("ROOT_SERVICE_ACCOUNT_JSON")?;
-    // let creds = std::env::var("GCP_CREDENTIALS")?;
-    // let creds = base64::decode(creds.as_str())?;
-    // let creds = String::from_utf8(creds)?;
+    #[cfg(not(feature = "dev"))]
+    let creds = {
+        let creds = std::env::var("GCP_CREDENTIALS")?;
+        let creds = base64::decode(creds.as_str())?;
+
+        String::from_utf8(creds)?
+    };
 
     let creds = serde_json::from_str::<ApplicationCredentials>(creds.as_str())?;
     let client = datastore::Client::from_credentials("fedra-301320", creds).await?;

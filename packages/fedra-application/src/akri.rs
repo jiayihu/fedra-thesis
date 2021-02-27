@@ -55,12 +55,14 @@ pub async fn find_resource_service(
 }
 
 pub async fn subscribe_resource(
-    _service: &String,
+    service: &String,
     resource: &String,
     tx: UnboundedSender<String>,
 ) -> Result<JoinHandle<Result<()>>> {
-    // let url = format!("ws://{}:80{}", service, resource);
+    #[cfg(feature = "dev")]
     let url = format!("ws://192.168.1.126:8083{}", resource);
+    #[cfg(not(feature = "dev"))]
+    let url = format!("ws://{}:80{}", service, resource);
 
     log::info!("Subscribing to the resource at url {}", url);
 
