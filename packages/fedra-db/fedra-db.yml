@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fedra-db
+  labels:
+    app: fedra-db-app
+spec:
+  containers:
+    - name: fedra-db
+      image: eu.gcr.io/fedra-301320/fedra-db:arm64v8
+      imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fedra-db-service
+spec:
+  selector:
+    app: fedra-db-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8084

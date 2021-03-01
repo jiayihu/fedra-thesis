@@ -70,11 +70,11 @@ async fn main() -> Result<()> {
     let state = Arc::new(Mutex::new(db));
 
     let healthz = warp::path("healthz").and_then(|| handle_health());
-    let get = warp::path!("record" / String)
+    let get = warp::path!("records" / String)
         .and(warp::get())
         .and(with_state(state.clone()))
         .and_then(|key: String, state: State| get_record(key, state));
-    let insert = warp::path!("record" / String)
+    let insert = warp::path!("records" / String)
         .and(warp::post())
         .and(warp::body::bytes())
         .and(with_state(state.clone()))
