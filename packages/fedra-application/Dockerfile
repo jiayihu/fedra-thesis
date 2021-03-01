@@ -10,5 +10,5 @@ RUN update-ca-certificates
 
 COPY ./target/${CROSS_BUILD_TARGET}/release/fedra-application /fedra-application
 
-ENV RUST_LOG info
+ENV RUST_LOG=info
 CMD ["./fedra-application"]

@@ -1,6 +1,6 @@
 [tasks.cross]
 command = "cross"
-args = ["build", "--target", "aarch64-unknown-linux-gnu", "--release"]
+args = ["build", "--target", "aarch64-unknown-linux-gnu", "--release", "--no-default-features"]
 
 [tasks.docker-build]
 command = "docker"
