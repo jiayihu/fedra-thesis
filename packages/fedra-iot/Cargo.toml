@@ -21,9 +21,9 @@ once_cell = { version = "1.5.2", default-features = false, features = [] }
 coap-lite = { version = "0.3.0", default-features = false }
 
 [patch.crates-io]
-wasmi = { path = "../../patches/wasmi" }
-parity-wasm = { path = "../../patches/parity-wasm" }
-coap-lite = { path = "../../patches/coap-lite" }
+wasmi = { path = "../../../patches/wasmi" }
+parity-wasm = { path = "../../../patches/parity-wasm" }
+coap-lite = { path = "../../../patches/coap-lite" }
 
 [profile.release]
 codegen-units = 1 # better optimizations
