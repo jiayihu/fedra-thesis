@@ -14,6 +14,16 @@ spec:
           secretKeyRef:
             name: datastore-binding
             key: PrivateKeyData
+      - name: FEDRA_DB_SERVICE_HOST
+        valueFrom:
+          secretKeyRef:
+            name: fedra-db-binding
+            key: host
+      - name: FEDRA_DB_SERVICE_PORT
+        valueFrom:
+          secretKeyRef:
+            name: fedra-db-binding
+            key: port
 ---
 apiVersion: v1
 kind: ServiceAccount

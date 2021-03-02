@@ -4,7 +4,12 @@ pub async fn get_rainfall_ytd(client: &reqwest::Client) -> Result<f32> {
     #[cfg(feature = "dev")]
     let url = format!("http://localhost:8084/records/ytd");
     #[cfg(not(feature = "dev"))]
-    let url = format!("http://fedra-db-service/records/ytd");
+    let url = {
+        let service_host = std::env::var("FEDRA_DB_SERVICE_HOST")?;
+        let service_port = std::env::var("FEDRA_DB_SERVICE_PORT")?;
+
+        format!("http://{}:{}/records/ytd", service_host, service_port)
+    };
 
     let resp = client
         .get(&url)
@@ -27,7 +32,12 @@ pub async fn save_rainfall_ytd(client: &reqwest::Client, rainfall: f32) -> Resul
     #[cfg(feature = "dev")]
     let url = format!("http://localhost:8084/records/ytd");
     #[cfg(not(feature = "dev"))]
-    let url = format!("http://fedra-db-service/records/ytd");
+    let url = {
+        let service_host = std::env::var("FEDRA_DB_SERVICE_HOST")?;
+        let service_port = std::env::var("FEDRA_DB_SERVICE_PORT")?;
+
+        format!("http://{}:{}/records/ytd", service_host, service_port)
+    };
 
     let body = crate::float::f32_to_bytes(rainfall)?;
 

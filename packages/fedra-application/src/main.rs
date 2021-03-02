@@ -53,7 +53,7 @@ async fn main() -> Result<()> {
             loop {
                 match rainfall_rx.recv().await {
                     Some(data) => {
-                        log::info!("Received rainfall data {}", data);
+                        // log::info!("Received rainfall data {}", data);
 
                         let value = data.parse::<f32>().unwrap();
                         let state = {
@@ -80,7 +80,7 @@ async fn main() -> Result<()> {
             loop {
                 match flow_rx.recv().await {
                     Some(data) => {
-                        log::info!("Received flow data {}", data);
+                        // log::info!("Received flow data {}", data);
 
                         let value = data.parse::<f32>().unwrap();
                         let state = {
@@ -119,21 +119,12 @@ async fn main() -> Result<()> {
 
                         match fedra_db::get_rainfall_ytd(&httpclient_iter).await {
                             Ok(rainfall_ytd) => {
+                                log::info!("---------------------------------------");
                                 log::info!("Got rainfall_ytd {}", rainfall_ytd);
 
                                 let sample = (rainfall_ytd, sample_td.0, sample_td.1);
                                 let save_rainfall_handle = tokio::spawn(async move {
-                                    match fedra_db::save_rainfall_ytd(&httpclient_iter, sample_td.0)
-                                        .await
-                                    {
-                                        Ok(()) => {
-                                            log::info!("Saved rainfall {} in local db", sample_td.0)
-                                        }
-                                        Err(e) => log::error!(
-                                            "Error saving the rainfall in local db: {}",
-                                            e
-                                        ),
-                                    }
+                                    save_rainfall_to_local_db(&httpclient_iter, sample_td.0).await;
                                 });
 
                                 let prediction_handle = tokio::task::spawn(async move {
@@ -161,17 +152,7 @@ async fn main() -> Result<()> {
                                 log::error!("Error while requesting rainfall_ytd: {}", e);
 
                                 let save_rainfall_handle = tokio::spawn(async move {
-                                    match fedra_db::save_rainfall_ytd(&httpclient_iter, sample_td.0)
-                                        .await
-                                    {
-                                        Ok(()) => {
-                                            log::info!("Saved rainfall {} in local db", sample_td.0)
-                                        }
-                                        Err(e) => log::error!(
-                                            "Error saving the rainfall in local db: {}",
-                                            e
-                                        ),
-                                    }
+                                    save_rainfall_to_local_db(&httpclient_iter, sample_td.0).await;
                                 });
 
                                 save_rainfall_handle.await.unwrap();
@@ -190,6 +171,15 @@ async fn main() -> Result<()> {
     flow_handle.await??;
 
     Ok(())
+}
+
+async fn save_rainfall_to_local_db(client: &reqwest::Client, rainfall: f32) {
+    match fedra_db::save_rainfall_ytd(client, rainfall).await {
+        Ok(()) => {
+            log::info!("Saved rainfall {} in local db", rainfall)
+        }
+        Err(e) => log::error!("Error saving the rainfall in local db: {}", e),
+    }
 }
 
 fn spawn_async_single_thread<F>(future: F) -> F::Output

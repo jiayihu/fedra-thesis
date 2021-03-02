@@ -1,9 +1,8 @@
 use actix_web::{web, HttpResponse, Responder};
-use brokerapi::service::{CreatedServiceIstance, ProvisionParams, ServiceInstanceRequestBody};
+use brokerapi::service::{
+    CreatedServiceIstance, ProvisionParams, ServiceDeleteParams, ServiceInstanceRequestBody,
+};
 
-use crate::error::Result;
-use crate::pod::PodKey;
-use crate::provider::Provision;
 use crate::state::State;
 
 pub async fn get_catalog(state: web::Data<State>) -> impl Responder {
@@ -14,10 +13,10 @@ pub async fn get_catalog(state: web::Data<State>) -> impl Responder {
 pub async fn put_service_instance(
     web::Path(instance_id): web::Path<String>,
     state: web::Data<State>,
-    web::Query(params): web::Query<ProvisionParams>,
+    web::Query(_params): web::Query<ProvisionParams>,
     web::Json(body): web::Json<ServiceInstanceRequestBody>,
 ) -> impl Responder {
-    log::info!("params {:?}, body:\n{:#?}", params, body);
+    // log::info!("params {:?}, body:\n{:#?}", params, body);
 
     let mut provider = state.provider.lock().unwrap();
     let ServiceInstanceRequestBody {
@@ -25,26 +24,36 @@ pub async fn put_service_instance(
         plan_id,
         ..
     } = body;
-    let response: Result<PodKey> = provider
-        .provision_service(service_id.clone(), plan_id.clone())
+    let response = provider
+        .provision_service(&service_id, &plan_id, &instance_id)
         .await;
 
     match response {
-        Ok(pod_key) => {
-            let provision = Provision {
-                instance_id,
-                service_id: service_id.clone(),
-                plan_id: plan_id.clone(),
-                pod_key,
-            };
-            provider.register_provision(provision);
-
-            HttpResponse::Created().json(CreatedServiceIstance::default())
-        }
+        Ok(()) => HttpResponse::Created().json(CreatedServiceIstance::default()),
         Err(e) => {
             log::error!("Error provisioning the service instance {}", e);
 
-            HttpResponse::InternalServerError().json({})
+            HttpResponse::InternalServerError().finish()
+        }
+    }
+}
+
+pub async fn delete_service_instance(
+    web::Path(instance_id): web::Path<String>,
+    state: web::Data<State>,
+    web::Query(_params): web::Query<ServiceDeleteParams>,
+) -> impl Responder {
+    // log::info!("params {:?}", params);
+
+    let mut provider = state.provider.lock().unwrap();
+
+    match provider.deprovision_service(&instance_id).await {
+        Ok(()) => HttpResponse::Ok().json({}),
+        Err(e) => {
+            log::error!("Error deprovisioning the service instance {}", e);
+
+            // Return as if the instances is always gone in case of error, otherwise it cannot be deleted
+            HttpResponse::Gone().finish()
         }
     }
 }

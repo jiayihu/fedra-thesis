@@ -1,6 +1,5 @@
 #![feature(const_btree_new)]
 
-mod error;
 mod handlers;
 mod pod;
 mod provider;
@@ -10,6 +9,7 @@ use std::sync::Mutex;
 
 use actix_web::middleware::Logger;
 use actix_web::{guard, web, App, HttpResponse, HttpServer};
+use anyhow::Result;
 use brokerapi::{binding, polling, service};
 use kube::Client;
 use provider::FedraProvider;
@@ -25,8 +25,8 @@ const LOG_HEADERS: &str = "%a %t %r %s %Ts
 ";
 
 #[actix_web::main]
-async fn main() -> std::result::Result<(), error::BrokerError> {
-    simple_logging::log_to_file("brokerapi.log", log::LevelFilter::Info)?;
+async fn main() -> Result<()> {
+    env_logger::init();
 
     let client = Client::try_default().await?;
     let namespace = "default";
@@ -60,13 +60,13 @@ async fn main() -> std::result::Result<(), error::BrokerError> {
                             .route(web::put().to(handlers::services::put_service_instance))
                             .route(web::get().to(service::get_service_instance))
                             .route(web::patch().to(service::patch_service_instance))
-                            .route(web::delete().to(service::delete_service_instance))
+                            .route(web::delete().to(handlers::services::delete_service_instance))
                     )
                     .service(
                 web::resource("/service_instances/{instance_id}/service_bindings/{binding_id}")
-                            .route(web::put().to(binding::put_binding))
+                            .route(web::put().to(handlers::bindings::put_binding))
                             .route(web::get().to(binding::get_binding))
-                            .route(web::delete().to(binding::delete_binding))
+                            .route(web::delete().to(handlers::bindings::delete_binding))
                     )
                     .route(
                         "/service_instances/{instance_id}/last_operation",
@@ -79,7 +79,7 @@ async fn main() -> std::result::Result<(), error::BrokerError> {
             )
             .default_service(web::route().to(|| HttpResponse::NotFound()))
     })
-    .bind("0.0.0.0:8080")?
+    .bind("0.0.0.0:8085")?
     .run()
     .await?;
 
