@@ -79,6 +79,7 @@ impl CoapServer {
                     request.set_path(resource_path);
 
                     let notification = request.message;
+                    log::debug!("Sending notification");
 
                     self.send_message(observer.endpoint, notification);
                 })
@@ -89,7 +90,7 @@ impl CoapServer {
     }
 
     fn gen_message_id(&mut self) -> u16 {
-        self.message_id += 1;
+        self.message_id = self.message_id.wrapping_add(1);
         return self.message_id;
     }
 
@@ -105,7 +106,7 @@ impl CoapServer {
 impl Default for CoapServer {
     fn default() -> Self {
         let mut subject = Subject::default();
-        subject.set_unacknowledged_limit(3);
+        subject.set_unacknowledged_limit(10);
 
         CoapServer {
             message_id: 0,

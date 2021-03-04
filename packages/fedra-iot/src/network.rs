@@ -151,17 +151,12 @@ where
 
                 match socket.recv() {
                     Ok((data, endpoint)) => {
-                        log::info!("UDP recv from {}", endpoint);
+                        log::info!("UDP packet from {}", endpoint);
 
-                        match handler(data, endpoint.clone()) {
-                            Some(response) => {
-                                socket
-                                    .send_slice(response.as_slice(), endpoint)
-                                    .unwrap_or_else(|e| log::error!("UDP send error: {:?}", e));
-                            }
-                            None => {
-                                log::debug!("No response");
-                            }
+                        if let Some(response) = handler(data, endpoint.clone()) {
+                            socket
+                                .send_slice(response.as_slice(), endpoint)
+                                .unwrap_or_else(|e| log::error!("UDP send error: {:?}", e));
                         }
                     }
                     Err(_) => {}
@@ -172,7 +167,7 @@ where
             }
             Err(e) => {
                 // Ignore malformed packets, they are pretty common
-                if e != Error::Unrecognized {
+                if e != Error::Unrecognized && e != Error::Malformed {
                     log::error!("Error polling the receive sockets: {:?}", e);
                 }
             }

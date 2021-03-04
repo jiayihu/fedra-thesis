@@ -167,6 +167,7 @@
 - [What are pid and lock files for?](https://unix.stackexchange.com/questions/12815/what-are-pid-and-lock-files-for)
 - [How containers work: overlayfs](https://jvns.ca/blog/2019/11/18/how-containers-work--overlayfs/)
 - [An introduction to using tcpdump at the Linux command line](https://opensource.com/article/18/10/introduction-tcpdump)
+- [Why do UDP packets get dropped?](https://jvns.ca/blog/2016/08/24/find-out-where-youre-dropping-packets/#:~:text=lost%20on%20the%20way%20out&text=On%20every%20UDP%20socket%2C%20there's,that%20you%20put%20packets%20into.&text=So%20if%20you%20have%20a,So%20you%20will%20drop%20packets.)
 
 ## Rust async
 
