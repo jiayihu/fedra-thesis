@@ -158,6 +158,10 @@ mod app {
                     }
                 }
 
+                response
+                    .message
+                    .set_content_format(ContentFormat::TextPlain);
+
                 Some(response)
             });
         })

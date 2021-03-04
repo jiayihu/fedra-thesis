@@ -10,6 +10,6 @@ MEMORY
 /* NOTE Do NOT modify `_stack_start` unless you know what you are doing */
 _stack_start = ORIGIN(RAM) + LENGTH(RAM); /* 0x20020000 */
 
-/* Advanced users can place the stack inthe CCRAM */
+/* Advanced users can place the stack in the CCRAM */
 /* which is smaller but faster. */
 /* _stack_start = ORIGIN(CCRAM) + LENGTH(CCRAM); */

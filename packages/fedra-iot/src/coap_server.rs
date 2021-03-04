@@ -1,8 +1,8 @@
 use crate::network;
 use alloc::vec::Vec;
 use coap_lite::{
-    CoapRequest, CoapResponse, MessageClass, MessageType, ObserveOption, Packet,
-    ResponseType as Status, Subject,
+    create_notification, CoapRequest, CoapResponse, ContentFormat, MessageType, ObserveOption,
+    Packet, Subject,
 };
 use smoltcp::wire::IpEndpoint;
 
@@ -63,46 +63,29 @@ impl CoapServer {
         if let Some(resource) = resource {
             if let Some(observers) = observers {
                 observers.into_iter().for_each(|observer| {
-                    let notification = self.create_notification(
+                    let mut notification = create_notification(
                         message_id,
                         observer.token.clone(),
                         resource.sequence,
                         payload.clone(),
                     );
+                    notification.set_content_format(ContentFormat::TextPlain);
+
+                    // Create a request just to set the path
+                    let mut request = CoapRequest::<IpEndpoint>::from_packet(
+                        notification,
+                        IpEndpoint::UNSPECIFIED,
+                    );
+                    request.set_path(resource_path);
+
+                    let notification = request.message;
 
                     self.send_message(observer.endpoint, notification);
                 })
             }
         }
 
-        self.subject.resource_changed(resource_path);
-    }
-
-    fn create_notification(
-        &self,
-        message_id: u16,
-        token: Vec<u8>,
-        sequence: u32,
-        payload: Vec<u8>,
-    ) -> Packet {
-        let mut packet = Packet::new();
-
-        packet.header.set_version(1);
-        packet.header.set_type(MessageType::Confirmable);
-        packet.header.code = MessageClass::Response(Status::Content);
-        packet.header.message_id = message_id;
-        packet.set_token(token);
-        packet.payload = payload;
-
-        let mut sequence_bytes = sequence.to_be_bytes().to_vec();
-        let first_non_zero = sequence_bytes
-            .iter()
-            .position(|&x| x > 0)
-            .unwrap_or(sequence_bytes.len());
-        sequence_bytes.drain(0..first_non_zero);
-        packet.set_observe(sequence_bytes);
-
-        packet
+        self.subject.resource_changed(resource_path, message_id);
     }
 
     fn gen_message_id(&mut self) -> u16 {
@@ -121,9 +104,12 @@ impl CoapServer {
 
 impl Default for CoapServer {
     fn default() -> Self {
+        let mut subject = Subject::default();
+        subject.set_unacknowledged_limit(3);
+
         CoapServer {
             message_id: 0,
-            subject: Subject::default(),
+            subject,
         }
     }
 }
