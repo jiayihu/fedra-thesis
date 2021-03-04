@@ -3,7 +3,6 @@ use alloc::vec::Vec;
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
 use once_cell::unsync::{Lazy, OnceCell};
-use rtt_target::rprintln;
 use smoltcp::iface::{EthernetInterface, EthernetInterfaceBuilder, Neighbor, NeighborCache};
 use smoltcp::socket::{
     SocketHandle, SocketSet, SocketSetItem, UdpPacketMetadata, UdpSocket, UdpSocketBuffer,
@@ -50,7 +49,7 @@ pub struct EthPeripherals {
 }
 
 pub fn setup_eth(eth_p: EthPeripherals, clocks: hal::rcc::Clocks) {
-    rprintln!("Enabling ethernet...");
+    log::debug!("Enabling ethernet...");
 
     let eth_pins = EthPins {
         ref_clk: eth_p.gpioa.pa1,
@@ -78,7 +77,7 @@ pub fn setup_eth(eth_p: EthPeripherals, clocks: hal::rcc::Clocks) {
         eth.enable_interrupt();
 
         ETH.set(eth).ok().unwrap();
-        rprintln!("Ethernet created");
+        log::debug!("Ethernet created");
     }
 }
 
@@ -143,7 +142,7 @@ where
                 if !socket.is_open() {
                     socket
                         .bind(PORT)
-                        .unwrap_or_else(|e| rprintln!("UDP bind error: {:?}", e));
+                        .unwrap_or_else(|e| log::error!("UDP bind error: {:?}", e));
                 }
 
                 if !socket.can_send() {
@@ -152,16 +151,16 @@ where
 
                 match socket.recv() {
                     Ok((data, endpoint)) => {
-                        rprintln!("UDP recv from {}", endpoint);
+                        log::info!("UDP recv from {}", endpoint);
 
                         match handler(data, endpoint.clone()) {
                             Some(response) => {
                                 socket
                                     .send_slice(response.as_slice(), endpoint)
-                                    .unwrap_or_else(|e| rprintln!("UDP send error: {:?}", e));
+                                    .unwrap_or_else(|e| log::error!("UDP send error: {:?}", e));
                             }
                             None => {
-                                rprintln!("No response");
+                                log::debug!("No response");
                             }
                         }
                     }
@@ -174,7 +173,7 @@ where
             Err(e) => {
                 // Ignore malformed packets, they are pretty common
                 if e != Error::Unrecognized {
-                    rprintln!("Error polling the receive sockets: {:?}", e);
+                    log::error!("Error polling the receive sockets: {:?}", e);
                 }
             }
         }
@@ -193,13 +192,13 @@ pub fn send(endpoint: IpEndpoint, data: &[u8]) {
             let mut socket = sockets.get::<UdpSocket>(*client_handle);
 
             if !socket.can_send() {
-                rprintln!("Cannot send on the UDP socket");
+                log::error!("Cannot send on the UDP socket");
                 return;
             }
 
             socket
                 .send_slice(data, endpoint)
-                .unwrap_or_else(|e| rprintln!("UDP send error: {:?}", e));
+                .unwrap_or_else(|e| log::error!("UDP send error: {:?}", e));
         }
 
         match net.poll(sockets, Instant::from_millis(time as i64)) {
@@ -207,7 +206,7 @@ pub fn send(endpoint: IpEndpoint, data: &[u8]) {
             Err(e) => {
                 // Ignore malformed packets, they are pretty common
                 if e != Error::Unrecognized {
-                    rprintln!("Error polling the send sockets: {:?}", e);
+                    log::error!("Error polling the send sockets: {:?}", e);
                 }
             }
         }

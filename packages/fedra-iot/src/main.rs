@@ -8,6 +8,7 @@ extern crate alloc;
 
 mod coap_server;
 mod intrinsics;
+mod logger;
 mod memory;
 mod network;
 pub mod qemu;
@@ -16,7 +17,6 @@ mod wasm_host;
 
 use core::panic::PanicInfo;
 use cortex_m_rt::{exception, ExceptionFrame};
-use rtt_target::rprintln;
 
 #[rtic::app(
     device = stm32f4xx_hal::stm32,
@@ -30,7 +30,6 @@ mod app {
     use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
     use hal::prelude::*;
     use rtic::cyccnt::U32Ext;
-    use rtt_target::{rprintln, rtt_init_print};
     use stm32f4xx_hal as hal;
 
     const PERIOD: u32 = 160_000_000;
@@ -50,7 +49,7 @@ mod app {
 
     #[init]
     fn init(cx: init::Context) -> init::LateResources {
-        rtt_init_print!();
+        crate::logger::init_logger();
         memory::setup_heap();
 
         let mut cp: rtic::Peripherals = cx.core;
@@ -104,7 +103,7 @@ mod app {
             host.invoke("main", runtime)
                 .expect("Cannot invoke main in the WASM module"); // TODO: Handle as CoAP response
 
-            rprintln!("Temp {}", runtime.temp);
+            log::info!("Temp {}", runtime.temp);
 
             notify::spawn("sensors/temp", runtime.temp).unwrap();
         });
@@ -118,11 +117,9 @@ mod app {
         coap_server.lock(|coap_server: &mut coap_server::CoapServer| {
             coap_server.notify_observers(resource, payload);
         });
-
-        rprintln!("Notified");
     }
 
-    #[task(resources = [runtime, coap_server], priority = 1)]
+    #[task(resources = [runtime, coap_server], capacity = 2, priority = 1)]
     fn server(cx: server::Context) {
         let mut runtime = cx.resources.runtime;
         let mut coap_server = cx.resources.coap_server;
@@ -133,7 +130,7 @@ mod app {
                 let path = request.get_path();
                 let mut response = request.response?;
 
-                rprintln!("Request path {}", path);
+                log::info!("Request path {}", path);
 
                 match (method, path.as_str()) {
                     (Method::Get, "sensors/temp") => {
@@ -186,20 +183,20 @@ mod app {
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    rprintln!("{}", info);
+    log::error!("{}", info);
     nop_loop()
 }
 
 #[exception]
 fn DefaultHandler(irqn: i16) {
-    rprintln!("Exception IRQN {}", irqn);
+    log::error!("Exception IRQN {}", irqn);
 
     nop_loop()
 }
 
 #[exception]
 fn HardFault(ef: &ExceptionFrame) -> ! {
-    rprintln!("HardFault {:#?}", ef);
+    log::error!("HardFault {:#?}", ef);
 
     nop_loop()
 }
