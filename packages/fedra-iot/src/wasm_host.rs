@@ -4,8 +4,8 @@ use alloc::format;
 use alloc::string::String;
 use wasmi::{
     Error as InterpreterError, Externals, FuncInstance, FuncRef, HostError as WasmiHostError,
-    ImportsBuilder, Module, ModuleImportResolver, ModuleInstance, ModuleRef, NopExternals,
-    RuntimeArgs, RuntimeValue, Signature, Trap, TrapKind, ValueType,
+    ImportsBuilder, Module, ModuleImportResolver, ModuleInstance, ModuleRef, RuntimeArgs,
+    RuntimeValue, Signature, StackRecycler, Trap, TrapKind, ValueType,
 };
 
 #[derive(Debug)]
@@ -37,6 +37,7 @@ impl WasmiHostError for HostError {}
 pub struct WasmHost<'a> {
     imports: ImportsBuilder<'a>,
     instance: Option<ModuleRef>,
+    stack_recycler: StackRecycler,
 }
 
 impl<'a> WasmHost<'a> {
@@ -51,7 +52,7 @@ impl<'a> WasmHost<'a> {
 
     pub fn set_instance(&mut self, module: &Module) -> Result<(), HostError> {
         let instance = ModuleInstance::new(module, &self.imports)?;
-        let instance = instance.run_start(&mut NopExternals)?;
+        let instance = instance.assert_no_start();
 
         self.instance = Some(instance);
 
@@ -59,7 +60,7 @@ impl<'a> WasmHost<'a> {
     }
 
     pub fn invoke<E: Externals>(
-        &self,
+        &mut self,
         name: &str,
         runtime: &mut E,
     ) -> Result<Option<RuntimeValue>, HostError> {
@@ -69,7 +70,10 @@ impl<'a> WasmHost<'a> {
             .ok_or(InterpreterError::Function(String::from(
                 "Cannot invoke without an instance",
             )))?;
-        let result = instance.invoke_export(name, &[], runtime)?;
+
+        self.stack_recycler.clear();
+        let result =
+            instance.invoke_export_with_stack(name, &[], runtime, &mut self.stack_recycler)?;
 
         Ok(result)
     }
@@ -84,14 +88,20 @@ impl<'a> WasmHost<'a> {
     }
 }
 
+const VALUE_STACK_LIMIT: usize = 4 * 1024;
+const CALL_STACK_LIMIT: usize = 42;
+
 impl<'a> Default for WasmHost<'a> {
     fn default() -> Self {
         let mut imports = ImportsBuilder::default();
         imports.push_resolver("env", &RuntimeImportResolver);
 
+        let stack_recycler = StackRecycler::with_limits(VALUE_STACK_LIMIT, CALL_STACK_LIMIT);
+
         WasmHost {
             imports,
             instance: None,
+            stack_recycler,
         }
     }
 }

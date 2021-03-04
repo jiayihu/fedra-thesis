@@ -16,13 +16,3 @@ command = "cargo"
 args = [
     "embed"
 ]
-
-[tasks.run]
-command = "cargo"
-args = [
-    "run"
-]
-
-[env]
-WASMI_VALUE_STACK_LIMIT = 4
-WASMI_CALL_STACK_LIMIT = 42
