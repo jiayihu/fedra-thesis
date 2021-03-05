@@ -80,7 +80,7 @@ impl<'a> WasmHost<'a> {
     }
 
     pub fn setup_default(&mut self) -> Result<(), HostError> {
-        let wasm = include_bytes!("./wasm/functions.wasm");
+        let wasm = include_bytes!("./wasm/fedra_io_sdk.wasm");
         let module = Self::create_module(wasm)?;
 
         self.set_instance(&module)?;
@@ -113,8 +113,8 @@ pub struct Runtime {
     pub rainfall: f32,
 }
 
-const GET_TEMP_FN: usize = 0;
-const SET_TEMP_FN: usize = 1;
+const GET_RAINFALL_FN: usize = 0;
+const SET_RAINFALL_FN: usize = 1;
 
 impl Externals for Runtime {
     fn invoke_index(
@@ -123,8 +123,8 @@ impl Externals for Runtime {
         args: RuntimeArgs,
     ) -> Result<Option<RuntimeValue>, Trap> {
         match index {
-            GET_TEMP_FN => Ok(Some(RuntimeValue::from(F32::from(self.rainfall)))),
-            SET_TEMP_FN => {
+            GET_RAINFALL_FN => Ok(Some(RuntimeValue::from(F32::from(self.rainfall)))),
+            SET_RAINFALL_FN => {
                 let value: F32 = args.nth_checked(0)?;
                 let value: f32 = value.into();
                 self.rainfall = value;
@@ -157,12 +157,14 @@ impl ModuleImportResolver for RuntimeImportResolver {
         _signature: &Signature,
     ) -> Result<FuncRef, InterpreterError> {
         let func_ref = match field_name {
-            "set_temp" => {
-                FuncInstance::alloc_host(Signature::new(&[ValueType::I32][..], None), SET_TEMP_FN)
-            }
-            "get_temp" => {
-                FuncInstance::alloc_host(Signature::new(&[][..], Some(ValueType::I32)), GET_TEMP_FN)
-            }
+            "set_rainfall" => FuncInstance::alloc_host(
+                Signature::new(&[ValueType::F32][..], None),
+                SET_RAINFALL_FN,
+            ),
+            "get_rainfall" => FuncInstance::alloc_host(
+                Signature::new(&[][..], Some(ValueType::F32)),
+                GET_RAINFALL_FN,
+            ),
             _ => {
                 return Err(InterpreterError::Function(format!(
                     "Host module doesn't export function with name {}",

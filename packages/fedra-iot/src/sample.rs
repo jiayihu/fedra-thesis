@@ -1,13 +1,13 @@
 use rand::Rng;
 use stm32f4xx_hal::rng::Rng as StmRng;
 
-const RAINFALL_MEAN: f32 = 0.05;
-const RAINFALL_SIGMA: f32 = 0.08;
+const RAINFALL_MEAN: f32 = 3.47;
+const RAINFALL_SIGMA: f32 = 5.58;
 
 #[allow(dead_code)]
-const FLOW_MEAN: f32 = 0.07;
+const FLOW_MEAN: f32 = 48.42;
 #[allow(dead_code)]
-const FLOW_SIGMA: f32 = 0.09;
+const FLOW_SIGMA: f32 = 58.69;
 
 pub fn gen_rainfall(rand_source: &mut StmRng) -> f32 {
     let std_rainfall: f32 = rand_source.gen();

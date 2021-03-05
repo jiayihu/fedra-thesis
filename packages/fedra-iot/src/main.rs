@@ -26,6 +26,8 @@ use cortex_m_rt::{exception, ExceptionFrame};
     dispatchers = [EXTI1, EXTI2]
 )]
 mod app {
+    use crate::wasm_host::WasmHost;
+
     use super::{coap_server, memory, network, sample, time, wasm_host};
     use alloc::string::ToString;
     use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
@@ -103,24 +105,24 @@ mod app {
     fn rainfall(cx: rainfall::Context) {
         rainfall::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
 
-        // let host = cx.resources.host;
+        let host: &mut WasmHost = cx.resources.host;
         let mut runtime = cx.resources.runtime;
         let rand_source: &mut Rng = cx.resources.rand_source;
 
         runtime.lock(|runtime: &mut wasm_host::Runtime| {
-            // host.invoke("main", runtime)
-            //     .expect("Cannot invoke main in the WASM module");
-
             let rainfall = sample::gen_rainfall(rand_source);
             runtime.rainfall = rainfall;
 
-            log::info!("Rainfall {}", rainfall);
+            host.invoke("preprocess_rainfall", runtime)
+                .expect("Cannot invoke preprocess_rainfall in the WASM module");
 
-            notify::spawn("sensors/rainfall", rainfall).unwrap();
+            log::info!("Rainfall {}", runtime.rainfall);
+
+            notify::spawn("sensors/rainfall", runtime.rainfall).unwrap();
         });
     }
 
-    #[task(resources = [coap_server], capacity = 2, priority = 1)]
+    #[task(resources = [coap_server], capacity = 1, priority = 1)]
     fn notify(cx: notify::Context, resource: &'static str, value: f32) {
         let mut coap_server = cx.resources.coap_server;
         let payload = value.to_string().into_bytes();
