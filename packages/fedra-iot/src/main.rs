@@ -23,7 +23,7 @@ use cortex_m_rt::{exception, ExceptionFrame};
     device = stm32f4xx_hal::stm32,
     peripherals = true,
     monotonic = rtic::cyccnt::CYCCNT,
-    dispatchers = [EXTI1, EXTI2]
+    dispatchers = [EXTI1, EXTI2, EXTI3]
 )]
 mod app {
     use crate::wasm_host::WasmHost;
@@ -101,7 +101,7 @@ mod app {
         super::nop_loop();
     }
 
-    #[task(resources = [host, runtime, rand_source], priority = 2)]
+    #[task(resources = [host, runtime, rand_source], priority = 5)]
     fn rainfall(cx: rainfall::Context) {
         rainfall::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
 
@@ -118,7 +118,9 @@ mod app {
 
             log::info!("Rainfall {}", runtime.rainfall);
 
-            notify::spawn("sensors/rainfall", runtime.rainfall).unwrap();
+            if notify::spawn("sensors/rainfall", runtime.rainfall).is_err() {
+                log::info!("Can't spawn notify, skipping");
+            }
         });
     }
 
@@ -132,7 +134,7 @@ mod app {
         });
     }
 
-    #[task(resources = [runtime, coap_server], capacity = 2, priority = 1)]
+    #[task(resources = [runtime, coap_server], capacity = 1, priority = 1)]
     fn server(cx: server::Context) {
         let mut runtime = cx.resources.runtime;
         let mut coap_server = cx.resources.coap_server;
@@ -179,6 +181,15 @@ mod app {
         })
     }
 
+    #[task(capacity = 2, priority = 4)]
+    fn socket(_: socket::Context) {
+        let ready = network::check_socket_readiness();
+
+        if ready {
+            server::spawn().unwrap();
+        }
+    }
+
     #[task(binds = ETH, resources = [], priority = 10)]
     fn eth(_: eth::Context) {
         network::set_pending();
@@ -187,7 +198,7 @@ mod app {
         let p = unsafe { hal::stm32::Peripherals::steal() };
         stm32_eth::eth_interrupt_handler(&p.ETHERNET_DMA);
 
-        server::spawn().unwrap();
+        socket::spawn().unwrap();
     }
 
     #[task(binds = TIM2, priority = 14)]

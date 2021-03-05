@@ -121,6 +121,28 @@ pub fn create_sockets() {
     }
 }
 
+pub fn check_socket_readiness() -> bool {
+    unsafe {
+        let net = NET.get_mut().expect("NET not initialized");
+        let sockets = SOCKETS.get_mut().expect("SOCKETS not initialized");
+        let time = time::now();
+
+        clear_pending();
+
+        match net.poll(sockets, Instant::from_millis(time as i64)) {
+            Ok(readiness) => readiness,
+            Err(e) => {
+                // Ignore malformed packets, they are pretty common
+                if e != Error::Unrecognized && e != Error::Malformed {
+                    log::error!("Error polling the receive sockets: {:?}", e);
+                }
+
+                false
+            }
+        }
+    }
+}
+
 pub fn handle_request<F>(mut handler: F)
 where
     F: FnMut(&[u8], IpEndpoint) -> Option<Vec<u8>>, // TODO: Fn should be enough
@@ -128,50 +150,32 @@ where
     const PORT: u16 = 5683;
 
     unsafe {
-        let net = NET.get_mut().expect("NET not initialized");
         let sockets = SOCKETS.get_mut().expect("SOCKETS not initialized");
         let server_handle = SERVER_HANDLE.get().expect("SERVER_HANDLE not initialized");
-        let time = time::now();
+        let mut socket = sockets.get::<UdpSocket>(*server_handle);
 
-        clear_pending();
-
-        match net.poll(sockets, Instant::from_millis(time as i64)) {
-            Ok(true) => {
-                let mut socket = sockets.get::<UdpSocket>(*server_handle);
-
-                if !socket.is_open() {
-                    socket
-                        .bind(PORT)
-                        .unwrap_or_else(|e| log::error!("UDP bind error: {:?}", e));
-                }
-
-                if !socket.can_send() {
-                    return;
-                }
-
-                match socket.recv() {
-                    Ok((data, endpoint)) => {
-                        log::info!("UDP packet from {}", endpoint);
-
-                        if let Some(response) = handler(data, endpoint.clone()) {
-                            socket
-                                .send_slice(response.as_slice(), endpoint)
-                                .unwrap_or_else(|e| log::error!("UDP send error: {:?}", e));
-                        }
-                    }
-                    Err(_) => {}
-                };
-            }
-            Ok(false) => {
-                // Sleep task if no ethernet work is pending
-            }
-            Err(e) => {
-                // Ignore malformed packets, they are pretty common
-                if e != Error::Unrecognized && e != Error::Malformed {
-                    log::error!("Error polling the receive sockets: {:?}", e);
-                }
-            }
+        if !socket.is_open() {
+            socket
+                .bind(PORT)
+                .unwrap_or_else(|e| log::error!("UDP bind error: {:?}", e));
         }
+
+        if !socket.can_send() {
+            return;
+        }
+
+        match socket.recv() {
+            Ok((data, endpoint)) => {
+                log::info!("UDP packet from {}", endpoint);
+
+                if let Some(response) = handler(data, endpoint.clone()) {
+                    socket
+                        .send_slice(response.as_slice(), endpoint)
+                        .unwrap_or_else(|e| log::error!("UDP send error: {:?}", e));
+                }
+            }
+            Err(_) => {}
+        };
     }
 }
 
