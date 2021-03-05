@@ -18,8 +18,10 @@ alloc-cortex-m = { git = "https://github.com/rust-embedded/alloc-cortex-m" }
 stm32-eth = { git = "https://github.com/stm32-rs/stm32-eth", features = ["stm32f407", "smoltcp-phy"]}
 smoltcp = { version = "0.6.0", default-features = false, features = ["socket-udp", "socket-icmp"]}
 once_cell = { version = "1.5.2", default-features = false, features = [] }
-coap-lite = { version = "0.4.1", default-features = false, features = ["log"] }
+coap-lite = { version = "0.4.1", default-features = false, features = [] }
 log = "0.4.14"
+rand_core = "0.5.1"
+rand = { version = "0.7", default-features = false, features = [] }
 
 [patch.crates-io]
 wasmi = { path = "../../../patches/wasmi" }

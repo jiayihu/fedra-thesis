@@ -2,6 +2,7 @@ use alloc::boxed::Box;
 use alloc::fmt::Formatter;
 use alloc::format;
 use alloc::string::String;
+use wasmi::nan_preserving_float::F32;
 use wasmi::{
     Error as InterpreterError, Externals, FuncInstance, FuncRef, HostError as WasmiHostError,
     ImportsBuilder, Module, ModuleImportResolver, ModuleInstance, ModuleRef, RuntimeArgs,
@@ -109,7 +110,7 @@ impl<'a> Default for WasmHost<'a> {
 unsafe impl Send for WasmHost<'static> {}
 
 pub struct Runtime {
-    pub temp: i32,
+    pub rainfall: f32,
 }
 
 const GET_TEMP_FN: usize = 0;
@@ -122,10 +123,11 @@ impl Externals for Runtime {
         args: RuntimeArgs,
     ) -> Result<Option<RuntimeValue>, Trap> {
         match index {
-            GET_TEMP_FN => Ok(Some(RuntimeValue::from(self.temp))),
+            GET_TEMP_FN => Ok(Some(RuntimeValue::from(F32::from(self.rainfall)))),
             SET_TEMP_FN => {
-                let value: i32 = args.nth_checked(0)?;
-                self.temp = value;
+                let value: F32 = args.nth_checked(0)?;
+                let value: f32 = value.into();
+                self.rainfall = value;
 
                 Ok(None)
             }
@@ -142,7 +144,7 @@ impl Externals for Runtime {
 
 impl Default for Runtime {
     fn default() -> Self {
-        Runtime { temp: 1 }
+        Runtime { rainfall: 1.0f32 }
     }
 }
 

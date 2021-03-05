@@ -36,6 +36,7 @@
 - [ENC28J60, Ethernet for your microcontroller](https://blog.japaric.io/wd-4-enc28j60/)
 - [ESP32 Ethernet](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_eth.html)
 - [STM32F4 Discovery board: ENC28J60 Ethernet Module Part3- Connect to LAN / Get IP address](https://www.youtube.com/watch?v=A4c0nJudOI0)
+- [Introduction to STM32F407 Clocks](https://sites.google.com/site/johnkneenmicrocontrollers/clocks/clk407)
 
 ## Embedded toolchain
 

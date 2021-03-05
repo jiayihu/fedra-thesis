@@ -12,6 +12,7 @@ mod logger;
 mod memory;
 mod network;
 pub mod qemu;
+mod sample;
 mod time;
 mod wasm_host;
 
@@ -25,10 +26,11 @@ use cortex_m_rt::{exception, ExceptionFrame};
     dispatchers = [EXTI1, EXTI2]
 )]
 mod app {
-    use super::{coap_server, memory, network, time, wasm_host};
+    use super::{coap_server, memory, network, sample, time, wasm_host};
     use alloc::string::ToString;
     use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
     use hal::prelude::*;
+    use hal::rng::Rng;
     use rtic::cyccnt::U32Ext;
     use stm32f4xx_hal as hal;
 
@@ -41,6 +43,8 @@ mod app {
     struct Resources {
         #[task_local]
         host: wasm_host::WasmHost<'static>,
+        #[task_local]
+        rand_source: Rng,
 
         coap_server: coap_server::CoapServer,
 
@@ -60,6 +64,8 @@ mod app {
         time::setup_cycle_counter(&mut cp);
         let clocks = time::setup_clocks(rcc, tim2);
 
+        let rand_source = dp.RNG.constrain(clocks.clone());
+
         let eth_p = network::EthPeripherals {
             gpioa: dp.GPIOA.split(),
             gpiob: dp.GPIOB.split(),
@@ -68,7 +74,7 @@ mod app {
             ethernet_dma: dp.ETHERNET_DMA,
         };
 
-        network::setup_eth(eth_p, clocks);
+        network::setup_eth(eth_p, clocks.clone());
         network::setup_net();
         network::create_sockets();
 
@@ -78,12 +84,13 @@ mod app {
         let runtime = wasm_host::Runtime::default();
         host.setup_default().expect("Could not setup the WAST Host");
 
-        temp::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
+        rainfall::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
 
         init::LateResources {
             host,
             runtime,
             coap_server,
+            rand_source,
         }
     }
 
@@ -92,25 +99,29 @@ mod app {
         super::nop_loop();
     }
 
-    #[task(resources = [host, runtime], priority = 2)]
-    fn temp(cx: temp::Context) {
-        temp::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
+    #[task(resources = [host, runtime, rand_source], priority = 2)]
+    fn rainfall(cx: rainfall::Context) {
+        rainfall::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
 
-        let host = cx.resources.host;
+        // let host = cx.resources.host;
         let mut runtime = cx.resources.runtime;
+        let rand_source: &mut Rng = cx.resources.rand_source;
 
         runtime.lock(|runtime: &mut wasm_host::Runtime| {
-            host.invoke("main", runtime)
-                .expect("Cannot invoke main in the WASM module"); // TODO: Handle as CoAP response
+            // host.invoke("main", runtime)
+            //     .expect("Cannot invoke main in the WASM module");
 
-            log::info!("Temp {}", runtime.temp);
+            let rainfall = sample::gen_rainfall(rand_source);
+            runtime.rainfall = rainfall;
 
-            notify::spawn("sensors/temp", runtime.temp).unwrap();
+            log::info!("Rainfall {}", rainfall);
+
+            notify::spawn("sensors/rainfall", rainfall).unwrap();
         });
     }
 
     #[task(resources = [coap_server], capacity = 2, priority = 1)]
-    fn notify(cx: notify::Context, resource: &'static str, value: i32) {
+    fn notify(cx: notify::Context, resource: &'static str, value: f32) {
         let mut coap_server = cx.resources.coap_server;
         let payload = value.to_string().into_bytes();
 
@@ -133,10 +144,10 @@ mod app {
                 log::info!("Request path {}", path);
 
                 match (method, path.as_str()) {
-                    (Method::Get, "sensors/temp") => {
+                    (Method::Get, "sensors/rainfall") => {
                         runtime.lock(|runtime| {
-                            let temp = runtime.temp.to_string();
-                            response.message.payload = temp.into_bytes();
+                            let rainfall = runtime.rainfall.to_string();
+                            response.message.payload = rainfall.into_bytes();
                         });
                     }
                     (Method::Get, "well-known/core") => {
@@ -144,7 +155,9 @@ mod app {
                             .message
                             .set_content_format(ContentFormat::ApplicationLinkFormat);
                         response.message.payload =
-                            br#"</sensors/temp>;rt="oic.r.temperature";if="sensor""#.to_vec();
+                            br#"</sensors/rainfall>;rt="rainfall";if="sensor",
+                            </sensors/flow>;rt="flow";if="sensor"#
+                                .to_vec();
                     }
                     (Method::Get, "ping") => {
                         response.message.payload = b"pong".to_vec();
