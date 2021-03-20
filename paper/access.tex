@@ -4,6 +4,11 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
+\usepackage[colorlinks = true,
+            linkcolor = black,
+            urlcolor  = black,
+            citecolor = blue,
+            anchorcolor = black]{hyperref}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -25,170 +30,298 @@ Work in Progress.
 \section{Introduction}
 \label{sec:introduction}
 
-The Internet has evolved significantly since its inception. From just a simple communication layer for information sharing between researchers, it has grown into a ubiquitous platform for complex services. This transformation is driven by many changes and innovations in terms of infrastructure, services and devices.
+The Internet has evolved significantly since its inception. From just a simple communication layer for information sharing between researchers, it has grown into an ubiquitous platform for everyday services. This transformation is driven by many changes and infrastructure trends.
 
-In the past decade, several infrastructure-related trends have emerged and consolidated. First, sharing of device, server, and networking capabilities (the cloud computing paradigm) has become a reality, giving users and companies access to virtually unlimited amounts of storage and computing power. Nowadays, there is an immense amount of seamlessly connected mobile devices, servers, and network elements, offering their virtualized capabilities to its users.
+First, during the past decade, the sharing of server and networking capabilities - known as cloud computing paradigm - has become a reality, giving users and companies access to virtually unlimited amounts of storage and computing power. Nowadays, there is an immense amount of seamlessly connected mobile devices, servers, and network components which offer their virtualized capabilities to their users.
 
-Second, as mobile computing evolved, people started bringing their devices with them and accessing the Internet anywhere anytime. Today, we are in the midst of the so-called Internet of Things (IoT), where devices (things) are connected to the Internet and each other. These things comprise a multitude of heterogeneous devices ranging from consumer devices, such as mobile phones and wearables, to industrial sensors and actuators, or electrical vehicles (EV). 
+Second, as mobile computing evolved, people started bringing their devices with them and accessing the Internet anywhere and anytime. Nowadays, we are in the midst of the so-called Internet of Things (IoT), where devices (things) are connected to the Internet and each other. These "things" comprise a multitude of heterogeneous devices ranging from consumer devices, such as mobile phones and wearables, to industrial sensors and actuators \cite{iot-manifacturing}, and smart transportation, grids \cite{dsu}, and cities \cite{saaas}.
 
-Concurrently, our capacity for collecting data is expanding dramatically, and yet, our ability to timely manage, manipulate, and analyze this data to transform it into knowledge and understanding has not kept pace. Data sources, volumes, and generation rates are growing exponentially and have outpaced the ability to transport this data in a reliable and timely manner to the cloud.
+It this thus natural that as consumers, we want our Internet-capable devices (e.g., mobile phones, thermostats, electrical vehicle) to adapt seamlessly to our changing lifes and expectations, regardless of location \cite{harnessing-continuum}.
 
-One can thus envision data-driven and information-rich pervasive computational ecosystems that seamlessly combine this data and computing power to model, manage, control and make use of virtually any realizable sub-system of interest. Use cases exist in diverse application areas from managing extreme events (e.g. environmental monitoring) to optimizing everyday processes (e.g. manifacturing) and improving life quality (e.g. healthcare and smart cities).
+Besides, our capacity for collecting data is expanding dramatically, and yet, our ability to timely manage, manipulate, and analyze this data to transform it into information and act upon it has not kept the pace \cite{computing-in-continuum}. Data sources and their volumes of generation are growing exponentially and have outpaced the Internet ability to transport this data in a reliable and timely manner to the cloud. IoT applications might require very short response time, involve private data, and produce a large quantity of data which could be a heavy load for networks. Cloud computing and the Internet infrastructure is not capable enough to support these applications and their exploding multitude.
 
-It is also a natural consequence that, in edge networks, computational capabilities are gradually being introduced. New approaches that combine distributed services close to the data sources (i.e. edge nodes) with resources in the cloud and along the data path can be effective in processing this data. Depending on the use case and service level requirements, IoT devices may require processing and storage locally, in the cloud or somewhere in between (fog).
+In the vision of this thesis, the future holds us an information-rich pervasive computational continuum that seamlessly combine this data and computing power to model, manage, control and make use of virtually any realizable sub-system of interest \cite{computing-in-continuum}. Use cases exist in diverse application areas from managing extreme events (e.g. environmental monitoring) to optimizing everyday processes (e.g. manifacturing) and improving life quality (e.g. healthcare and smart cities).
 
-This trend paves the way for novel and ubiquitous services in a wide range of application domains. As a matter of fact, Haller et al. \cite{iot-enterprise} define the IoT as "a world where physical objects are seamlessly integrated into the information network, and where the physical objects can become active participants in business processes. Services are available to interact with these 'smart objects' over the Internet, query their state and any information associated with them, taking into account security and privacy issues."
+A natural consequence of this vision is that, in edge networks, computational capabilities are gradually being introduced during the recent years. New approaches that combine distributed services close to the data sources (i.e. edge nodes) with resources in the cloud and along the data path can constitute a computing continuum and be effective in processing this data. Depending on the use case and service level requirements (SLR), user applications may require processing and storage locally, in the cloud or somewhere in the between (fog).
 
-This thesis proposes a vision which follows naturally from the previous premises - the \textbf{Continuum of Computing} - a fluid ecosystem where distributed resources and services are aggregated on-demand to support emerging services.
+This trend paves the way for novel and ubiquitous services in a wide range of application domains. To cite Haller et al. \cite{iot-enterprise}, this thesis believes that we are close to "a world where physical objects are seamlessly integrated into the information network, and where the physical objects can become active participants in business processes. Services are available to interact with these 'smart objects' over the Internet, query their state and any information associated with them, taking into account security and privacy issues."
 
-In the vision of this thesis, there will be service platforms and a multitude of services available over the Internet. The granularity of these services will be very different, ranging from high-level business services to low-level sensor services provided by the Internet of Things. Edge services are emerging close to the data sources to provide non-trivial data processing capabilities.
+This thesis proposes a vision which follows naturally from the previous premises - the \textbf{continuum of computing} - a  ubiquitous system where distributed resources and services on the whole computing continuum are dynamically aggregated on-demand to support different ranging services.
 
-It is fundamental that services are treated as first-class citizens, allowing services to be dynamically placed by decoupling them from their location. The Continuum must also facilitate the elastic provisioning of virtualized end-to-end service delivery infrastructures, in which leased (virtual) capabilities are dynamically configured and scaled as a function of user demand and service requirements.
+In the vision of this thesis, there will be pervasive service platforms anywhere the user is and a multitude of services available over the Internet. The granularity of these services will be very different, ranging from high-level business services to low-level sensor services provided by the Internet of Things.
 
-This vision goes beyond the traditional elasticity of clouds, since in addition to computational, network and storage resources, the managed capabilities also include end-to-end network configuration and high-level service and device functionalities.
+It is fundamental that services are treated as first-class citizens, allowing services to be dynamically placed by decoupling them from their location. The continuum must also facilitate the elastic provisioning of virtualized end-to-end service delivery infrastructures, in which virtual capabilities are leased, dynamically configured and scaled as a function of user demand and service requirements. The continuum must have as a fluid, which continuously adapts its shapes to fit the surroundings, as first described in \cite{fluid-internet}.
+
+This vision goes however beyond the traditional elasticity of clouds, since in addition to computational, network and storage resources, the managed capabilities also include end-to-end network configuration and high-level service and device functionalities.
+
+The notion of "the continuum of computing" is not completely novel and has been anticipated before. The authors of \cite{fluid-internet} envision a Fluid Internet, which "seamlessly provisions virtualized infrastructure capabilities, adapting the delivery substrate to the dynamic requirements of services and users, much like a fluid adapting to fit its surroundings". \cite{computing-in-continuum} also presents the notion of computing in the continuum, that is "realizing a fluid ecosystem where distributed resources and services are programmatically aggregated on-demand to support emerging data-driven application workflows". Authors of \cite{harnessing-continuum} also present the continuum of computing and seek to develop approaches that include the entire computing continuum as a collective whole.
+
+Both cloud computing and IoT topics gained popularity in the last decade, and the number of papers dealing with Cloud and IoT separately has been showing an increasing trend since 2008. More recent works like \cite{cloud-iot} focus on the integration of the Cloud and IoT, but keeping the two as distinct spaces where the latter sends data and offloads computation to the former. Only the few pubblications mentioned in the previous paragraph foresee a continuum of computing encompassing the whole Internet as substrate for ubiquitous services.
+
+The remaining parts of this paper are organized as follows. Section \ref{sec:challenges} discusses the present trends which lead to the continuum and presents the challenges of this vision. Section \ref{sec:technicals} shows the problem space addresses by this thesis and the technology baseline. Section \ref{sec:evaluation} contains the evaluation of the architecture presented in the preceding section and, lastly, the thesis concludes in Section \ref{sec:conclusion} with the final remarks.
 
 \section{The problem statement}
 \label{sec:challenges}
 
-In the past decade and now more than ever, cloud computing has been providing users with the potential to perform computing tasks utilizing resource physically distant to them. A popular definition of cloud computing is defined in \cite{cloud-def} as "a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction."
+In the past decade and now more than ever, cloud computing has been providing users with the potential to perform computing tasks utilizing resource physically distant to them. A popular definition of cloud computing \cite{cloud-def} is "a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction."
 
-Conventional single provider infrastructures hosting cloud services on data centers offer undoubtedly a lot of benefits but also hide many challenges. A large data center’s energy consumption is high just to keep it operational and like any other centralized computing model, in case of a failure the resulting issues would be adverse.
+The successful cloud architecture can be split into four layers: datacenter (hardware), infrastructure, platform, and application \cite{cloud-computing}. Each of them can be seen as a service for the layer above and as a consumer for the layer below. This results in mainly three types of service: Software as a Service (SaaS), Platform as a Service (PaaS), and Infrastructure as a Service (IaaS).
 
-Another issue is that required data may have to be transferred and stored to separate places, rather than the source, because data centers are often geographically distant from the application users, especially when the data is generated at edge locations geographically distant from the data center. However, exchange of sensitive or personal data is considered critical for applications.
+Conventional single provider infrastructures hosting cloud services offer undoubtedly a lot of benefits but not without challenges. A large data center’s energy consumption is high just to keep it operational and like any other centralized computing model, in case of a failure the resulting issues would be adverse.
 
-Moreover, the evolution of the Internet of Things has had a significant impact on cloud computing generally and stretching the limitations of conventional cloud architecture. The number of connected devices is increasing exponentially with estimations of dozens of billions of "things" going live in coming years (Gartner 2017).
+Another issue is that required data have to be transferred and stored to separate places from the source, because data centers are often geographically distant from the application users, especially when the data is generated at edge locations. However, exchange of sensitive or personal data is considered critical and private for applications.
 
-As a consequence of connecting these sensors to the Internet, large volumes of data are being generated in unprecedented volumes, variety and velocity. This data is currently transferred and stored in the cloud in a centralized manner. Data transfer, especially in these volumes, is extremely expensive and retards computational performance. The result is that an enormous amount of data needs to be transmitted over the network, stored and/or processed by the receivers in an efficient way.
+Besides, the evolution of the Internet of Things is having a significant impact on cloud computing generally and it's stretching the limitations of the latter. The number of connected devices is increasing exponentially with estimations of dozens of billions of "things" going live in coming years \cite{gartner-iot}.
 
-It becomes thus obvious that traditional methods of data processing where all data is collected and processed in a central instance will not suffice. A more decentralized solution is required where data processing could take place before transfer and storage. The key is to reduce the number of messages and the amount of data transmitted throughout all the layers of the system; to that end data should be evaluated locally and only where it makes sense.
+As a consequence of connecting these sensors to the Internet, large volumes of data are being generated at unprecedented volumes, variety and velocity. This data is currently transferred and stored in the cloud in a centralized manner. Data transfer, especially in these volumes, is extremely expensive and retards computational performance.
 
-With these premises, this thesis visions bringing the cloud computing definition to the Internet of Things and the network along the data path (fog). The rational is two-fold. First, it offers virtually unlimited capabilities regarding storage, memory and processing units that augment IoT devices and components with limited computation capabilities due to construction factors.
+It becomes thus obvious that traditional methods of data processing where all data is collected and processed in a central instance will not suffice. A more decentralized solution is required where data processing could take place before transfer and storage. The key is to reduce the number of messages and the amount of data transmitted throughout the continuum so that data should be evaluated locally or only where it makes sense.
 
-Second, scaling fog/edge infrastructure is costly and time-consuming at least as much as in cloud infrastructure, as it is difficult to predict capacity needs in advance. Underprovisioning means potentially losing business while overprovisioning means wasting money on unused infrastructure. Moreover, user demand is often very spiky, meaning that companies traditionally needed to provision for anomalous peaks like gatherings and events, investing in significant infrastructure that sits underutilized most of the time. This also has an environmental cost when underutilized infrastructure consumes significant amounts of power.
+With these premises, in the vision of this thesis, we shall apply the aforementioned cloud computing definition to the Internet of Things and the network along the data path (fog and edge). The rational is two-fold. First, it offers on-demand virtual capabilities regarding storage, memory and processing units that augment IoT devices and components with limited computation capabilities due to build factors. Note however that fog and edge nodes cannot scale "infinitely" as the cloud data centers.
 
-This thesis identifies the following significant challenges for the Continuum:
+Second, scaling fog and edge infrastructure is costly and time-consuming even more as in cloud infrastructure, due to additional factors such as heterogeneity, network unreliability and difficulty to predict capacity needs in advance. Underprovisioning means potentially losing business while overprovisioning means wasting money on unused infrastructure.  Moreover, user demand at the edge can be very often spiky, meaning that companies would need to provision for anomalous peaks like gatherings and events, investing in significant infrastructure that sits underutilized most of the time. This also has an environmental cost when underutilized infrastructure consumes significant amounts of power.
 
-\begin{enumerate}
-    \item \emph{Heterogeneity}: the heterogeneity of the connected devices is immense and can be discrete in many levels, such as computing performance, storage and network requirements, communication protocols, energy consumption amongst others
-    \item \emph{Portability}: how do we program applications to run in such dynamic environment?
-    \item \emph{Interoperability}: applications on a platform should be able to amalgamate services and infrastructure from another platform;
-    \item \emph{Security and Privacy}: personal and sensitive user data are subjected to high risk while many users access public and ad-hoc clouds. In some instances, personal data may have to be stored closer to the users/devices in order to facilitate computing and processing on the edge or fog layer. TODO: Homomorphic encryption?
-    \item \emph{Mobility}: efficient migration of each application and service has to be supported from platform to platform and follow the users’ movements in the network.
-    \item \emph{Reliability}: establishment of real-time communication between objects and applications with high connectivity and availability must be supported
-    \item \emph{Service orientation}: consumers should only be concerned with what they want to do and accomplish, and providers with how that could be done and provided to the user.
-    \item \emph{Orchestration}: advanced orchestration systems are required to support the resource management of heterogeneous devices and adapted to many applications running on the IoT connected devices. Ss their numbers increase, so do their requirements accordingly, making it more complex and far more difficult to cope with.
-    \item \emph{Virtualization—the}: potential to provision resources and provide access to heterogeneous resources and hardware such as GPUs, FPGAs, etc.
-\end{enumerate}
+The cloud computing model applied to the fog and edge as services is attractive since it allows businesses to decrease the required capital expenditure (CAPEX) and frees them from the need to invest in the infrastructure. Businesses can rent resources according to their needs and only paying for the usage \cite{cloud-iot}. Moreover, it allows to decrease operating costs (OPEX), as service providers do not have to provision capacities according to maximum peak load. In fact, resources are released when service demand is low.
 
-The following subsections will further explore some of the stated problems.
+On the other hand, the cloud can benefit from the fog and edge by extending its scope to deal with real world things in a more distributed and dynamic manner, and for delivering new services in a large number of real life scenarios. This will impact future application development, where this new flow of information gathering, processing, and transmission will generate new challenges.
 
 \subsection{Decentralization}
 
-A highly distributed network is the most effective architecture for the Continuum, particularly as services becomes more complex and more bandwidth hungry. Although often referred to as a single entity, the Internet is actually composed of thousands of different networks. This means that content generated at the edge must travel over multiple networks to reach its centrally-hosted data center.
+As stated before, highly distributed network is the most effective architecture for the Continuum, particularly as services becomes more complex and more bandwidth hungry. Although often referred to as a single entity, the Internet is actually composed of thousands of different networks. This means that content generated at the edge must travel over multiple networks to reach its centrally-hosted data center.
 
 Unfortunately, inter-network data communication is neither an efficient nor reliable operation and can be adversely affected by a number of factors.
 
-Capacity at peering points where networks exchange traffic typically lags demand, due in large part to the economic structure of the Internet \cite{akamai}. Money flows in at the first mile (cloud data centers) and at the last mile (end users), spurring investment in first and last mile infrastructure. However, there is little economic incentive for networks to invest in the middle mile—the high-cost, zerorevenue peering points where networks are forced to cooperate with competing entities. These peering points thus become bottlenecks that cause packet loss and increase latency.
+Capacity at peering points where networks exchange traffic typically lags demand, due in large part to the economic structure of the Internet \cite{akamai}. The economic incentive flows in at the first mile (cloud data centers) and at the last mile (IoT), with however very little interest to invest in the middle network composed by peering points. These points become thus the cause for packet loss and increase latency.
 
-Across the Internet, outages are happening all the time, caused by a wide variety of reasons such as cable cuts, misconfigured routers, DDoS attacks, power outages, even earthquakes and other natural disasters. While failures vary in scope, large-scale occurrences are not uncommon \cite{aws-outage}.
+Across the Internet, outages are happening all the time, caused by a wide variety of reasons such as cable cuts, misconfigured routers, DDoS attacks, power outages, or even earthquakes and other natural disasters. While failures vary in scope, large-scale occurrences are not uncommon \cite{aws-outage}.
 
-At scale at which the Internet is growing, it is no longer sufficient to simply have enough server and network bandwidth resources. One must consider the throughput of the entire path from IoT devices to servers to end users. The bottleneck is no longer likely to be at just the far ends of the path. It could be at a peering point or an ISP’s upstream connectivity, or it could be due to the network latency between server and device. 
+When dealing with an pervasive system such as the continuum, it is therefore no longer sufficient to simply have enough server and network bandwidth resources. One must consider the throughput of the entire path from IoT devices to data centers to end users. The bottleneck is not likely to be at just the far ends of the path. It could be at a peering point as mentioned, or it could be due to the network latency between server and device. 
 
-A fog and edge-based platform, with servers in thousands of locations, can achieve the scale needed with each location supporting higher orders of throughput.
+Autonomous vehicle are a great example of these issues. One Gigabyte data will be generated by the car every second and it requires real-time processing for the vehicle to make correct decisions \cite{edge-computing-vision-challenges}. A network bandwidth and reliability can be easily challenged for its capability of supporting a large number of vehicles in one area. Moreover, if all the data were to be sent to the cloud for processing, the response time would be too long. In such cases, the data needs to be processed at the edge for shorter response time, more efficient processing and smaller network pressure.
 
-For these reasons, alternate models such as fog computing and edge computing have emerged in the recent years.
+Secondly, in many other cases, most of the end nodes in IoT (e.g. sensors and actuators) are energy constrained things so offloading some computing tasks to the edge could be more energy efficient. Even end end mobile phones benefit greatly from reduced energy consumption, especially for tasks like Mobile Augmented Reality \cite{mobile-augmented-reality}.
+
+For these reasons, alternate models such as fog computing and edge computing have emerged in the recent years. A fog and edge-based platform, with servers anywhere the end device is, can achieve the scale needed with each location supporting higher orders of throughput, low response times and higher energy efficiency.
+
+However, the nearest physical layer may not always be a good option. If the task requires long computation, as in the case of big-data analysis, it will be better to offload to the more distant but capable node, or even the cloud. The latency of a request is the sum of two components: the computing latency and the transmission latency. A high computing latency can outweight the transmission efficiency. Therefore, the wish for edge computing is to determine the ideal trade-off between computing latency and transmission latency leveraring the whole continuum.
+
+Similar attention must be dedicated to the energy issue. Battery is the most precious resource for things at the edge of the network, but the wireless communication module is usually very energy hungry \cite{edge-computing-vision-challenges}. For a given workload, is it not always the case that the most energy efficient solution is to offload the whole workload to the edge rather than compute locally. The key is the tradeoff between the computation energy consumption and transmission energy consumption. Disburdening to another node is preferable only if the latte overhead is smaller than computing locally.
+
+It shall be clear by now that the vision of a computing continuum is not that one form of computing (e.g. edge computing) will supplant another (e.g. cloud computing), but that we must try harnessing the entire computing space. Some trending computing models relevant for the aforementioned decentralization are not presented.
 
 \subsubsection{Fog Computing}
 
-Fog computing is a decentralized computing infrastructure which is used particularly as a complement to cloud computing. It leverages the compute resources at the edge network and brings the computational processing closer to the data source by offloading workload to edge nodes from cloud data centers. The network nodes near the edge providing these resources are called fog nodes. Overall, any device with computing, storage and network connectivity can constitute a fog node, for example switches and routers, industrial controllers, embedded servers and video surveillance cameras.
+Fog computing \cite{fog-computing} is a decentralized computing infrastructure which is used particularly as a complement to cloud computing. It leverages the compute resources at the edge network and brings the computational processing closer to the data source by offloading workload to edge nodes from cloud data centers. The network nodes near the edge providing these resources are called fog nodes.
 
-Its first level usually lays a single hop away from the edge and is an extension of edge computing.
+Overall, any device with computing, storage and network connectivity can constitute a fog node, such as switches and routers, industrial controllers, embedded servers and video surveillance cameras \cite{camera-virtualisation}.
+
+It's first usually a single hop away from the edge and is an extension of edge computing. The Cloudlet \cite{cloudlet} architecture is one of the first approaches that offer an example of fog computing with virtual machine (VM) techniques. Its computing power is much less than a conventional cloud infrastructure as cloudlets are composed of less powerful processors and are significantly smaller in size.
 
 \subsubsection{Mobile Edge Computing}
 
-Mobile Edge Computing, also referred to as just edge computing, takes place only on the edge of the network. Processing is executed closer to the data source and eliminates the costly data transfer to a remote data center or cloud. This significantly improves user Quality of Service (QoS) as, similar to fog computing, there is considerable network latency reduction and bandwidth consumption by the mobile subscribers.
+Edge computing \cite{edge-computing-vision-challenges} is any computing and network resource that takes place only on the edge of the network. The rationale of edge computing is that computing should happen at the proximity of data sources, eliminating the costly data transfer to a remote data center. This significantly improves user Quality of Service (QoS) as, similar to fog computing, there is considerable network latency reduction and bandwidth consumption by the end users.
+
+When the end users are mobile devices, edge computing is also referred as mobile edge computing (MEC). In contrast to the broader term edge computing, MEC focuses on co-locating computing and storage resources at base stations of cellular networks. Being co-located at base stations, computing and storage resources of MEC servers are available in close proximity to mobile users like smartphones and smart vehicles and can support mobility between cellular cells. MEC is seen as a promising approach to increase the quality of experience in cellular networks and a natural direction for the evolution to 5G networks \cite{nfv-5g}.
 
 \subsubsection{Serverless Computing}
 
-Serverless Computing involves building, running and providing applications and services without taking into consideration the server side. "Serverless" does not mean that there is no server usage but rather the main focus is on the application itself rather than what happens on the physical infrastructure.
+Serverless Computing \cite{serverless-berkeley} involves building, running and providing applications and services without taking into consideration the server side. "Serverless" does not mean that there is no server usage but rather the main focus is on the application itself rather than what happens on the physical infrastructure.
 
-Serverless Computing is synonymous with Function-as-a-Service (FaaS) and event-based programming as the execution of an application will be executed only when necessary and not all the time, thus meaning that an event can trigger the execution of a function or more than one function concurrently.
+Serverless Computing is synonymous with Function-as-a-Service (FaaS) and event-based programming as the execution of an application will be executed only when necessary and not all the time, thus meaning that an event can trigger the execution of a function. In particular, FaaS triggers a server only when a function is requested, executes the expected operations and then terminates. The major advantages of this model are increased scalability and infrastructure independency of the applications and lower costs.
 
-Although serverless computing is a trend generated in cloud computing per se, it can prove useful for many edge computing use cases.
+Recently, there is AWS Lambda@Edge, that allows using serverless functions at the AWS edge location in response to CDN event to apply moderate computations. \textcolor{blue}{TODO}
 
-\subsection{Service orientation}
+Recent works in literature have shown the advantages of the approach for edge computing. The authors of \cite{serverless-mec} show an augmented reality use case for Mobile Edge Computing, in which computation and data intensive tasks are offloaded from the devices to serverless functions at the edge, outperforming the cloud alternative up to 80\% in terms of throughput and latency.
 
-This thesis visions service oriented paradigms as necessary for organizing and utilizing distributed capabilities that may be under the control of different ownership domains. A Service Oriented Architecture (SOA) provides "a uniform means to offer, discover, interact with and use capabilities to produce desired effects consistent with measurable preconditions and expectations" \cite{oasis}. According to this model, the major components of a basic SOA and their possible interactions are: a service provider publishes his service interface via a service registry where a service requester/consumer can find it and subsequently may bind to the service provider \cite{iot-enterprise}. The central concept of the SOA reference model is the existence of services which provide access to capabilities by well-defined interfaces to be exercised following a service contract with constraints and policies. This enables a loose coupling of services (thereby minimizing mutual dependencies). Services are provided by entities, the service provider, and are to be used by others, the service consumers. Services may be composed on the basis of other, existing services, thereby adhering to the principle of reuse. They are autonomous in the sense that they solely control the logic they encapsulate, uniformly described and publicly retrievable via certain discovery mechanisms. 
+\subsection{Challenges}
 
-However, to enable the seamless and agile interoperation of smart items in the Internet of Things, a number of challenges still exist with respect to the organization and implementation of services.
+Having discussed the trend towards a decentralized interconnected continuum, this section presents the challenges imposed by such system. As an example, the heterogeneity of the connected devices is immense and can be seen from different perspectives, such as computing performance, storage and network requirements, communication protocols, energy consumption to name a few. Such diversity poses questions about how to deal with the virtualisation of the underlying resources and the interoperability of the nodes.
 
-First of all, the lack of comprehensive, trustworthy and widely accepted service intermediaries in the Internet of today still prevents the establishment of a Continuum as described above. Service providers are necessary for improved navigation by facilitating the efficient retrieval of services which match a given user need, service performance transparency through permanent monitoring of service quality and availability, and governance, i.e., controlling and enforcing the delivery of service levels as defined in Service-Level Agreements (SLA).
+In order to achieve the continuum, this thesis identifies the following challenges as the most significant. 
+\label{challenges}
 
-Secondly, the lack of means for composing diverse services towards higher-order services meeting actual user demands imposes additional challenges to the emergence of the Continuum of Computing. The lack of interoperation prevents web services from being set up quickly and easily. Cloud providers and their respective systems adhere to different conventions with respect to interfaces and communication protocols. For this reason, the information objects which need to be exchanged between services are virtually guaranteed to have inconsistency in both syntax and semantics. A major effort will be required to uniformly provide meaning of services and their input as well as output objects in a comprehensible way. Semantically organized services are believed to improve retrievability and seamless composability significantly.
+\begin{enumerate}
+    \item \emph{Service orientation}: as stated in the introduction of this thesis, services must be treated as first-class citizens, allowing them to be dynamically placed and decoupling them from their location. Consumers should only be concerned with what they want to do and accomplish and providers with how that could be done and provided to the user;
+    \item \emph{Orchestration}: advanced orchestration systems are required to support the resource management of heterogeneous devices and be adapted to many applications running on the edge connected devices;
+    \item \emph{Virtualisation}: the system have to provision resources and provide access to heterogeneous IoT resources and hardware such as GPUs, FPGAs, etc. Besides, today's common practice in cloud assume enumerated resources and predictable computing capabilities. However, in the continuum, the capabilities and numbers of components change dramatically over time;
+    \item \emph{Interoperability}: applications on a continuum should be able to seamlessly amalgamate services and infrastructure from different locations. Every nodes on the Internet should also expose an uniform interface to its resources and services;
+    \item \emph{Portability and Programmability}: developers should be provided the languages and tools to program applications and services to run in such dynamic environment without having to reinvent themselves;
+    \item \emph{Mobility}: efficient migration of each application and service has to be supported from platform to platform and to follow the users’ movements in the network (roaming).
+    \item \emph{Reliability}: services in the continuum could fail due to various reasons, notably at the edge. The establishment of reliable communication between nodes must be supported;
+    \item \emph{Security and Privacy}: personal and sensitive user data are subjected to high risk while many users access Internet services from anywhere. Security and privacy matter even more when personal data may have to be stored closer to the users/devices to facilitate computing and processing on the edge or fog layer;
+    \item \emph{Context awareness}: services need to be aware of different aspects of the environment they are acting in, whereas today's services are rarely context-sensitive;
+    \item \emph{Energy efficiency}: obtaining energy efficiency in both data processing and transmission is an important open issue;
+    \item \emph{Storage}: \textcolor{blue}{TODO}
+\end{enumerate}
 
-Thirdly, services in the Internet of today can be considered as mute and autistic. In the Future Internet, services are expected to become more open and reactive to their respective environments particularly in two respects. First, existing service interfaces (e.g., REST-based) are not designed to be interpreted and used by machines but rather by humans. This frequently prevents the systems from easily discovering and interacting with them. Methods are needed to allow to both "put a face" on services and to thus improve user-service interaction and machine-to-machine communication. Second, today's Internet-based services are rarely context-sensitive. However, in order to ..., services need to be aware of different aspects of the environment they are acting in. Context services can provide such information to the application services that implement local control loops and that trigger specific actions. Such context services will be composed of several lower-level services which deliver individual sensor readings.
+\subsubsection{Service orientation}
 
-\subsubsection{History of service-oriented architectures}
+This thesis visions service-oriented paradigms as necessary for organizing and utilizing distributed capabilities that may be under the control of different ownership domains. A Service Oriented Architecture (SOA) provides "a uniform mean to offer, discover, interact with and use capabilities to produce desired effects consistent with measurable preconditions and expectations" \cite{oasis}.
 
-The idea of service-orientation can be partially traced back to the object-oriented programming (OOP) literature \cite{microservices-today}. However, the evolution of objects into services, and the relative comparisons, has to be treated carefully since the first focus on encapsulation and information is hidden in a shared-memory scenario, while the second is built on the idea of independent deployment and message-passing. It is therefore a paradigm shift, where both the paradigms share the common idea of componentization.
+According to this model, the major components of a basic SOA and their possible interactions are constituted by a service provider which publishes his service interface via a service registry where a service requester/consumer can find it and subsequently may bind to the service provider \cite{iot-enterprise}.
 
-The last decade has seen a further shift towards the concept of service first and the natural evolution to microservices afterwards. Service oriented architectures (SOA) have been introduced to harness the complexity of distributed systems and to integrate different software applications. In SOA, a a service offers functionalities to other components, accessible via message passing. Services decouple their interfaces (i.e. how other services access their functionalities) from their implementation.
+The central concept of the SOA reference model is the existence of services which provide access to capabilities by well-defined interfaces to be exercised following a service contract with constraints and policies. This enables a loose coupling of services and minimization of mutual dependencies.
 
-This is in striking contrast to monolithic architectures, where the application is composed of a single program or platform, typically providing a user interface and data access through a database. However, the monolithic architecture starts to pose real challenges and difficulties when growing exponentially because of the application need to scale up.
+Services are provided by the service providers and are to be used by others, the service consumers. Services may be composed on the basis of other, existing services, thereby adhering to the principle of reuse. The are responsible only for the logic and information they encapsulate, uniformly described and publicly retrievable via service discovery mechanisms. This is in net contrast to the practice of today, where we continue to build ad-hoc programs confined in relatively small single nodes, defining individual device computing behaviours \cite{harnessing-continuum}.
 
-Service Oriented Architectures (SOA) are instead build around services, which are built to work in an orchestrated manner to modularize the system. It is more challenging to divide the application in to multiple services, but it enables greater flexibility, extensibility and reusability of existing services for multiple use cases. The benefits of this model are application modularity, service reusability and enhanced security in the (re)building process and development of the application \cite{cloud-to-thing}. A major disadvantage is the complexity in orchestrating all the services, especially when the project is complex and the components are huge.
+However, to enable the seamless and agile interoperation of services in the continuum, a number of challenges still exist with respect to their organization and implementation.
 
-The first generation of SOA architectures defined daunting and nebulous requirements for services (e.g., discoverability and service contracts), and this hindered the adoption of the model. Microservices are the second iteration, introduced as a solution for the gaps in the SOA approach.
+First of all, the lack of neutral, trustworthy and widely accepted service intermediaries in the Internet of today still prevents the establishment of a Continuum as described above. Service intermediaries are necessary for facilitating the efficient retrieval of services which match a given user need and for providing service performance through monitoring of service quality and availability. Unfortunately, so far single cloud providers such as Amazon Web Services, Google Cloud Platform or Microsoft Azure have shown no interest for inter-cooperation.
 
-This approach divides applications into more granular components by distributing them into small independent services. Each service implements and attends to separate business functions and capabilities to maintain independency from other services. They are the mainly deployed in an automated manner, through a container and communicating through Rest APIs \cite{rest}, thus making the impact of programming language insignificant. This allows microservices to be easily deployed in the cloud, offering great reusability and minimal or no centralized management and orchestration.
+Secondly, the lack of means for composing diverse services towards higher-order services meeting actual user demands imposes additional challenges to the emergence of the Continuum of Computing. The lack of interoperation prevents services from being set up quickly and easily. Cloud providers and their respective systems adhere to different conventions with respect to interfaces and communication protocols. For instance, Google Cloud Platform services use Protocol Buffers \cite{protobuf}, which are a Google technology for serializing structured data. For this reason, a major effort will be required to uniformly provide the service semantics and interfaces in a comprehensible way for both humans and machines.
 
-Consumers should only be concerned with what they want to do and accomplish, and providers with how that could be done and provided to the user. A successful interface establishment between those two actors can lead to minimal direct consumer interaction with provider’s infrastructure, thus allowing full control to the provider.
+On this latter matter, services in the Internet of today can be considered as mute and dull. In the future, services are expected to become more open and reactive to their respective environments, particularly in two respects \cite{iot-enterprise}. Existing service interfaces (e.g., REST-based) are not yet designed to be interpreted and used by machines but rather by humans. This frequently prevents the systems from easily discovering and interacting with them. Methods are needed to allow to both "put a face" on services and to thus improve both user-service interaction and machine-to-machine (M2M) communication. Fortunately, recent efforts in the REST community are trying to compensate the lack of M2M communication \cite{openapi}.
 
-Furthermore, this results in the assumption that various service implementations should already exist and the consumer himself does not have to be an expert and develop them. physical resources provided by the infrastructure should not be consumer-aware and yet there may be several diverse implementations to meet specific service demands.
+\paragraph{Service-oriented architectures}
 
-These implementations can differ in hardware type and could be characterized by different price and performance attributes.
+The idea of service-orientation can be partially traced back to the object-oriented programming (OOP) literature \cite{microservices-today}. However, the evolution of objects into services, and the relative comparisons, has to be treated carefully since the first focus on encapsulation and information is hidden in a shared-memory scenario, while the second is built on the idea of independent deployment and asynchronous communication via well-defined interfaces. It is therefore a paradigm shift, where both the paradigms share the common idea of componentization.
 
-\subsection{Orchestration}
+The last decade has seen a further shift towards the concept of service first and the natural evolution to microservices afterwards. Service oriented architectures (SOA) have been introduced to harness the complexity of distributed systems and to integrate different software applications. In SOA, a service offers functionalities to other components, accessible via message passing. Services decouple their interfaces (how other services access their functionalities) from their implementation.
 
-Orchestration can also be defined as the use of programming technology to manage the interconnections and interactions among workloads on distributed edge-cloud infrastructure. This is accomplished through three main attributes of orchestration, which are closely related: service orchestration, workload orchestration, and resource orchestration. 
+This is in striking contrast to monolithic architectures, where the application is composed of a single program, typically providing a user interface and data access through a database. However, the monolithic architecture poses real challenges and difficulties when growing exponentially because of the application need to scale up.
 
-Continuum orchestration is a crucial feature for many IT organisations and DevOps adopters as a way to speed the delivery of services, simplify optimisation, and reduce costs (Nygren et al. 2010). A cloud orchestrator automates the management, coordination, and organisation of distributed computer systems, services. 
+Service Oriented Architectures (SOA) are instead built around services, which are designed to work in an orchestrated manner to modularize the system. It is more challenging to divide the application into multiple services, but it enables greater flexibility, extensibility and reusability of existing services for multiple use cases. The benefits of this model are application modularity and service reusability \cite{cloud-to-thing}, which are all very important to a successful continuum of computing. A major disadvantage however is the complexity in orchestrating and monitoring all the services, especially when the project is complex and the components are huge.
 
-The orchestration of virtualised environments is challenging due to the scale, heterogeneity, and diversity of resource types and the uncertainties of the underlying cloud environment. The uncertainties arise from a number of factors including resource capacity demand (e.g. bandwidth and memory), failures (e.g. failure of a network link), user access pattern (e.g. number of users and location) and lifecycle activities of applications. Cloud resource orchestration is challenging because applications are composed of multiple, heterogeneous software and hardware resources, which may have integration and interoperation dependencies.
+The first generation of SOA architectures defined daunting and nebulous requirements for services (e.g., discoverability and service contracts) \cite{microservices-today}, and this hindered the adoption of the model. Microservices are the second iteration, introduced as a solution for the gaps in the SOA approach.
 
-The orchestration and management of a cloud-to-thing architecture is mostly realised through virtualisation. As discussed in Chap. 2, the evolution of virtualisation has moved away from virtual machines towards more lightweight solutions such as containers. This is specifically relevant for application packaging at a software platform and application level. Different application packages such as containers have been proposed to cluster Cloud-to-Edge and solutions such as Docker container and Kubernetes architectures. Yet, there is still a need for a topology specification and a derived orchestration plan for cloud edge computing.
+The microservices approach divides applications into more granular components by distributing them into small self-contained services. Each service implements and attends to separate business functions and capabilities to maintain independence from other services. They are mainly deployed in an automated manner, through a container (more on that in §\ref{sec:virtualisation}) and communicating through REST APIs \cite{rest}, thus making the impact of programming language insignificant. This allows microservices to be easily deployed in the cloud, offering great reusability.
 
-\subsection{Virtualization}
+In terms of the continuum, the \emph{as-a-service} model allows consumers to be only concerned with what they want to do and accomplish, and providers with how that could be done and provided to the user. A successful interface establishment between those two actors can lead to minimal direct consumer interaction with provider’s infrastructure, thus allowing full control to the provider and no cost of ownership for the consumer.
 
-In addition to architecture modeling, different approaches have emerged regarding service modeling. In addition to conventional SaaS, IaaS, PaaS models, a new approach in virtualization is bare metal or native virtualization (Scarfone et al. 2011). Here, the hypervisor can run directly on the underlying hardware of the provider without a host operating system. Bare metal offers more security, providing that the hypervisor itself is well-secured. As the hypervisor is placed directly over the hardware, there is no host OS thus it cannot be harmed. This model is mostly used for servers in the cloud. Nevertheless, the hardware provided is limited so that a hypervisor does not consume the total available resources.
+Furthermore, this results in a system where various service implementations should already exist, maybe provided in the same fashion as service marketplace (e.g. Shopify App Store \cite{shopify}), and the consumer himself does not have to be an expert and develop them. Even the physical resources provided by the infrastructure should not be consumer-aware and there may be several diverse implementations to meet specific service demands. These implementations can differ in hardware type and could be characterized by different price and performance attributes.
 
-Hosted Virtualization is where the hypervisor runs over the host OS. The difference between hosted virtualization and bare metal is that the hypervisor is provided with more virtual resources but, on the other hand, the potential to harm the host OS is significantly increased.
+\paragraph{Web services}
 
-Function as a Service (FaaS) is synonymous with serverless computing. Basically, FaaS enhances the microservices model development. During the development process, server operations are not taken into account, as services are hosted externally. Compared to conventional cloud models, where at least one server is utilized, FaaS triggers a server only when a function is conducted, executes the expected operations and then terminates. The major advantages of this model are increased scalability and independency of the applications and lower costs. As costs are based only on per used functionality, expenses from inactive resources are eliminated. A major disadvantage is the reduced transparency as FaaS is managed externally.
+\textcolor{blue}{TODO}
 
-\section{Technicals}
+\subsubsection{Orchestration}
+
+Orchestration can be defined as the use of programming technology to manage the interconnections and interactions among workloads on distributed edge-cloud infrastructure \cite{cloud-to-thing}. This is accomplished through three main attributes of orchestration, which are closely related: service orchestration, workload orchestration, and resource orchestration. 
+
+Orchestration in the continuum will be a crucial feature for many IT organisations and DevOps adopters as a way to speed the delivery of services, simplify optimisation, and reduce costs \cite{akamai}. However, the orchestration of virtualised environments is challenging due to the scale, heterogeneity, and diversity of resource types and the uncertainties of the underlying environments. The uncertainties arise from a number of factors including resource capacity demand (e.g. bandwidth and memory), failures (e.g. failure of a network link), user access pattern (e.g. number of users and location) and lifecycle activities of applications.
+
+A key enabler to the orchestration and management of a continuum architecture is the virtualisation, further presented in the next subsection. The evolution of virtualisation has moved away from virtual machines towards more lightweight solutions such as containers. This is specifically relevant for software packaging at application and service level. Different application packages such as containers and orchestration solutions such as Docker container and Kubernetes architectures \cite{lxc-docker-k8s} have been proposed to for the edge computing \cite{camera-virtualisation}. Yet, there is still a need for a topology specification and a derived orchestration plan for the continuum of computing.
+
+\textcolor{blue}{TODO}
+
+\subsubsection{Virtualisation}
+\label{sec:virtualisation}
+
+\textcolor{blue}{TODO}
+
+Compared to VM, the OS-level virtualisation provided by containers offers resource isolation in a much lower cost. Adoption of container technique leads to a platform where the end user can deploy services and applications on edge computing platform on heterogeneous devices with minimal efforts. Containers provide resource isolation, self-contained packaging, anywhere deployment, and easiness of orchestration.
+
+Several works like \cite{lavea} combine container technology along with the serverless computing model to enable end user the need to only register events of interest and provide corresponding handler functions to the system, which automatically handle the events behind the scene.
+
+Virtualisation for IoT devices has also another facet rarely discussed, to the best of this thesis' knowledge. Existing edge systems fail to promptly recognize the environmental context changes under which IoT nodes are subject to, which are often critical to many applications like video analysis \cite{camera-virtualisation}. This is because the service controller can only validate the usefulness of the data (e.g. video frame) after they are received from the devices. The latter will continue to perform poorly (or even uselessly) until the controller makes adjustments.
+
+Virtualisation on constrained devices would allow to dynamically adapt to environmental context changes based on the application requirements by running pre-processing on the node itself. The experimental results in \cite{camera-virtualisation} show that virtualisation of multiple IoT cameras to serve applications and reconfigure the cameras can significantly enhance performance in terms of object detection accuracy, computational cost, and response time.
+
+\subsubsection{Interoperability}
+
+For connecting and integrating all the things into the continuum, there are and will be many different technologies. In embedded systems standards are in place or standardisation efforts are underway. For example, ZigBee, 6LoWPAN, MQTT and CoAP \cite{mqtt-coap-amqp-http} are gaining popularity in the wireless sensor networking area, and OPC \cite{rest-opc} is well accepted in factory automation. However, the technologies are too different to expect any standard to be able to cover them all.
+
+For all these reasons, it is clear that we will have to deal with heterogeneity when building the edge infrastructures of the continuum. Standards are surely helpful, but will be hardly achieved. What is asked for here is interoperability. The key is to separate the functionality from its technical implementation. Service oriented architectures are ideally suited for this, since they encapsulate functionality in services with a common interface, abstracting from the underlying hardware and protocols. \textcolor{blue}{TODO}
+
+Having infrastructures that allow connecting and integrating a diverse set of technologies is not just a "necessary evil", but rather a strength, since it offers two key benefits. First, it allows applying different solutions to different applications. Depending on the application requirements, the best-fitting technology can be used.
+
+Secondly, an infrastructure where diverse technologies can easily be integrated into will be future-proof. Especially in the area of edge computing and IoT, the technical developments are not complete and we can expect that new technologies, protocols and standards will arise. An infrastructure built with technology diversity in mind will allows these to be interoperable with existing and already deployed devices and networks.
+
+With that said, cloud platforms heterogeneity is also a non-negligible concern. Cloud services typically come with proprietary interfaces, causing resource integration to be properly customized based on the specific providers. This issue can be exacerbated when users when services in the continuum can depend on multiple providers in order to provide the necessary resources an application may require or to improve application performance and resilience \cite{cloud-iot}.
+
+Both cloud and IoT services and applications have typically been conceived as isolated vertical solutions, in which all system components are tightly coupled to the specific application context or the cloud provider. By applying the cloud service delivery models, the IoT should instead ease service delivery without any vendor lock-in.
+
+This challenge involves thus several aspects, where solutions need to be being investigated in terms of unifying cloud providers \cite{inter-cloud}, interoperable programming interfaces, and means for copying with data diversity.
+
+\textcolor{blue}{TODO: data-diversity}
+
+\subsubsection{Portability and Programmability}
+
+In cloud computing, users program their code and deploy them on the cloud. The cloud provider is in charge to decide where the computing is conducted in a cloud. Users have only partial knowledge of how the application runs. This is one of the benefits of cloud computing: the infrastructure is transparent to the user. Usually, the program is written in the programming language the developer is most familiar with between the supported ones (e.g. JavaScript, Java, Python, .NET) and compiled for a certain target platform, since the program only runs in the cloud.
+
+However, in the edge computing and thus in the continuum, the nodes have diverse platforms. Mobile devices may have Android and iOS operative systems, edge nodes are likely to have different Linux distributions or versions of the same distribution. Embedded devices lacks of any operative system feature such as file system or the notion of processes. Even the different CPU architectures (x86, ARM32, ARM64) give programmers a hard time compiling for the different platforms. For all these reasons, the runtime of the nodes differ from each other, and the programmers face huge difficulties to write a service/application that may be deployed in the continuum paradigm.
+
+To address the programmability in the context of edge computing, \cite{edge-computing-vision-challenges} proposes the concept of computing stream that is defined as a serial of functions applied on the data along the data propagation path. Likewise, \cite{harnessing-continuum} proposes to program the continuum so that new algorithms and deep learning models can be pushed to appropriate locations (i.e., edge, fog, cloud, and/or HPC computing resources) using a simple FaaS abstraction.
+
+Serverless architecture naturally solves two important problems for portability and programmability \cite{lavea}. First, the serverless programming model greatly reduces the burden on users or developers in developing, deploying and managing applications, as there is no need to understand the complex underlying procedures and distributed system to run the applications. Second, the functions are flexible to run on either edge or cloud, which achieves the desired portability.
+
+However, in this thesis's view, the serverless computing model is able to satisfy only a limited subset of services, notably those with event-driven nature and request-reply nature. Continuum application/services are however comprised of both context-aware control loops and servers triggered by specific actions. The FaaS model can answer only the demand for the latter case. There is thus space for serverless computing at the edge, but a more general-purpose baseline has to be laid first of all.
+
+\textcolor{blue}{TODO: Dynamic System Updates and Dynamic configuration}
+
+\textcolor{blue}{TODO: OCI Images}
+
+\subsubsection{Mobility}
+
+In the continuum, services can be reallocated to follow the movements of the end users, and the data and state along should also be reallocated. Therefore, the collaboration issues (e.g., synchronization, aforementioned data/state migration, etc.) have to be addressed across multiple layers in the infrastructure.
+
+When mobility is required provisioning of data and services needs also to be performed with high reactivity and reliability. For instance, in the context of smart mobility, vehicles are often on the move and the vehicular networking and communication is often intermittent or unreliable \cite{vehicular-data-cloud}.
+
+Being co-located at base stations, MEC servers are available anywhere the user moves and can support mobility between cellular cells.
+
+\textcolor{blue}{TODO}
+
+\subsubsection{Reliability}
+
+When applications are deployed in resource-constrained environments a number of challenges related to device failure or unreachability exists. Things at the edge of the network could fail due to various reasons and they could also report fail to report data under unreliable condition such as low battery level.
+
+Various new communication protocols for IoT data collection have been proposed in the last years (e.g. CoAP, MQTT, AMPQ) \cite{mqtt-coap-amqp-http}. These protocols serves well for the support of low energy and highly dynamic network condition. However, their connection reliability is not as good as BlueTooth or WiFi. If both sensing data and communication are not reliable, the system must leverage multiple reference data source and historical data record to be provide a reliable service.
+
+\subsubsection{Security and Privacy}
+
+The integration of edge computing, fog computing and cloud computing will raise some new and unforeseen security issues. Unique and unstudied scenarios, such as the interplay of heterogeneous edge nodes, and the migration of services across global and local scales, create the potential for original channels of malicious behavior \cite{edge-computing-survey}.
+
+Similar to the health record data, end user data collected at the edge of the network should be stored at the edge and the user should be able to control if the data should be used by service providers. However, as edge computing stores and processes data at the edge, the privacy-sensitive information associated with end users could be exploited and be more vulnerable than cloud servers.
+
+Moreover, for applications like smart grids or sensor networks, an adversary could report false data, modify the other user data, tamper with their own smart meter, or spoof IP addresses, and further disrupt the effectiveness of sensor management in IoT systems.
+
+\subsubsection{Context awareness}
+
+Today's web services are rarely context-sensitive. However, in order to support context-sensitive services at the edge, they need to be aware of different aspects of the environment they are acting in. Context services can provide such information to the application services that implement local control loops and that trigger specific actions based on context events. Such context services can be composed of lower-level services which deliver individual sensor readings.
+
+On this matter, the MEC architecture provides the advantage of data locality, which lets a given MEC server to store the context data only regarding the devices within the region covered by its base station. Such advantage is two-fold: providing location aware services is easier and less data must be persisted on each MEC server. As an example, MEC servers in \cite{mobile-augmented-reality} can retrieve the features of the points-of-interest in an augmented reality scene, match them against a local database, and return the corresponding data (information about monuments, buildings and other points of interest) to the client application.
+
+\subsubsection{Energy efficiency}
+
+Obtaining energy efficiency in both data processing and transmission is an important open issue. For handling such issue, several directions have been proposed: more efficient data transmission and compression technologies, data caching mechanisms for reusing collected data in time-tolerant applications, middlewares to improve availability and to compress data in case of continuous and long-duration monitoring of data.
+
+\subsubsection{Storage}
+
+The edge is the source of prodigious data, and will become the most important part of big data generation, if it is not already. Thus, massive data amounts need to be uploaded to edge or cloud-based storage. The storage space of edge nodes is limited though, and there is no large-scale and long-lived storage to compare with the cloud computing data centers.
+
+\section{System design}
+\label{sec:technicals}
 
 \subsection{Architecture}
 
-Architecture is what allows systems to evolve and provide a certain level of service throughout their lifecycle. In software engineering, architecture is concerned with providing a bridge between system functionality and requirements for quality attributes that the system has to meet. (TODO: Architecture definition from REST)
+\textcolor{blue}{TODO}
 
-\subsection{Decentralization}
+\subsection{Kubernetes}
 
-To incorporate resources located outside the cloud data centers. Cloudlet \cite{cloudlet} approaches offer a more decentralized computing infrastructure, as they are located closer to the edge of the network, thus minimizing transfer cost and communication latency as they are closer, sometimes a mere single hop, to the users and the generated data. Nevertheless, their computing power is much less than a conventional cloud infrastructure as they are composed of less powerful processors and are significantly smaller in size.
+\textcolor{blue}{TODO}
 
-\subsection{Interoperability}
+\subsection{REST}
 
-A multi-cloud utilizes resources from multiple providers, thus providing the potential to make applications portable, meaning that data from it or even the whole application can migrate from one cloud to another in case of failure or cost-effectiveness
+Stateless: the feasibility of hosting dedicated virtual machines, containers, and stateful applications is limited, as edge nodes cannot scale "infinitely" to host always-running VMs/containers as the cloud itself.
 
-\subsection{Service orientation}
+Most things are connected to the cloud through web based interfaces, which are able to reduce the complexity for developing such applications. However, they are not specifically designed for efficient machine-to-machine communications and introduce overhead in terms of network load, delay, and data processing.
 
-The concept of supporting loosely coupled, business-aligned and networked services as introduced above can be realized with the help of numerous different technologies such as the Web Services stack. This stack comprises WSDL as a uniform format for service interfaces, UDDI as standard for specifying publicly available service registries, SOAP as data exchange protocol and BPEL as language for orchestrating services according to specific business logic.
+\textcolor{blue}{TODO: Web of Things}
 
 \subsection{CoAP}
 
-Inefficient communications protocols: Although it was designed for reliability and congestion-avoidance, TCP carries significant overhead and can have suboptimal performance for links with high latency or packet loss, both of which are common across the wide-area Internet. Middle mile congestion exacerbates the problem, as packet loss triggers TCP retransmissions, further slowing down communications.
+Inefficient communications protocols: although it was designed for reliability and congestion-avoidance, TCP carries significant overhead and can have suboptimal performance for links with high latency or packet loss, both of which are common across the wide-area Internet \cite{akamai}. Middle mile congestion exacerbates the problem, as packet loss triggers TCP retransmissions, further slowing down communications.
 
 Additionally, for interactive applications, the multiple round trips required for HTTP requests can quickly add up, affecting application performance.
+
+\section{Evaluation}
+\label{sec:evaluation}
+
+A key component in IoT environments is represented by sensor networks \cite{edge-computing-survey}. For example, they can cooperate with RFID systems to better track the status of things, getting information about position, movement, temperature, etc. Sensor networks are typically composed of a potentially high number of sensing nodes, communicating in a wireless multi-hop fashion.
+
+Wireless sensor networks (WSNs) can provide various useful data and are being utilized in several areas like healthcare, government and environmental services (natural disaster relief), defense (military target tracking and surveillance), hazardous environment exploration, seismic sensing, etc.
+
+Recent technological advances have made efficient, low-cost, and low-power miniaturized devices available for use in large-scale, remote sensing applications. In this context, the timely processing of huge and streaming sensor data, subject to energy and network constraints and uncertainties, has been identified as the main challenge.
 
 % \Figure[t!](topskip=0pt, botskip=0pt, midskip=0pt){fig1.png}
 % {Magnetization as a function of applied field.
@@ -263,8 +396,9 @@ Additionally, for interactive applications, the multiple round trips required fo
 
 
 \section{Conclusion}
+\label{sec:conclusion}
 
-The challenge with cloud and IoT is not that one form will supplant another, but that we lack a programming and execution model that is inclusive and capable of harnessing the entire computing continuum to program our new intelligent world.
+\textcolor{blue}{TODO}
 
 \appendices
 
@@ -272,7 +406,7 @@ Appendixes, if needed, appear before the acknowledgment.
 
 \section*{Acknowledgment}
 
-Work in Progress
+\textcolor{blue}{TODO}
 
 \begin{thebibliography}{00}
 
@@ -284,7 +418,7 @@ Work in Progress
 
 \bibitem{cloud-to-thing} T Lynn, JG Mooney, B Lee, PT Endo. 2020. The cloud-to-thing continuum: opportunities and challenges in cloud, fog and edge computing.
 
-\bibitem{rest} Roy Fielding. 2000. Representational State Transfer (REST). \underline{https://www.ics.uci.edu/~fielding/pubs/dissertation/rest\_arch\_style.htm}. Accessed on: Mar. 15, 2021.
+\bibitem{rest} Roy Fielding. 2000. Representational State Transfer (REST). \url{https://www.ics.uci.edu/~fielding/pubs/dissertation/rest\_arch\_style.htm}. Accessed on: Apr. 15, 2021.
 
 \bibitem{oasis} MacKenzie, C.M., Laskey, K., McCabe, F., Brown, P.F., Metz, R. and Hamilton, B.A., 2006. Reference model for service oriented architecture 1.0. OASIS standard, 12(S 18).
 
@@ -292,7 +426,59 @@ Work in Progress
 
 \bibitem{akamai} Nygren, E., Sitaraman, R.K. and Sun, J., 2010. The akamai network: a platform for high-performance internet applications. ACM SIGOPS Operating Systems Review, 44(3), pp.2-19.
 
-\bibitem{aws-outage} Prolonged AWS outage takes down a big chunk of the internet. 2020. [Online]. Available: \underline{https://www.theverge.com/2020/11/25/21719396/amazon-web-services-aws-outage-down-internet}. Accessed on: Mar. 15, 2021.
+\bibitem{aws-outage} Prolonged AWS outage takes down a big chunk of the internet. 2020. [Online]. Available: \url{https://www.theverge.com/2020/11/25/21719396/amazon-web-services-aws-outage-down-internet}. Accessed on: Apr. 15, 2021.
+
+\bibitem{fluid-internet} Latre, S., Famaey, J., De Turck, F. and Demeester, P., 2014. The fluid internet: service-centric management of a virtualized future internet. IEEE Communications Magazine, 52(1), pp.140-148.
+
+\bibitem{computing-in-continuum} AbdelBaky, M., Zou, M., Zamani, A.R., Renart, E., Diaz-Montes, J. and Parashar, M., 2017, June. Computing in the continuum: Combining pervasive devices and services to support data-driven applications. In 2017 IEEE 37th International Conference on Distributed Computing Systems (ICDCS) (pp. 1815-1824). IEEE.
+
+\bibitem{harnessing-continuum} Beckman, P., Dongarra, J., Ferrier, N., Fox, G., Moore, T., Reed, D. and Beck, M., 2020. Harnessing the Computing Continuum for Programming Our World. Fog Computing: Theory and Practice, pp.215-230.
+
+\bibitem{edge-computing-vision-challenges} Shi, W., Cao, J., Zhang, Q., Li, Y. and Xu, L., 2016. Edge computing: Vision and challenges. IEEE internet of things journal, 3(5), pp.637-646.
+
+\bibitem{lavea} Yi, S., Hao, Z., Zhang, Q., Zhang, Q., Shi, W. and Li, Q., 2017, October. Lavea: Latency-aware video analytics on edge computing platform. In Proceedings of the Second ACM/IEEE Symposium on Edge Computing (pp. 1-13).
+
+\bibitem{serverless-mec} Baresi, L., Mendonça, D.F. and Garriga, M., 2017, September. Empowering low-latency applications through a serverless edge computing architecture. In European Conference on Service-Oriented and Cloud Computing (pp. 196-210). Springer, Cham.
+
+\bibitem{camera-virtualisation} Jang, S.Y., Lee, Y., Shin, B. and Lee, D., 2018, October. Application-aware IoT camera virtualisation for video analytics edge computing. In 2018 IEEE/ACM Symposium on Edge Computing (SEC) (pp. 132-144). IEEE.
+
+\bibitem{cloud-iot} Botta, A., De Donato, W., Persico, V. and Pescapé, A., 2016. Integration of cloud computing and internet of things: a survey. Future generation computer systems, 56, pp.684-700.
+
+\bibitem{cloud-computing} Zhang, Q., Cheng, L. \& Boutaba, R. Cloud computing: state-of-the-art and research challenges. J Internet Serv Appl 1, 7–18 (2010).
+
+\bibitem{vehicular-data-cloud} He, W., Yan, G. and Da Xu, L., 2014. Developing vehicular data cloud services in the IoT environment. IEEE transactions on industrial informatics, 10(2), pp.1587-1595.
+
+\bibitem{fog-computing} Cisco fog computing solutions: Unleash the power of the Internet of Things. [Online]. Available: \url{https://www.cisco.com/c/dam/en\_us/solutions/trends/iot/docs/computing-solutions.pdf}. Accessed on Apr. 15, 2021.
+
+\bibitem{dsu} Mugarza, I., Amurrio, A., Azketa, E. and Jacob, E., 2019. Dynamic software updates to enhance security and privacy in high availability energy management applications in smart cities. IEEE Access, 7, pp.42269-42279.
+
+\bibitem{saaas} Mitton, N., Papavassiliou, S., Puliafito, A. and Trivedi, K.S., 2012. Combining Cloud and sensors in a smart city environment.
+
+\bibitem{iot-manifacturing} Chen, B., Wan, J., Celesti, A., Li, D., Abbas, H. and Zhang, Q., 2018. Edge computing in IoT-based manufacturing. IEEE Communications Magazine, 56(9), pp.103-109.
+
+\bibitem{gartner-iot} Gartner. Leading the IoT. 2017. [Online]. Available: \url{https://www.gartner.com/imagesrv/books/iot/iotEbook_digital.pdf}. Accessed on Apr. 15, 2021.
+
+\bibitem{mobile-augmented-reality} Baresi, L., Mendonça, D.F. and Garriga, M., 2017, September. Empowering low-latency applications through a serverless edge computing architecture. In European Conference on Service-Oriented and Cloud Computing (pp. 196-210). Springer, Cham.
+
+\bibitem{nfv-5g} Yousaf, F.Z., Bredel, M., Schaller, S. and Schneider, F., 2017. NFV and SDN—Key technology enablers for 5G networks. IEEE Journal on Selected Areas in Communications, 35(11), pp.2468-2478.
+
+\bibitem{serverless-berkeley} Jonas, E., Schleier-Smith, J., Sreekanti, V., Tsai, C.C., Khandelwal, A., Pu, Q., Shankar, V., Carreira, J., Krauth, K., Yadwadkar, N. and Gonzalez, J.E., 2019. Cloud programming simplified: A berkeley view on serverless computing. arXiv preprint arXiv:1902.03383.
+
+\bibitem{protobuf} Protocol Buffers. [Online]. Available: \url{https://developers.google.com/protocol-buffers}. Accessed on Apr. 15, 2021.
+
+\bibitem{openapi} OpenAPI Specification, Version 3.0.3. [Online]. Available: \url{https://swagger.io/specification/}. Accessed on Apr. 15, 2021.
+
+\bibitem{shopify} Shopify App Store. [Online]. Available: \url{https://apps.shopify.com/}. Accessed on Apr. 15, 2021.
+
+\bibitem{mqtt-coap-amqp-http} Naik, N., 2017, October. Choice of effective messaging protocols for IoT systems: MQTT, CoAP, AMQP and HTTP. In 2017 IEEE international systems engineering symposium (ISSE) (pp. 1-7). IEEE.
+
+\bibitem{rest-opc} Grüner, S., Pfrommer, J. and Palm, F., 2016. RESTful industrial communication with OPC UA. IEEE Transactions on Industrial Informatics, 12(5), pp.1832-1841.
+
+\bibitem{inter-cloud} Grozev, N. and Buyya, R., 2014. Inter‐Cloud architectures and application brokering: taxonomy and survey. Software: Practice and Experience, 44(3), pp.369-390.
+
+\bibitem{lxc-docker-k8s} Bernstein, D., 2014. Containers and cloud: From lxc to docker to kubernetes. IEEE Cloud Computing, 1(3), pp.81-84.
+
+\bibitem{edge-computing-survey} Yu, W., Liang, F., He, X., Hatcher, W.G., Lu, C., Lin, J. and Yang, X., 2017. A survey on the edge computing for the Internet of Things. IEEE access, 6, pp.6900-6919.
 
 \end{thebibliography}
 
