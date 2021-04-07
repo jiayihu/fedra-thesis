@@ -1,0 +1,145 @@
+\documentclass[11pt,                    % corpo del font principale
+               a4paper,                 % carta A4
+               oneside,                 % impagina per fronte-retro
+               openright,               % inizio capitoli a destra
+               english,                 
+               ]{memoir}    
+
+%**************************************************************
+% Importazione package
+%************************************************************** 
+
+%\usepackage{amsmath,amssymb,amsthm}    % matematica
+
+\usepackage[T1]{fontenc}                % codifica dei font:
+                                        % NOTA BENE! richiede una distribuzione *completa* di LaTeX
+
+\usepackage{times}
+\usepackage[headsep=.5in,left=1.5in,right=1.5in,top=1in,bottom=1in,footskip=.5in]{geometry}
+
+\usepackage[utf8]{inputenc}             % codifica di input; anche [latin1] va bene
+                                        % NOTA BENE! va accordata con le preferenze dell'editor
+
+\usepackage[english]{babel}    % per scrivere in italiano e in inglese;
+                                        % l'ultima lingua (l'italiano) risulta predefinita
+
+\usepackage{bookmark}                   % segnalibri
+
+\usepackage{caption}                    % didascalie
+
+\usepackage{chngpage,calc}              % centra il frontespizio
+
+\usepackage{emptypage}                  % pagine vuote senza testatina e piede di pagina
+\usepackage{afterpage}                  % inserimento di pagine vuote
+
+\usepackage{epigraph}			% per epigrafi
+
+\usepackage{graphicx}                   % immagini
+
+\usepackage{hyperref}                   % collegamenti ipertestuali
+
+\usepackage[binding=5mm]{layaureo}      % margini ottimizzati per l'A4; rilegatura di 5 mm
+
+\usepackage{listings}                   % codici
+
+\usepackage[dvipsnames]{xcolor}         % colori
+
+\usepackage{kpfonts}
+
+%**************************************************************
+% Layout pagine
+%**************************************************************
+
+\maxtocdepth{subsection}
+\setsecnumdepth{subsection}
+
+\setSingleSpace{1.1}
+\SingleSpacing
+\definecolor{chaptercolor}{gray}{0.8}
+\newcommand\numlifter[1]{\raisebox{-2cm}[0pt][0pt]{\smash{#1}}}
+\newcommand\numindent{\kern37pt}
+\newlength\chaptertitleboxheight
+\makechapterstyle{hansen}{
+  \renewcommand\printchaptername{\raggedleft}
+  \renewcommand\printchapternum{%
+    \begingroup%
+    \leavevmode%
+    \chapnumfont%
+    \strut%
+    \numlifter{\thechapter}%
+    \numindent%
+\endgroup%
+}
+  \renewcommand*{\printchapternonum}{%
+    \vphantom{\begingroup%
+      \leavevmode%
+      \chapnumfont%
+      \numlifter{\vphantom{9}}%
+      \numindent%
+      \endgroup}
+    \afterchapternum}
+  \setlength\midchapskip{0pt}
+  \setlength\beforechapskip{0.5\baselineskip}
+  \setlength{\afterchapskip}{3\baselineskip}
+  \renewcommand\chapnumfont{%
+    \fontsize{4cm}{0cm}%
+    \bfseries%
+    \sffamily%
+    \color{chaptercolor}%
+  }
+  \renewcommand\chaptitlefont{%
+    \normalfont%
+    \huge%
+    \bfseries%
+    \raggedleft%
+  }%
+  \settototalheight\chaptertitleboxheight{%
+    \parbox{\textwidth}{\chaptitlefont \strut bg\\bg\strut}}
+  \renewcommand\printchaptertitle[1]{%
+    \parbox[t][\chaptertitleboxheight][t]{\textwidth}{%
+      %\microtypesetup{protrusion=false}% add this if you use microtype
+      \chaptitlefont\strut ##1\strut}%
+}}
+\chapterstyle{hansen}
+\aliaspagestyle{chapter}{empty} % just to save some space
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\large}
+  {\thesection}{12pt}{\MakeUppercase}
+
+\makeevenhead{headings}{\small\thepage}{}{\footnotesize\leftmark}
+\makeoddhead{headings}{\footnotesize\rightmark}{}{\small\thepage}
+
+\input{tesi-config}                     % file con le impostazioni personali
+
+\begin{document}
+%**************************************************************
+% Materiale iniziale
+%**************************************************************
+\frontmatter
+\input{sections/frontespizio}
+\input{sections/colophon}
+\blankpage
+\input{sections/sommario}
+\blankpage
+\input{sections/ringraziamenti}
+\blankpage
+\input{sections/indici}
+\cleardoublepage
+
+%**************************************************************
+% Materiale principale
+%**************************************************************
+\mainmatter
+\input{sections/main}
+\appendix 
+\blankpage
+
+
+\backmatter
+
+\cleardoublepage
+\input{sections/bibliography}
+\end{document}
