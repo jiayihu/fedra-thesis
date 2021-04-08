@@ -44,9 +44,7 @@ Promise.all([loadCitations, loadBibitems])
     return orderedBibitems;
   })
   .then((orderedBibitems) => {
-    const latex = Array.from(orderedBibitems)
-      .map(([key, value]) => value)
-      .join('\n\n');
+    const latex = Array.from(orderedBibitems.values()).join('\n\n');
 
     console.log(latex);
   });
