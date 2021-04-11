@@ -12,9 +12,13 @@ fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
 
 pub fn setup_heap() {
     let start = cortex_m_rt::heap_start() as usize;
-    let size = 1024 * (128 - 4); // Reserve okay 4KB for the stack
+    let size = 1024 * (128 - 8); // Reserve 8KB for the stack, of which 4KB is the WASM value stack
 
     unsafe {
         ALLOCATOR.init(start, size);
     }
+}
+
+pub fn stats() {
+    log::info!("Heap used {}, free {}", ALLOCATOR.used(), ALLOCATOR.free());
 }

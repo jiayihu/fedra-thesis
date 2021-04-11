@@ -6,16 +6,6 @@
 
 extern crate alloc;
 
-mod coap_server;
-mod intrinsics;
-mod logger;
-mod memory;
-mod network;
-pub mod qemu;
-mod sample;
-mod time;
-mod wasm_host;
-
 use core::panic::PanicInfo;
 use cortex_m_rt::{exception, ExceptionFrame};
 
@@ -26,15 +16,14 @@ use cortex_m_rt::{exception, ExceptionFrame};
     dispatchers = [EXTI1, EXTI2, EXTI3]
 )]
 mod app {
-    use crate::wasm_host::WasmHost;
-
-    use super::{coap_server, memory, network, sample, time, wasm_host};
     use alloc::string::ToString;
     use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
+    use fedra_iot::{coap_server, memory, network, sample, time, wasm_host};
     use hal::prelude::*;
     use hal::rng::Rng;
     use rtic::cyccnt::U32Ext;
     use stm32f4xx_hal as hal;
+    use wasm_host::WasmHost;
 
     const PERIOD: u32 = 160_000_000;
 
@@ -55,7 +44,7 @@ mod app {
 
     #[init]
     fn init(cx: init::Context) -> init::LateResources {
-        crate::logger::init_logger();
+        fedra_iot::logger::init_logger();
         memory::setup_heap();
 
         let mut cp: rtic::Peripherals = cx.core;

@@ -36,9 +36,9 @@ impl From<Trap> for HostError {
 impl WasmiHostError for HostError {}
 
 pub struct WasmHost<'a> {
-    imports: ImportsBuilder<'a>,
-    instance: Option<ModuleRef>,
-    stack_recycler: StackRecycler,
+    pub imports: ImportsBuilder<'a>,
+    pub instance: Option<ModuleRef>,
+    pub stack_recycler: StackRecycler,
 }
 
 impl<'a> WasmHost<'a> {
