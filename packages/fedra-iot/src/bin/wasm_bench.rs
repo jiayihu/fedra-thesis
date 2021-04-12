@@ -17,7 +17,7 @@ use cortex_m_rt::{exception, ExceptionFrame};
 )]
 mod app {
     use fedra_iot::wasm_host;
-    use fedra_iot::{memory, polybench, time};
+    use fedra_iot::{memory, time};
     use hal::prelude::*;
     use stm32f4xx_hal as hal;
     use wasmi::{ImportsBuilder, NopExternals, StackRecycler};
