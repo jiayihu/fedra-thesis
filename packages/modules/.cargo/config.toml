@@ -1,6 +1,7 @@
 [build]
 target = "wasm32-wasi"
 
-rustflags = [
-  "-C", "link-arg=-zstack-size=4096",
-]
+# [target.wasm32-wasi]
+# rustflags = [
+#   "-C", "link-arg=-zstack-size=4096",
+# ]

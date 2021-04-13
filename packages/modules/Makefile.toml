@@ -1,0 +1,22 @@
+[tasks.cross]
+command = "cross"
+args = ["build", "--bin", "datetime", "--target", "aarch64-unknown-linux-musl", "--release"]
+
+[tasks.docker-build]
+command = "docker"
+args = [
+  "build",
+  ".",
+  "--tag=eu.gcr.io/fedra-301320/datetime:arm64v8",
+  "--build-arg",
+  "PLATFORM=arm64v8",
+  "--build-arg",
+  "CROSS_BUILD_TARGET=aarch64-unknown-linux-musl",
+]
+
+[tasks.docker-push]
+command = "docker"
+args = ["push", "eu.gcr.io/fedra-301320/datetime:arm64v8"]
+
+[tasks.deploy]
+dependencies = ["cross", "docker-build", "docker-push"]

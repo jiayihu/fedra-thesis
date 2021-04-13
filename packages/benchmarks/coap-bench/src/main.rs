@@ -1,6 +1,5 @@
 use std::sync::atomic::AtomicI8;
 use std::sync::{Arc, Mutex};
-use std::thread;
 use std::time::{Duration, Instant};
 
 use coap::CoAPClient;
@@ -9,30 +8,25 @@ use tokio::runtime::Builder;
 
 const ADDR: &str = "coap://192.168.1.100:5683/benchmark";
 
-#[tokio::main]
-async fn main() {
-    let response_times = Arc::new(Mutex::new(Vec::new()));
-    let dropped_count = Arc::new(AtomicI8::new(0));
+fn main() {
+    let runtime = Arc::new(
+        Builder::new_multi_thread()
+            .worker_threads(12)
+            .enable_all()
+            .build()
+            .unwrap(),
+    );
 
-    for _ in 0..15 {
-        let request_handles = Arc::new(Mutex::new(Vec::new()));
+    runtime.block_on(async {
+        let response_times = Arc::new(Mutex::new(Vec::new()));
+        let dropped_count = Arc::new(AtomicI8::new(0));
 
-        let times = response_times.clone();
-        let dropped = dropped_count.clone();
-        let handles = request_handles.clone();
-
-        thread::spawn(move || {
-            let runtime = Arc::new(
-                Builder::new_multi_thread()
-                    .worker_threads(12)
-                    .enable_all()
-                    .build()
-                    .unwrap(),
-            );
+        for _ in 0..15 {
+            let mut request_handles = Vec::new();
 
             for _ in 0..12 {
-                let times = times.clone();
-                let dropped = dropped.clone();
+                let times = response_times.clone();
+                let dropped = dropped_count.clone();
 
                 let handle = runtime.spawn_blocking(move || {
                     let timeout = Duration::new(10, 0);
@@ -56,17 +50,13 @@ async fn main() {
                     }
                 });
 
-                handles.lock().unwrap().push(handle);
+                request_handles.push(handle);
             }
-        })
-        .join()
-        .unwrap();
 
-        let mut handles = request_handles.lock().unwrap();
+            join_all(request_handles).await;
+        }
 
-        join_all(handles.iter_mut()).await;
-    }
-
-    println!("Response times {:?}", response_times.lock().unwrap());
-    println!("Dropped packets {:?}", dropped_count);
+        println!("Response times {:?}", response_times.lock().unwrap());
+        println!("Dropped packets {:?}", dropped_count);
+    });
 }

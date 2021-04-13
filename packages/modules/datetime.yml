@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: datetime
+spec:
+  containers:
+    - name: datetime
+      image: eu.gcr.io/fedra-301320/datetime:arm64v8
+      imagePullPolicy: Always
+      env:
+        - name: NAME
+          value: datetime
+

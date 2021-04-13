@@ -6,6 +6,10 @@ spec:
   containers:
     - name: hello-wasi
       image: eu.gcr.io/fedra-301320/hello-wasi:latest
+      imagePullPolicy: Always
+      env:
+        - name: NAME
+          value: hello-wasi
   nodeSelector:
     kubernetes.io/arch: "wasm32-wasi"
   tolerations:

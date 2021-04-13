@@ -9,8 +9,8 @@ edition = "2018"
 [dependencies]
 
 [[bin]]
-name = "hello-wasi"
-path = "src/hello-wasi.rs"
+name = "datetime"
+path = "src/datetime.rs"
 
 [lib]
 name = "add"

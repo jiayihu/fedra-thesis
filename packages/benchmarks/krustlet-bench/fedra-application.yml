@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fedra-application
+spec:
+  serviceAccountName: fedra-app-sa
+  containers:
+    - name: fedra-application
+      image: eu.gcr.io/fedra-301320/fedra-application:arm64v8
+      imagePullPolicy: Always
+      env:
+      - name: GCP_CREDENTIALS
+        valueFrom:
+          secretKeyRef:
+            name: datastore-binding
+            key: PrivateKeyData
+      - name: FEDRA_DB_SERVICE_HOST
+        valueFrom:
+          secretKeyRef:
+            name: fedra-db-binding
+            key: host
+      - name: FEDRA_DB_SERVICE_PORT
+        valueFrom:
+          secretKeyRef:
+            name: fedra-db-binding
+            key: port
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fedra-app-sa
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: fedra-app-role
+rules:
+- apiGroups: ["akri.sh"]
+  resources: ["instances", "configurations"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods", "pods/exec"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fedra-app-binding
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: fedra-app-role
+subjects:
+  - kind: ServiceAccount
+    name: fedra-app-sa
+    namespace: default

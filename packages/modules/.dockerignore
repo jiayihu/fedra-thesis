@@ -1,0 +1,19 @@
+
+# Ignore everything
+**
+
+
+# Cross-build binaries need to be available
+#    It is not clear to me why !target/*/*/controller
+#    does not work here, but it doesn't seem to.  So
+#    for now, explicitly specifying each cross-build
+#    target and configuration path.
+!target/x86_64-unknown-linux-gnu/debug/datetime
+!target/x86_64-unknown-linux-gnu/release/datetime
+!target/aarch64-unknown-linux-gnu/debug/datetime
+!target/aarch64-unknown-linux-gnu/release/datetime
+!target/aarch64-unknown-linux-musl/debug/datetime
+!target/aarch64-unknown-linux-musl/release/datetime
+
+# Cross toml file needs to be available for making the cross build containers
+!Cross.toml
