@@ -1,0 +1,80 @@
+02:18:42.069912 6
+02:18:48.624873 7
+02:18:55.173732 8
+02:19:01.719649 9
+02:34:41.610500 11
+02:34:48.164944 12
+02:34:54.713636 13
+02:37:54.922611 16
+02:38:01.477277 17
+02:38:08.025141 18
+02:38:14.572864 19
+02:49:07.415801 33
+02:49:13.970871 34
+02:49:20.518263 35
+02:49:27.064934 36
+02:49:33.612347 37
+02:49:40.159144 38
+02:49:46.706245 39
+02:49:53.253998 40
+02:49:59.801681 41
+02:50:06.347875 42
+02:50:12.894167 43
+02:50:19.432273 44
+02:50:25.979395 45
+	
+6 1618359524408	
+7 1618359528712	
+8 1618359535266	
+9 1618359541705	
+11 1618360488223	
+12 1618360488451
+13 1618360494748	
+16 1618360681463	
+17 1618360681696	
+18 1618360688056	
+19 1618360694609	
+33 1618361350657	
+34 1618361353955	
+35 1618361360542	
+36 1618361367095	
+37 1618361373651	
+38 1618361380144	
+39 1618361386754	
+40 1618361393310	
+41 1618361399861	
+42 1618361406418	
+43 1618361412971	
+44 1618361419426
+
+1618364831.362496 INFO:end2end_bench::app -- Rainfall 6
+1618364834.056388 INFO:fedra_iot::network -- UDP packet from 192.168.1.120:60690
+1618364834.056443 INFO:end2end_bench::app -- Request path well-known/core
+1618364836.045434 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:55205
+1618364836.045522 INFO:end2end_bench::app -- Request path sensors/rainfall
+1618364837.917955 INFO:end2end_bench::app -- Rainfall 7
+1618364837.918063 DEBUG:fedra_iot::coap_server -- Sending notification
+1618364837.935695 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:55205
+1618364844.465532 INFO:end2end_bench::app -- Rainfall 8
+1618364844.465641 DEBUG:fedra_iot::coap_server -- Sending notification
+1618364844.477153 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:55205
+1618364844.753459 INFO:fedra_iot::network -- UDP packet from 192.168.1.120:47571
+1618364844.753601 INFO:end2end_bench::app -- Request path well-known/core
+1618364851.013155 INFO:end2end_bench::app -- Rainfall 9
+1618364967.696366 INFO:end2end_bench::app -- Rainfall 14
+1618364968.307923 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:63366
+1618364968.318568 INFO:end2end_bench::app -- Request path sensors/rainfall
+1618364972.428842 INFO:fedra_iot::network -- UDP packet from 192.168.1.120:45541
+1618364972.428971 INFO:end2end_bench::app -- Request path well-known/core
+1618364974.252643 INFO:end2end_bench::app -- Rainfall 15
+1618364974.252788 DEBUG:fedra_iot::coap_server -- Sending notification
+1618364974.320234 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:63366
+1618364980.798780 INFO:end2end_bench::app -- Rainfall 16
+1618364980.798874 DEBUG:fedra_iot::coap_server -- Sending notification
+1618364980.869673 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:63366
+1618364983.289846 INFO:fedra_iot::network -- UDP packet from 192.168.1.120:39115
+1618364983.289979 INFO:end2end_bench::app -- Request path well-known/core
+1618364987.346528 INFO:end2end_bench::app -- Rainfall 17
+1618364987.346677 DEBUG:fedra_iot::coap_server -- Sending notification
+1618364987.426689 INFO:fedra_iot::network -- UDP packet from 192.168.1.126:63366
+1618364993.893211 INFO:end2end_bench::app -- Rainfall 18

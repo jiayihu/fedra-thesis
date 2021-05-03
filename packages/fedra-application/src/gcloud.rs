@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::{anyhow, Result};
 use google_cloud::authorize::ApplicationCredentials;
@@ -25,9 +26,15 @@ pub async fn save_state(client: &mut GClient, sample: crate::krustlet::Sample) -
     let key = datastore::Key::new("sensors");
     let properties = {
         let mut values = HashMap::new();
-        values.insert(String::from("rainfall_ytd"), sample.0);
-        values.insert(String::from("rainfall_td"), sample.1);
-        values.insert(String::from("flow_yd"), sample.2);
+        values.insert(String::from("rainfall_ytd"), sample.0.to_string());
+        values.insert(String::from("rainfall_td"), sample.1.to_string());
+        values.insert(String::from("flow_yd"), sample.2.to_string());
+
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis();
+        values.insert(String::from("timestamp"), timestamp.to_string());
 
         values
     };

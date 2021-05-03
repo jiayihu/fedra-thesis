@@ -13,17 +13,15 @@ use cortex_m_rt::{exception, ExceptionFrame};
     device = stm32f4xx_hal::stm32,
     peripherals = true,
     monotonic = rtic::cyccnt::CYCCNT,
-    dispatchers = [EXTI1, EXTI2, EXTI3]
+    dispatchers = [EXTI1, EXTI2, EXTI3, EXTI4]
 )]
 mod app {
     use alloc::string::ToString;
     use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
-    use fedra_iot::{coap_server, memory, network, sample, time, wasm_host};
+    use fedra_iot::{coap_server, memory, network, time, wasm_host};
     use hal::prelude::*;
-    use hal::rng::Rng;
     use rtic::cyccnt::U32Ext;
     use stm32f4xx_hal as hal;
-    use wasm_host::WasmHost;
 
     const PERIOD: u32 = 160_000_000;
 
@@ -32,11 +30,6 @@ mod app {
 
     #[resources]
     struct Resources {
-        #[task_local]
-        host: wasm_host::WasmHost<'static>,
-        #[task_local]
-        rand_source: Rng,
-
         coap_server: coap_server::CoapServer,
 
         runtime: wasm_host::Runtime,
@@ -55,8 +48,6 @@ mod app {
         time::setup_cycle_counter(&mut cp);
         let clocks = time::setup_clocks(rcc, tim2);
 
-        let rand_source = dp.RNG.constrain(clocks.clone());
-
         let eth_p = network::EthPeripherals {
             gpioa: dp.GPIOA.split(),
             gpiob: dp.GPIOB.split(),
@@ -71,17 +62,13 @@ mod app {
 
         let coap_server = coap_server::CoapServer::default();
 
-        let mut host = wasm_host::WasmHost::default();
         let runtime = wasm_host::Runtime::default();
-        host.setup_default().expect("Could not setup the WAST Host");
 
         rainfall::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
 
         init::LateResources {
-            host,
             runtime,
             coap_server,
-            rand_source,
         }
     }
 
@@ -90,20 +77,18 @@ mod app {
         super::nop_loop();
     }
 
-    #[task(resources = [host, runtime, rand_source], priority = 5)]
+    #[task(resources = [runtime], priority = 5)]
     fn rainfall(cx: rainfall::Context) {
+        static mut RAINFALL: f32 = 10_f32;
+
         rainfall::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
 
-        let host: &mut WasmHost = cx.resources.host;
         let mut runtime = cx.resources.runtime;
-        let rand_source: &mut Rng = cx.resources.rand_source;
 
         runtime.lock(|runtime: &mut wasm_host::Runtime| {
-            let rainfall = sample::gen_rainfall(rand_source);
-            runtime.rainfall = rainfall;
-
-            host.invoke("preprocess_rainfall", runtime)
-                .expect("Cannot invoke preprocess_rainfall in the WASM module");
+            // let rainfall = sample::gen_rainfall(rand_source);
+            *RAINFALL = *RAINFALL + 1_f32;
+            runtime.rainfall = *RAINFALL;
 
             log::info!("Rainfall {}", runtime.rainfall);
 
@@ -123,7 +108,7 @@ mod app {
         });
     }
 
-    #[task(resources = [runtime, coap_server], capacity = 1, priority = 2)]
+    #[task(resources = [runtime, coap_server], capacity = 2, priority = 2)]
     fn server(cx: server::Context) {
         let mut runtime = cx.resources.runtime;
         let mut coap_server = cx.resources.coap_server;

@@ -39,7 +39,7 @@ fn main() {
                             let elapsed = instant.elapsed().as_millis();
 
                             let mut times = times.lock().unwrap();
-                            times.push(elapsed);
+                            times.lock().unwrap().push(elapsed);
 
                             println!("Request received");
                         }

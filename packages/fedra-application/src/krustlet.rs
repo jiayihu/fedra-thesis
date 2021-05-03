@@ -1,7 +1,5 @@
 use anyhow::Result;
-use k8s_openapi::api::core::v1::Pod;
-use kube::Api;
-use tokio::io::AsyncReadExt;
+use reqwest::Client;
 
 const POD_NAME: &str = "fedra-ml";
 const CONTAINER_NAME: &str = "fedraml";
@@ -23,10 +21,7 @@ impl State {
     }
 }
 
-pub async fn predict(api: &Api<Pod>, sample: Sample) -> Result<f32> {
-    let mut ap = kube::api::AttachParams::default();
-    ap.container = Some(CONTAINER_NAME.to_string());
-
+pub async fn predict(sample: Sample) -> Result<f32> {
     let input_f32: Vec<f32> = vec![sample.0, sample.1, sample.2];
     let mut input_str: Vec<String> = input_f32
         .into_iter()
@@ -34,12 +29,27 @@ pub async fn predict(api: &Api<Pod>, sample: Sample) -> Result<f32> {
         .collect();
     let mut command = vec![String::from("run")];
     command.append(&mut input_str);
+    let query = command
+        .iter()
+        .map(|value| format!("command={}", value))
+        .collect::<Vec<String>>();
+    let query = query.join("&");
 
-    let mut process = api.exec(POD_NAME, command, &ap).await?;
-    let mut output = process.stdout().unwrap();
-    let mut buffer = [0; 10];
-    let n = output.read(&mut buffer[..]).await?;
-    let result = String::from_utf8_lossy(&buffer[..n]);
+    log::info!("query {}", query);
+
+    let url = format!(
+        "https://192.168.1.126:3000/exec/default/{}/{}?{}",
+        POD_NAME, CONTAINER_NAME, query,
+    );
+    let tls = native_tls::TlsConnector::builder()
+        .use_sni(false)
+        .danger_accept_invalid_certs(true)
+        .build()?;
+    let client = Client::builder().use_preconfigured_tls(tls).build()?;
+
+    let result = client.post(&url).send().await?;
+    let result = result.text().await?;
+
     let result = result.parse::<u32>()?;
     let result = f32::from_bits(result);
 

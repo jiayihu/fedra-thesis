@@ -10,7 +10,7 @@ pub mod intrinsics;
 pub mod logger;
 pub mod memory;
 pub mod network;
-pub mod polybench;
+// pub mod polybench;
 pub mod qemu;
 pub mod sample;
 pub mod time;

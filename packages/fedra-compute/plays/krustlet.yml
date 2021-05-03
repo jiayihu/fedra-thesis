@@ -3,7 +3,7 @@
   tasks:
   - name: Download the krustlet binary
     get_url:
-      url: https://storage.googleapis.com/fedra-thesis/krustlet-wasi-openssl
+      url: https://storage.googleapis.com/fedra-storage/krustlet-wasi
       dest: /usr/local/bin/krustlet-wasi
       owner: root
       group: root
@@ -62,6 +62,7 @@
 
         export KUBECONFIG=~{{ ansible_user }}/.krustlet/config/kubeconfig
         export KRUSTLET_DATA_DIR=~{{ ansible_user }}/.krustlet
+        export RUST_LOG="info,regalloc=error,api"
         name="krustlet"
         command="/usr/local/bin/krustlet-wasi"
         command_args="--node-ip {{ ansible_host }}"

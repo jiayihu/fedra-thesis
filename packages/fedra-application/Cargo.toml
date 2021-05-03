@@ -14,7 +14,7 @@ k8s-openapi = { version = "0.11.0", default-features = false, features = ["v1_19
 kube = { version = "0.50.1", features = ["derive", "ws"]}
 kube-runtime = "0.50.1"
 log = "0.4.14"
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.11", features = ["json", "native-tls"] }
 schemars = "0.8.0"
 serde = "1.0.123"
 serde_json = "1.0.63"
@@ -23,6 +23,7 @@ websocket = "0.26.2"
 google-cloud = { git = "https://github.com/jiayihu/google-cloud-rs", features = ["datastore", "datastore-derive"]}
 base64 = "0.13.0"
 byteorder = "1.4.2"
+native-tls = "0.2.7"
 
 [features]
 default = ["dev"]
