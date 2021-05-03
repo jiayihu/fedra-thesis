@@ -19,7 +19,7 @@ Besides, our capacity for collecting data is expanding dramatically. Nevertheles
 \caption{Pictorial view of the continuum of computing \label{fig:continuum}}
 \end{figure*}
 
-In the author's vision \textcolor{red}{?}, the future holds to us \textcolor{red}{?} an information-rich pervasive computational continuum that seamlessly combines this data and computing power to model, manage, control and make use of virtually any realisable sub-system of interest \cite{computing-in-continuum}. Use cases exist in diverse application areas, from managing extreme events (e.g. environmental monitoring \cite{levee}) to optimising everyday processes (e.g. manufacturing \cite{iot-manifacturing}) and improving life quality (e.g. healthcare \cite{iot-healthcare} and smart cities \cite{data-analytics-iot}). Fig. \ref{fig:continuum} is a pictorial view of such vision..
+In the author's vision, the computing will converge to an information-rich pervasive continuum that seamlessly combines this data and computing power to model, manage, control and make use of virtually any realisable sub-system of interest \cite{computing-in-continuum}. Use cases exist in diverse application areas, from managing extreme events (e.g. environmental monitoring \cite{levee}) to optimising everyday processes (e.g. manufacturing \cite{iot-manifacturing}) and improving life quality (e.g. healthcare \cite{iot-healthcare} and smart cities \cite{data-analytics-iot}). Fig. \ref{fig:continuum} is a pictorial view of such vision..
 
 A natural requisite of this vision is that computational capabilities are gradually being introduced at the network's edge, where devices are connected to the Internet and communicate with each other. This inter-communication constitutes in edge networks. New approaches that combine distributed services close to the data sources (i.e. edge nodes) with resources in the cloud and along the data path can establish a computing continuum and effectively process this data. Depending on the use case and service level requirements, user applications may require processing and storage locally, in the cloud, or somewhere in between. Fog computing \cite{fog-computing} is the term coined by the research community to identify computational resources situated at a few, usually one, hop away from end-users. Fig. \ref{fig:continuum} represents the fog computing as base stations, to which users connect to in everyday activities.
 
@@ -39,7 +39,7 @@ The vision of continuum would not be feasible without the previous groundwork do
 
 The remaining parts of this thesis are organised as follows. Chapter \ref{sec:challenges} discusses the present trends which lead to the continuum and presents the challenges of this vision. Chapter \ref{sec:technicals} shows the problem space addressed by this thesis and the technology baseline. Chapter \ref{sec:evaluation} contains an evaluation of the architecture presented in the preceding section and, lastly, the thesis concludes in Chapter \ref{sec:conclusion} with the final remarks.
 
-\section{The trend}
+\section{The trend to decentralisation}
 \label{sec:challenges}
 
 In the past decade and now more than ever, cloud computing has provided users with the potential to perform computing tasks utilising resource physically distant. A popular definition of cloud computing \cite{cloud-def} is "a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction."
@@ -73,7 +73,7 @@ Unfortunately, inter-network data communication is neither an efficient nor reli
 \begin{figure}[h]
 \centering
 \includegraphics[width=\columnwidth]{figures/traceroute}
-\caption{Traceroute virtualisation of an IP packet reaching google.com \label{fig:traceroute}. The left green nodes are the source nodes and travel from point-to-point till the extreme right, where servers are located in datacentres. Source \cite{traceroute-google}.}
+\caption{Traceroute virtualisation of an IP packet reaching google.com \label{fig:traceroute}. The left green nodes are the source nodes and travel throught to the extreme right, where servers are located in datacentres. Source \cite{traceroute-google}.}
 \end{figure}
 
 The peering points, depicted nodes in Fig. \ref{fig:architecture}, are where networks exchange traffic and are the common bottleneck of the Internet. Capacity at these points typically lags behind the reliability demand mainly due to the economic structure of the Internet \cite{akamai}. The economic incentive flows in at the first mile (cloud data centres) and at the last mile (IoT), with however very little interest to invest in the middle network composed of peering points. These points thus become the cause for packet loss and increase latency.
@@ -106,7 +106,7 @@ The Cloudlet \cite{cloudlet} architecture is one of the first approaches that of
 
 Edge computing \cite{edge-computing-vision-challenges} denotes any computing and network resource that is located only at the extreme edge of the network. The rationale of edge computing is that computing should happen in the proximity of data sources, thus ideally \emph{at} the data source, eliminating the costly data transfer to a remote data centre. The result significantly improves Quality of Service (QoS) as, similar to fog computing, and the end-user earns considerable network latency reduction and bandwidth consumption.
 
-When the end-users (\textcolor{red}{?}) are mobile devices, edge computing is referred to as mobile edge computing (MEC) \cite{mec} as well. In contrast to the broader term edge computing, MEC focuses on co-locating computing and storage resources at base cellular networks stations. Being co-located at base stations, MEC servers' computing and storage resources are available close to mobile users like smartphones and smart vehicles and can support mobility between cellular cells. MEC is seen as a promising approach to increase the quality of experience in cellular networks and a natural direction for the evolution to 5G networks \cite{nfv-5g}.
+When the end-users are mobile devices, edge computing is referred to as mobile edge computing (MEC) \cite{mec} as well. In contrast to the broader term edge computing, MEC focuses on co-locating computing and storage resources at base cellular networks stations. Being co-located at base stations, MEC servers' computing and storage resources are available close to mobile users like smartphones and smart vehicles and can support mobility between cellular cells. MEC is seen as a promising approach to increase the quality of experience in cellular networks and a natural direction for the evolution to 5G networks \cite{nfv-5g}.
 
 \subsubsection{Serverless Computing}
 
@@ -120,16 +120,14 @@ Recently, the leading cloud vendors (e.g. Amazon and Microsoft) are putting effo
 
 Recent works in the literature have argued the advantages of edge computing too. An instance, the authors of \cite{serverless-mec} present an augmented reality use case for mobile edge computing, in which computation and data-intensive tasks are offloaded from the devices to serverless functions at the edge, outperforming the cloud alternative up to 80\% in terms of throughput and latency.
 
-\section{The challenges}
+\section{The challenges ahead}
 \label{challenges}
 
 After discussing the decentralisation trend, this section presents the challenges in implementing such a vision. As an example, the heterogeneity of the connected devices is immense. It can be seen from different perspectives, such as computing performance, storage and network requirements, communication protocols, energy consumption, to name just a few. Such diversity poses questions about handling the virtualisation of the underlying resources and the nodes' interoperability. Both challenges are explored in Chapter §\ref{sec:virtualisation} and §\ref{sec:interoperability} respectively.
 
 To enable the continuum, this thesis identifies the following challenges as important ones to be addressed. The list should not be considered exhaustive by any means, nor the most significant ones. Dynamic network configuration and distributed persistent storage are two examples of critical technical challenges, which the author has not explored yet in his thesis' work.
 
-Besides being the edge characterised by very high heterogeneity, it lacks different important properties such as service orientation, interoperability, orchestration, reliability, efficiency, availability, and security. Therefore, it is natural that many challenges in the continuum's realisation overlap with open research problems in edge computing. At the same time, other issues are originated, or at least exacerbated, from the holistic integration of cloud, fog, and edge computing (e.g. providers' interoperability).
-
-\textcolor{blue}{TODO: raggruppare challenges per tipologia}
+Besides being characterised by very high heterogeneity, the edge lacks important features such as service orientation, interoperability, orchestration, reliability, efficiency, availability, and security. Therefore, it is natural that many challenges in the continuum's realisation overlap with open research problems in edge computing. At the same time, other issues are originated, or at least exacerbated, by the desire for holistic integration of cloud, fog, and edge computing.
 
 \begin{enumerate}
     \item \emph{Service orientation}: as stated in the introduction of this thesis, services must be treated as first-class citizens, allowing them to be dynamically placed and decoupling them from their location. Consumers should only be concerned with what they want to do and accomplish and providers with how that could be done and provided to the user;
@@ -147,9 +145,9 @@ Besides being the edge characterised by very high heterogeneity, it lacks differ
 
 \subsection{Service orientation}
 
-This thesis visions service-oriented paradigms as necessary for organising and utilising distributed capabilities that may be under the control of different ownership domains. A Service-Oriented Architecture (SOA) provides "a uniform mean to offer, discover, interact with and use capabilities to produce desired effects consistent with measurable preconditions and expectations" \cite{oasis}.
+This thesis envisions service-oriented paradigms as necessary for organising and utilising distributed capabilities that may be under the control of different ownership domains. A Service-Oriented Architecture (SOA) provides "a uniform mean to offer, discover, interact with and use capabilities to produce desired effects consistent with measurable preconditions and expectations" \cite{oasis}.
 
-According to this model, the major components of a basic SOA and their possible interactions are constituted by a service provider that publishes his service interface (how other services access its functionalities) via a service registry where a service requester/consumer can find it and subsequently bind to the service provider \cite{iot-enterprise}.
+According to this model, the major components of a basic SOA and their possible interactions are constituted by a service provider that publishes its service interface (how other services access their functionalities) via a service registry where a service requester/consumer can find it and subsequently bind to the service provider \cite{iot-enterprise}.
 
 The SOA reference model's central concept lies in services that provide access to capabilities to be exercised by following well-defined interfaces and a service contract with constraints and policies. This enables the loose coupling of services and minimisation of mutual dependencies.
 
@@ -161,7 +159,7 @@ First of all, the lack of neutral, trustworthy and widely accepted service inter
 
 Secondly, the lack of means of composing higher-order services from various services imposes additional challenges to the emergence of the continuum of computing. The lack of interoperability prevents services from being set up quickly and easily. Cloud providers and their respective systems adhere to different conventions with respect to interfaces and communication protocols. For instance, Google Cloud Platform services heavily use Protocol Buffers \cite{protobuf} in the services' APIs, a Google technology for serialising structured data. For this reason, a significant effort will be required to uniformly provide the service semantics and interfaces in a comprehensible way for both humans and machines. For example, the system would need to map high-level descriptions to vendor-specific implementations (e.g. "key-value store" would map to different AWS or Google Cloud products).
 
-Lastly, services on the Internet of today can be considered mute and unresponsive. In the future, services are expected to become communicative and reactive to their respective environments, particularly in two respects \cite{iot-enterprise}. Existing service interfaces (e.g., REST-based) are not yet designed to be interpreted and used by machines but rather by humans. This issue frequently prevents the systems from easily discovering and interacting with them. Methods are needed to improve both user-service interaction and machine-to-machine communication. Today's services are unfortunately clearly built with human interaction in mind.  Fortunately, recent REST community efforts are trying to compensate for the lack of M2M communication \cite{openapi}. \textcolor{blue}{TODO: da approfondire}
+Lastly, services on the Internet of today can be considered mute and unresponsive. In the future, services are expected to become communicative and reactive to their respective environments, particularly in two respects \cite{iot-enterprise}. Existing service interfaces (e.g., REST-based) are not yet designed to be interpreted and used by machines but rather by humans. This issue frequently prevents the systems from easily discovering and interacting with them. Methods are needed to improve both user-service interaction and machine-to-machine communication. Today's services are unfortunately clearly built with human interaction in mind.  Fortunately, recent REST community efforts are trying to compensate for the lack of M2M communication \cite{openapi}.
 
 \subsubsection{Service-oriented architectures}
 
@@ -183,7 +181,7 @@ Furthermore, this architecture results in a system where various service impleme
 
 \subsection{Orchestration}
 
-The complexity of the continuum environment and services makes service orchestration a central task to coordinate and schedule the operation of a myriad of distributed service components. Besides, it will also be a crucial feature for many IT organisations and DevOps adopters to speed the delivery of services, simplify optimisation, and reduce costs \cite{akamai}. However, the continuum's orchestration is challenging due to the scale, heterogeneity, and diversity of resource types and the uncertainties of the underlying environments. The uncertainties arise from a number of factors, including resource capacity demand (e.g. bandwidth and memory), failures (e.g. failure of a network link), user access pattern (e.g. the number of users and location) and lifecycle activities of applications.
+The transition to the continuum will require coordinating and scheduling the operation of a myriad of distributed service components, whose complexity makes the necessity of service orchestration paramount. Besides, it will also be a crucial feature for many IT organisations and DevOps adopters to speed the delivery of services, simplify optimisation, and reduce costs \cite{akamai}. However, the continuum's orchestration is challenging due to the scale, heterogeneity, and diversity of resource types and the uncertainties of the underlying environments. The uncertainties arise from a number of factors, including resource capacity demand (e.g. bandwidth and memory), failures (e.g. failure of a network link), user access pattern (e.g. the number of users and location) and lifecycle activities of applications.
 
 Another difficulty caused by the underlying resources' heterogeneities is providing proper pricing models that take into account locations, resource types, and sizes. Considering such variables would enable, for instance, to dynamically provision resources of different pricing models to the cluster to satisfy application-specific needs with minimum cost.
 
@@ -246,8 +244,6 @@ With that said, cloud platforms heterogeneity is a non-negligible concern as wel
 
 Overall, cloud, IoT services, and applications are nowadays typically conceived as isolated vertical solutions. All system components are tightly coupled to the specific application context or the cloud provider. The interoperability challenge involves several aspects, where solutions need to be investigated in terms of uniformly access to cloud services \cite{inter-cloud}, programming interfaces, and means for coping with data diversity.
 
-\textcolor{blue}{TODO: data-diversity}
-
 \subsection{Portability and Programmability}
 
 In cloud computing, users program their code and deploy them on the cloud. The cloud provider is the one in charge to decide where the computing is conducted in a cloud. Users have only partial knowledge of how the application runs. This easiness is one of the benefits of cloud computing: the infrastructure is transparent to the user. Usually, the program is written in the programming language the developer is most familiar with and between a limited selection (e.g. JavaScript, Java, Python, .NET). The application is then compiled for a specific target platform (typically x86\_64 GNU Linux) since the program only runs in the cloud.
@@ -272,15 +268,11 @@ When mobility is required, provisioning data and services also needs to be perfo
 
 Being co-located at base stations, MEC servers are available anywhere the user moves and can support roaming between cellular cells.
 
-\textcolor{blue}{TODO: to complete}
-
 \subsection{Reliability}
 
 When applications are deployed in resource-constrained environments, many challenges related to device failure or unreachability exist. Things at the edge of the network could fail due to various reasons, and they could additionally report failure to report data under unreliable conditions such as low battery level.
 
 As mentioned before, various new communication protocols for IoT data collection have been proposed in the last years (e.g. CoAP, MQTT, AMPQ) \cite{mqtt-coap-amqp-http}. These protocols serve well for the support of low energy and highly dynamic network condition. However, their connection reliability is not as good as conventional BlueTooth or WiFi. For instance, if both sensing data and communication are not reliable, the system must leverage multiple reference data sources and historical data records to provide a reliable service.
-
-\textcolor{blue}{TODO: end-to-end network unreliability}
 
 \subsection{Security and Privacy}
 
@@ -289,8 +281,6 @@ The integration of edge computing, fog computing and cloud computing will raise 
 Like the health record data, end-user data collected at the edge of the network should be stored at the edge, and the user should be able to control if service providers should use the data. However, as edge computing stores and processes data at the edge, the privacy-sensitive information associated with end-users could be exploited and be more vulnerable than within cloud servers.
 
 Moreover, for applications like smart grids or sensor networks, an adversary could report false data, modify the other user data, tamper with their smart meter, or spoofing IP addresses, further disrupting sensor management's effectiveness IoT systems.
-
-\textcolor{blue}{TODO: current security and privacy concerns in the cloud and edge computing}
 
 \subsection{Context awareness}
 
@@ -302,8 +292,6 @@ On this matter, the MEC architecture provides the advantage of data locality, wh
 
 Obtaining energy efficiency in both data processing and transmission is an essential open issue. Several directions have been proposed for handling such issue: more efficient data transmission and compression technologies, data caching mechanisms for reusing collected data in time-tolerant applications, middlewares to improve availability and compress data in case of continuous and long-duration monitoring of data.
 
-\textcolor{blue}{TODO: expand the listed solutions}
-
 \section{System design}
 \label{sec:technicals}
 
@@ -311,18 +299,16 @@ Having illustrated the challenges of this thesis' vision, this chapter presents 
 
 \subsection{Addressed challenges}
 
-This thesis attempts to provide some groundwork on how to address the following challenges within the list mentioned in the previous section:
+This thesis attempts to provide some groundwork on how to address the following challenges within the list discussed in Section §\ref{sec:challenges}:
 
 \begin{enumerate}
     \item \emph{Service orientation}: the web architecture is proposed as the substrate for the pervasive communication between services in the continuum, and the Representational State Transfer (REST) (§\ref{sec:web}) is the natural architectural style to follow so that services can communicate uniformly. Furthermore, the author presents Open Service Broker (§\ref{sec:osb}) platform to allow independent vendors and developers to provide services running on popular service orchestrators;
-    \item \emph{Orchestration}: Kubernetes (§\ref{sec:kubernetes}) is proposed as an orchestrator for resource orchestration, workload orchestration and service orchestration of the continuum. \textcolor{blue}{TODO: define orchestration types before} On this matter, Kubernetes is extended to support the orchestration of IoT devices with an attempt to overcome the heterogeneity and unreliability of the underlying environment;
+    \item \emph{Orchestration}: Kubernetes (§\ref{sec:kubernetes}) is proposed as an orchestrator for resource orchestration, workload orchestration and service orchestration of the continuum. On this matter, Kubernetes is extended to support the orchestration of IoT devices with an attempt to overcome the heterogeneity and unreliability of the underlying environment;
     \item \emph{Virtualisation}: WebAssembly (§\ref{sec:webassembly}) is used as platform-agnostic virtualisation technology to provide lightweight sandboxing capabilities on every node of the continuum based on Software Fault Isolation and Control Flow Integrity. Importantly, WebAssembly is a portable bytecode that is a compilation target of potentially any programming language, both the ones that use garbage collection (e.g. Go, JavaScript, and Python) and those that do not (e.g. C, C++, and Rust);
     \item \emph{Dynamic configuration}: the combination of a small WebAssembly interpreter and the low-overhead binary format of the bytecode result in intriguing opportunities for dynamic configuration of IoT devices;
     \item \emph{Interoperability}: REST is a natural choice to support high-level interoperability between services as well. A contribution of this thesis is the implementation of the CoAP (§\ref{sec:coap}) protocol to expose constrained devices' capabilities as REST resources. Such resources are then made available within the Kubernetes cluster, easily accessible as RESTful services. The Akri project (§\ref{sec:akri}) is introduced to extend Kubernetes to support IoT devices. Its broker-based architecture offers a compelling solution to the heterogeneity of the Internet of Things. Similarly, the Open Service Broker allows a similar opportunity to work around the interoperability issue between cloud providers via a broker-based architecture;
     \item \emph{Portability and Programmability}: the thesis suggests using recent efforts in extending and standardising Docker images to support the distribution of arbitrary binary files, notably WebAssembly applications instead of container filesystems. This solution significantly improves the integration with existing development tools and lowers the entry barrier for developing applications in the continuum. The Rust (§\ref{sec:rust}) programming language is then argued as the most sensible choice for providers to implement the infrastructure and developers to realise their applications, especially because of the tight integration to the aforementioned WebAssembly technology;
 \end{enumerate}
-
-\textcolor{blue}{Table to better visualize the relationship between technologies and challenges}
 
 Due to the ample problem space, mobility, reliability, security, privacy, context awareness, and energy efficiency are not addressed in this thesis and are left as open research questions. Besides, by any mean, it is also not in the intentions of this thesis to be assertive in the technical solutions proposed here. The author proposes a technological ground for future work and later realises a proof of concept (POC) to argue the continuum's viability with today's technologies.
 
@@ -339,8 +325,8 @@ The most prominent characteristics of REST that makes it relevant as technology 
     \item Resource orientation: resources are an information abstraction that allows servers to make any information or service available, identified via Uniform Resource Identifiers (URIs). The REST architecture allows the server to own the original state of a resource, and the client negotiates and accesses a representation of it. The representation negotiation is suitable for interoperability, caching, proxying, and redirecting requests and responses. Such features enable seamless interoperation of services in the continuum through proxies, scalable architectures and better availability. Besides, under the REST architecture, web resources often advertise links to other resources creating a distributed web and resulting in an even more scalable and flexible architecture;
     \item Uniform interface: clients access these server-controlled resources in a request-response fashion using a small uniform set of methods with different semantics (GET, PUT, POST, and DELETE). This well-defined, limited set of methods makes REST significantly different from Remote Produce Calls (RPC). The requests are directed to resources using a generic interface with standard semantics that intermediaries can interpret. The result is an application that allows for layers of transformation and indirection independent of the information origin. Such characteristic has been fundamental for the Internet-scale, multi-domain, scalable information system called web. It will be increasingly necessary as the latter expands its scope to continuum computing. RPC mechanisms, in contrast, are defined in terms of language APIs, not network-based applications \cite{rest};
     \item High-level interoperability: besides the representation negotiation, the REST architectural style enables further interoperability between RESTful protocols through proxies or, more generally, intermediaries that behave like a server to a client and play a client with respect to another server. REST intermediaries play well with the assumption that not every device must offer RESTful interfaces directly. In several cases, notably in the Internet of Things, it may not be possible to change the underlying communication protocol. However, intermediaries allow exposing the resources through a RESTful API nevertheless. The interactions behind that RESTful interface are invisible and may include highly specialized protocols for the specific implementation scenario (e.g. OPC UA or MQTT) \cite{web-of-things};
-    \item Communication protocol independence: REST needs to be based on a protocol different from HTTP for constrained environments. HTTP is a powerful and well-tried protocol, but it is relatively expensive both in binary overhead and network resource usage. Part of the problem is that HTTP has undergone more than a decade of organic growth, leading to considerable implementation baggage that overwhelms small devices \cite{coap}. Fortunately, the REST architectural style is not strictly tied to HTTP, and new communication protocols like CoAP (§\ref{sec:coap}) can offer a very similar interface while guaranteeing more lightweight implementation, less demand for network bandwidth, lower latency and more energy efficiency among many features;
-    \item Machine-to-Machine communication (M2M): communication protocols must be specifically designed for efficient M2M communications without introducing overhead in network load, delay, and data processing. In the M2M environments typical of IoT applications (and of the continuum by extension), devices must discover each other and their resources. Resource discovery is common on the web. One form of web discovery occurs when a user access a server's default resource (such as \emph{index.html}), which often includes links to other web resources available on that or related servers. Machines can also perform web discovery if standardized interfaces and resource descriptions are available. New approaches from the IETF include the well-known resource path \emph{/.well-known/scheme} (RFC 5785) and the HTTP link header (RFC 5988). In the IoT, we are dealing with autonomous devices and embedded systems. Therefore the importance of uniform, interoperable resource discovery is much greater than on the current web; \textcolor{blue}{TODO: REST for service discovery}
+    \item Communication protocol independence: REST needs to be based on a protocol different from HTTP for constrained environments. HTTP is a powerful and well-tried protocol, but it is relatively expensive for both binary overhead and network resource usage. Part of the problem is that HTTP has undergone more than a decade of organic growth, leading to considerable implementation baggage that overwhelms small devices \cite{coap}. Fortunately, the REST architectural style is not strictly tied to HTTP, and new communication protocols like CoAP (§\ref{sec:coap}) can offer a very similar interface while guaranteeing more lightweight implementation, less demand for network bandwidth, lower latency and more energy efficiency among many features;
+    \item Machine-to-Machine communication (M2M): communication protocols must be specifically designed for efficient M2M communications without introducing overhead in network load, delay, and data processing. In the M2M environments typical of IoT applications (and of the continuum by extension), devices must discover each other and their resources. Resource discovery is common on the web. One form of web discovery occurs when a user access a server's default resource (such as \emph{index.html}), which often includes links to other web resources available on that or related servers. Machines can also perform web discovery if standardized interfaces and resource descriptions are available. New approaches from the IETF include the well-known resource path \emph{/.well-known/scheme} (RFC 5785) and the HTTP link header (RFC 5988). In the IoT, we are dealing with autonomous devices and embedded systems. Therefore the importance of uniform, interoperable resource discovery is much greater than on the current web;
     \item Stateless: REST requires requests from clients to be self-contained, in the sense that all information to serve the request must be part of the request. Statelessness helps applications to scale, as persisting state in a highly distributed system brings challenges like consistency and hinders support for user mobility in the continuum space.
 \end{itemize}
 
@@ -359,7 +345,7 @@ Application developers require services and managed ones, whose infrastructure i
 
 Contrary to this vision, cloud standards have failed to gain traction. Therefore, the need to find mechanisms for bridging the heterogeneity gap between platforms and enabling data integration is more relevant than ever. Most orchestration technologies working across administrative domains use a broker to orchestrate resources at different levels within a provider (e.g. the cloud and the edge network) and across providers \cite{inter-cloud}. As the number of cloud vendors is limited, it is possible to build adapter and brokering layers that align access to different clouds. 
 
-On this matter, several stakeholders (namely the Kubernetes community, OpenShift, IBM and Google) have shown interest and contributed to working on a standard Open Service Broker (OSB) API \cite{osb}. Components that implement the OSB REST endpoints are referred to as service brokers and can be hosted anywhere the application platform can reach them. Service brokers offer a catalogue of services, payment plans and user-facing metadata. The main components of the OSB architecture are presented in Fig. \ref{fig:osb}. \textcolor{blue}{TODO: expand}
+On this matter, several stakeholders (namely the Kubernetes community, OpenShift, IBM and Google) have shown interest and contributed to working on a standard Open Service Broker (OSB) API \cite{osb}. Components that implement the OSB REST endpoints are referred to as service brokers and can be hosted anywhere the application platform can reach them. Service brokers offer a catalogue of services, payment plans and user-facing metadata. The main components of the OSB architecture are presented in Fig. \ref{fig:osb}.
 
 However, the actual value of the broker API is in abstracting service-specific lifecycle operations from the platform. The service broker translates RESTful requests from the platform to service-specific operations such as creation, update, deletion and generation of credentials to access the provisioned services from applications. Service brokers can offer as many services and plans as desired. Multiple service brokers can be registered with the marketplace so that the final catalogue of services is the aggregate of all services. The platform is thus able to provide a consistent developer experience for application developers consuming these services.
 
@@ -374,7 +360,7 @@ However, the actual value of the broker API is in abstracting service-specific l
 
 Kubernetes \cite{kubernetes} is an open-source framework designed to manage containerized workloads on clusters and originated from Google's experience with cloud services. Fig. \ref{fig:kubernetes} illustrates the main components of the architecture.
 
-The basic building block in Kubernetes is a Pod. A Pod encapsulates one or more tightly coupled containers that are colocated and share the same set of resources. Pods also encapsulate storage resources, a network IP, and a set of options that govern how the Pod's container(s) should run. A Pod is designed to run a single instance of an application enabling horizontal scaling by replicating multiple Pods across the nodes. The amount of CPU, memory, and ephemeral storage a container needs can be specified when creating a Pod. This information can then be used to make decisions on Pod placement. These compute resources can be specified as both requests and limits. \textcolor{blue}{TODO: expand architecture overview}
+The basic building block in Kubernetes is a Pod. A Pod encapsulates one or more tightly coupled containers that are colocated and share the same set of resources. Pods also encapsulate storage resources, a network IP, and a set of options that govern how the Pod's container(s) should run. A Pod is designed to run a single instance of an application enabling horizontal scaling by replicating multiple Pods across the nodes. The amount of CPU, memory, and ephemeral storage a container needs can be specified when creating a Pod. This information can then be used to make decisions on Pod placement. These compute resources can be specified as both requests and limits.
 
 Kubernetes allows for various container runtimes to be used from a technical perspective, with Docker natively supported by the platform. Thanks to the Container Runtime Interface (CRI) API standardisation, Kubernetes supports other container technologies such as containerd \cite{containerd} or Firecracker and gVisor mentioned before. Moreover, etcd \cite{etcd} is an open-source highly available distributed key-value store and a fundamental part in supporting Kubernetes in managing the cluster nodes and jobs. Specifically, etcd is used to store all of the cluster's data and acts as the single source of truth for all of the framework's components.
 
@@ -464,7 +450,7 @@ The granular memory encapsulation means that even untrusted modules can be safel
 Another critical safety feature of Wasm is the type system. Code must be validated before it can be executed safely. Validation rules for WebAssembly are defined succinctly as a type system. This type system is, by design, simple. It is designed to be efficiently checkable in a single linear pass to allow parallelisable binary decoding and compilation.
 Moreover, function pointers cannot be dereferenced directly. A call to a function pointer is translated into a function in a runtime table of valid entry points and types. The type of the function is checked dynamically against the expected type in the said entry. The dynamic signature check protects the integrity of the execution environment. In case of a type mismatch or an out of bounds table access, a trap occurs.
 
-With that being said, the design goals of WebAssembly strongly advocate for its suitability for this thesis: \textcolor{blue}{TODO: explain why each design goal is essential for the continuum}
+With that being said, the design goals of WebAssembly strongly advocate for its suitability for this thesis:
 
 \begin{itemize}
     \item \emph{Safe to execute}: protection for arbitrary code has traditionally been achieved by providing a managed language runtime that enforces memory safety, preventing programs from compromising user data or system state. However, managed language runtimes have traditionally not offered much for portable low-level code, such as C/C++ applications, that do not need garbage collection;
@@ -485,17 +471,11 @@ Despite the name WebAssembly, there has been a significant effort in the last ye
 \caption{WebAssembly is a portable binary format \label{fig:portability}.}
 \end{figure}
 
-At the time of writing, there are several Wasm runtimes for programs written in different languages to embed Wasm applications. On the other hand, different compilers can compile languages to Wasm, as shown in Fig. \ref{fig:portability}. Notably, the Wasm back-end for LLVM \cite{llvm} works for C, C++, and Rust. Commercial solutions have also been slowly but steadily gaining popularity. Cloudflare's Service Workers \cite{cloudflare-workers} began to offer support for creating and hosting serverless functions in WebAssembly. In March 2019, the edge-computing platform Fastly had announced an open-sourced Lucet \cite{fastly-lucet} that provides a compiler and runtime to enable native execution of Wasm applications and can instantiate a Wasm module within $50\mu s$, with just a few kilobytes of memory overhead. Parity is also actively experimenting with writing smart contracts using Wasm \cite{parity-wasm}.
+At the time of writing, there are several Wasm runtimes for programs written in different languages capable of embedding Wasm applications. On the other hand, multiple compilers can compile languages to Wasm, as shown in Fig. \ref{fig:portability}. Notably, the Wasm back-end for LLVM \cite{llvm} works for C, C++, and Rust. Commercial solutions have also been slowly but steadily gaining popularity. Cloudflare's Service Workers \cite{cloudflare-workers} began to offer support for creating and hosting serverless functions in WebAssembly. In March 2019, the edge-computing platform Fastly had announced an open-sourced Lucet \cite{fastly-lucet} that provides a compiler and runtime to enable native execution of Wasm applications and can instantiate a Wasm module within $50\mu s$, with just a few kilobytes of memory overhead. Parity is also actively experimenting with writing smart contracts using Wasm \cite{parity-wasm}.
 
 WebAssembly is currently under experimentation as a new method for running portable applications without containers because of its design features. This method leverages its binary format a portable vehicle to inherent memory and execution safety guarantees via its language features and a runtime with strong sandboxing capabilities. The Wasm security model enables the execution of multiple untrusted modules in the same process, thereby providing significantly more lightweight isolation compared to VMs and containers for multi-tenant serverless execution \cite{sledge}.
 
 This idea is still in its infancy, but there has been some interest in recent years, as shown by the works done in \cite{execution-model-serverless-edge} and \cite{faasm}. All these works focus primarily on serverless computing via WebAssembly, demonstrating the gain in popularity of such a computing model. As this thesis has stated before, however, if serverless were the only execution model, it would severely limit the variety of applications in the continuum.
-
-\subsubsection{Krustlet}
-
-\textcolor{blue}{TODO}
-
-The current WebAssembly System Interface (WASI) standard only contains a few methods for working with sockets, namely \emph{sock\_recv}, \emph{sock\_send}, and \emph{sock\_shutdown}, that are not enough for complete networking support. Adding support for connecting to sockets is fundamental to allow Wasm modules to connect to web servers, databases, or any service.
 
 \subsubsection{WebAssembly for embedded microcontrollers}
 
@@ -515,7 +495,7 @@ In the author's view, interpreting WebAssembly on microcontrollers remains an in
 \subsection{Rust}
 \label{sec:rust}
 
-As the continuum integrates computing throughout the network, the attack surface greatly increases consequently. Security has to be a top priority during software development, yet most of the infrastructure is programmed using the C, C++ programming languages. These two programming languages are chosen due to the low overhead on memory and the high processing performance. Embedded systems have favoured the two languages because of the need for low-level control over the hardware.  However, C and C++ are not particularly known for producing secure software, as evidenced by the large number of vulnerabilities reported against software written in them. Notably, the leading cause of security vulnerabilities are memory safety bugs like data races and buffer overflows. Even higher-level languages suffer from these kinds of safety issues. The Go language, upon which most modern distributed systems are built (namely Kubernetes), is not exempt from exploits based on data races \cite{go-data-races}.
+As the continuum integrates compute support across the network, the attack surface greatly increases consequently. Security has to be a top priority during software development, yet most of the infrastructure is programmed using the C, C++ programming languages. These two programming languages are chosen due to the low overhead on memory and the high processing performance. Embedded systems have favoured the two languages because of the need for low-level control over the hardware. However, C and C++ are not particularly renowned for producing secure software, as evidenced by the large number of vulnerabilities reported against software written in them. Notably, the leading cause of security vulnerabilities are memory safety bugs like data races and buffer overflows. Even higher-level languages suffer from these kinds of safety issues. The Go language, upon which most modern distributed systems are built (namely Kubernetes), is not exempt from exploits based on data races \cite{go-data-races}.
 
 On the other hand, Rust is a strongly-typed, compiled language that uses a lightweight runtime similar to C. Unlike many other modern languages, Rust is an attractive choice for predictable performance because it does not use a garbage collector. It provides strong memory safety guarantees by focusing on "zero-cost abstractions", meaning that safety checks are done at compile-time and runtime checks (e.g. out-of-bounds access) have the minimum overhead and come with a predictable cost.
 
@@ -523,16 +503,7 @@ Not all operations can be verified to be memory safe at compile time. One exampl
 
 In the Rust community, there is a strong emphasis on building safe abstractions with almost zero runtime cost. Safe Rust code is guaranteed to be free of null or dangling pointer dereferences, invalid variable values (e.g. casts are checked), reads from uninitialized memory, unsafe mutations of shared data, and data races, among other misbehaviours.  The borrow checker, the most innovative feature of the language compiler, runs as part of the compilation process and catches bugs like just mentioned misbehaviours. Security cannot be achieved without memory safety, so it is fundamental that the latter is a property of the language and not a developer's concern only.
 
-% The main four aspects of Rust memory safety are:
-
-% \begin{itemize}
-%     \item Ownership: the compiler tracks the lifetime of resources, like memory allocations, through variable assignments and function calls. A resource assigned to a variable is said to be owned by the variable. Passing a variable to a function causes the resource's ownership to be transferred to the callee; this operation is known as a move in Rust terminology. After moving the resource out of a variable, the variable can no longer access the resource. When a variable goes out of scope, the resource it owns is freed, i.e. the destructor is called;
-%     \item References: when a move is not desired, borrowing can be used. Borrowing a value creates a reference to it. References in Rust are pointers that are guaranteed to be valid at compile time. References are never null and always point to a live and valid memory location. The Rust programming language provides two kinds of references to cope with unsynchronized mutation: immutable references and mutable references. At any time, the language allows many immutable references to the same memory location \emph{or} a single mutable reference to exist;
-%     \item Lifetime: the compiler uses lifetimes to track the liveness of variables. The borrow checkers checks that borrows do not outlive (have a span longer than) the lifetime of the data they refer to;
-%     \item Concurrency: Rust provides two marker traits in the core library used to build concurrency primitives: Send and Sync. Send types can be transferred across thread boundaries, whereas Sync types are safe to share references between threads. Values are required to implement these traits to be accessed concurrently. Concurrent access is limited neither to two or more cores accessing the value in parallel. Single-core runtimes can likewise access a value concurrently. Examples of the latter scenario include POSIX signal handlers on a single-core system, time-sliced threads running on a single-core system, and interrupt handlers on an embedded system.
-% \end{itemize}
-
-In the author's view, Rust is a strongly recommended choice as the implementation language for the continuum's infrastructure. Rust is one of the few alternatives to C and C++ that can equally compete in performance, low-level control and cross-platform support. Its use cases are not limited to system development, however. Although initially advertised as a system language, Rust is nowadays described as a language to build \emph{any} reliable and performant software. Use cases range from embedded systems and Operative Systems to web servers and user interfaces (e.g. via WebAssembly on the browser). Thanks to its vast community of open-source libraries and productivity tools, it can be a sensible alternative even for high-level services.
+In the author's view, Rust is a much recommended choice as the implementation language for the continuum's infrastructure. Rust is one of the few alternatives to C and C++ that can equally compete in performance, low-level control and cross-platform support. Its use cases are not limited to system development, however. Although initially advertised as a system language, Rust is nowadays described as a language to build \emph{any} reliable and performant software. Use cases range from embedded systems and Operative Systems to web servers and user interfaces (e.g. via WebAssembly on the browser). Thanks to its vast community of open-source libraries and productivity tools, it can be a sensible alternative even for high-level services.
 
 Its toolchain is backed by the LLVM modular compiler infrastructure, which Rust relies on for translating high-level code from languages such as C++ to its intermediate representation (IR). In addition to code translation, LLVM also provides several tools that aid in optimisation and dead code elimination. Thanks to the integration of LLVM, the Rust compiler rustc can transform this IR to generate WebAssembly binary code. The union of Rust and WebAssembly constitutes a powerful combination. Developers can write source code in Rust to achieve high productivity and efficient memory-safe applications. On the other hand, WebAssembly can contribute to the universal portability of such binaries without compiling or distributing multiple versions (e.g. Docker image versions). 
 
@@ -544,7 +515,7 @@ The Rust compiler rustc supports a wide range of platforms and architectures as 
 
 A further step towards the maturity of Rust as a language for embedded systems is the framework Real-Time Interrupt-driven Concurrency (RTIC) \cite{rtic}, previously known as Real-Time For the Masses (RTFM) \cite{rtfm}. RTIC is a framework developed by the Embedded Systems group at the Luleå University of Technology (LTU) for leveraging the interrupt controller (shortly explained) to schedule tasks of different priority. At the same time, the risk of deadlock is mitigated thanks to all resource-accesses being handled by the Stack Resource Policy (SRP) \cite{stack-resource-policy}.
 
-Stack Resource Policy is a method to handle resource access in real-time systems with a single shared stack. RTIC uses SRP to handle access to resources, and it guarantees a race and deadlock-free preemptive execution, along with bounded priority inversion. Additionally, the model does not use excessive memory for the stack since all the tasks share a common stack space.
+The Stack Resource Policy is a method to handle resource access in real-time systems with a single shared stack. RTIC uses SRP to handle access to resources, and it guarantees a race and deadlock-free preemptive execution, along with bounded priority inversion. Additionally, the model does not use excessive memory for the stack since all the tasks share a common stack space.
 
 RTIC implements the SRP using hardware interrupts. An interrupt signal is a hardware-generated event that usually occurs asynchronously with respect to the program's execution. Examples of signals include an electrical pin changing its logical state from 0 to 1 or vice versa, a timer reaching a specific value, or data becoming available on some communication interface. In response to these signals, the processor executes an interrupt handler, a special subroutine. Interrupts also have an associated priority level. In the ARM Cortex-M architecture case, all interrupts have higher priority than the thread mode, reserved for the common procedures, so handlers will preempt code running in thread mode.
 
@@ -556,7 +527,7 @@ The way the NVIC handles interrupts \cite{interrupts-handling} exactly matches h
 
 \subsection{Architecture}
 
-Having presented the technology background, the architecture of this thesis is now presented. To the best of the author's knowledge, this thesis is the first to combine the vision of the computing continuum and the proposal of a technology baseline, whose sensibility is demonstrated with a Proof of Concept (POC). Notably, the POC's goal is to prove that the technologies mentioned above can be integrated to support the realisation of the continuum's infrastructure layer. 
+To the best of the author's knowledge, this thesis is the first to combine the vision of the computing continuum and the proposal of a technology baseline, whose soundness is demonstrated with a Proof of Concept (POC). Notably, the POC's goal is to prove that the technologies mentioned above can be integrated to support the realisation of the continuum's infrastructure layer. 
 
 The infrastructure layer is composed of data and computational resources. The data can be generated by various streaming IoT devices (e.g. cameras, smartwatches, and smart infrastructure). The computational resources can be heterogeneous and distributed through the infrastructure, from the cloud to the edges.
 
@@ -597,87 +568,201 @@ One of the main benefits of containers is their flexibility in being deployed on
 \section{Evaluation}
 \label{sec:evaluation}
 
-% First, we evaluate our Sledge compiler aWsm and runtime on x86\_64 and AArch64 architectures using two systems:
+In this section, the author presents a performance evaluation of the Proof of Concept (POC) that implements the reference architecture presented in Fig. \ref{fig:architecture}. The evaluation uses a local cluster of 4 machines and a microcontroller constituted by:
 
-% \begin{itemize}
-%     \item MacBook Pro 15" 2018 with 6-Core Intel Core i7 2,2GHz and 16GB of RAM;
-%     \item Raspberry Pi 4 Model 3B+ with Quad-core Cortex-A53 (ARMv8) 64-bit SoC at 1.4GHz and 4 GB physical memory.
-% \end{itemize}
+\begin{itemize}
+    \item 4 Raspberry Pi 4 Model 3B+ with Quad-core Cortex-A53 (ARMv8) 64-bit SoC at 1.4GHz and 1 GB physical memory. The Raspberry 3B+ model has been chosen to showcase the feasibility of the presented technologies on limited low-powered machines, with only 1GB of total memory;
+    \item A STM32F407 microcontroller with ARM Cortex-M4 core, 512KiB flash storage, and 128KiB of memory. The device is also capable of many 32-bit floating-point operations.
+\end{itemize}
 
-% Sensor networks represent a crucial component in IoT environments \cite{edge-computing-survey}. For example, they can cooperate with RFID systems to better track things, get information about the position, movement, temperature, etc. Sensor networks are typically composed of a potentially high number of sensing nodes, communicating in a wireless multi-hop fashion.
+Raspberry Pi and STM32F407 microcontrollers are designed for moderately high computational performance, low unit cost, and power efficiency in edge computing environments. The author believes that this evaluation's results should generalize to other ARM machines and microcontrollers in the Cortex-M family.
 
-% Wireless sensor networks (WSNs) can provide various valuable data and are being utilised in several areas like healthcare, government and environmental services (natural disaster relief), defence (military target tracking and surveillance), hazardous environment exploration, and seismic sensing.
+On the software layer, this thesis uses Rust 1.53.0-nightly (07e0e2ec2 2021-03-24) and Alpine Linux aarch64 v3.12.1 as OS. Alpine Linux has been chosen as it is a much more lightweight alternative to Ubuntu, and it offers a built-in Raspberry Pi version available for download. An idle Ubuntu Server 20.0 consumes about 420MB, whereas Alpine Linux incurs only 50MB of memory.
 
-% Recent technological advances have made efficient, low-cost, and low-power miniaturised devices available for large-scale remote sensing applications. In this context, the timely processing of massive and streaming sensor data, subject to energy and network constraints and uncertainties, has been identified as the main challenge.
+\subsection{The application}
 
-% \subsection{Kubernetes}
+As a practical example to guide the architecture's implementation, the thesis applies the continuum concept to a flood warning system. The existence of preprocessed data in the local sensor-actuator network can be leveraged to support rescue teams. Thus, the distributed architecture of the continuum is proposed as a viable architecture for advanced telemetry systems with distributed intelligence.
 
-% - OSB is not meant for machines (M2M)
-% - The Device Plugin APIs is meant for hardware attached to a node, not for advertising edge nodes
+In a flood warning system, the telemetry stations acquire data from wireless sensors networks, process the data in a distributed manner, and locally determine potential levee breaking. Sensor networks represent a crucial component in IoT environments \cite{edge-computing-survey}. For example, they can cooperate with RFID systems to better track things, get information about the position, movement, temperature, etc. Sensor networks are typically composed of a potentially high number of sensing nodes, communicating in a wireless multi-hop fashion. Such networks can provide various valuable data and are being utilised in several areas like healthcare, government and environmental services (natural disaster relief), defence (military target tracking and surveillance), hazardous environment exploration, and seismic sensing.
 
-% \subsection{Web Assembly}
+The ideas and a large part of the implementation, which the thesis applies to the smart levee monitoring system, can also be applied to other modern data acquisition and distributed processing systems with similar requirements, including smart cities and smart agriculture. Risk assessment and early warning systems play a crucial role in minimizing the negative results of floods. Such systems may significantly contribute to detect a potential threat of a breach. Therefore, local flash floods may be dangerous because they occur in a short time, usually as a result of sudden heavy rainfall.
 
-% The startup latency for initiating a function instance in a FaaS platform can vary significantly: from a few milliseconds to several seconds. A function execution might be a “warm-start", reusing a VM or container from the previous event of the same function, or it might be a “cold-start", where a new VM/container has to be launched.
+The application implements a system based on the architecture proposed previously in Fig. §\ref{fig:architecture}:
 
-% Application developers employ workarounds to avoid startup delays, including artificially activating functions (to avoid container shutdown) or over-provisioning resources required to run their functions. On a container-based serverless computing platform in an edge computing environment, long-lived or overprovisioned containers can quickly degrade performance due to limited available resources. Setup and control of these features require multiple syscalls and IPC between container parent and child processes before a serverless function can begin executing. 
+\begin{itemize}
+    \item Measuring nodes: it is composed of sensor devices that collect data from the measuring layer, preprocess it and transmits it to the central part of the system for further processing. One challenging task of this layer is implementing the dynamic reconfiguration of the internal logic, as preprocessing can result in more accurate predictions. However, the optimal parameters are continuously evaluated by the cloud machine learning models. In this thesis, the software runtime is implemented with RTIC. The interrupt-driven Stack Based Policy allows the definition of several tasks (e.g. network handling and data collecting), establishing the proper priorities depending on the requirements, and requiring a minimal stack size. Most of the memory is reserved for the WebAssembly interpreter. The reconfiguration can thus be done by replacing the application via over-the-air by transmitting a minimal Wasm binary file;
+    \item Edge computing nodes: it provides a local database to store the information for the analysis and forecasting, which also happens locally. In a real-world environment, especially during flood threat scenarios, the communication channels may become unavailable, so the system must perform a localised flood risk assessment. Moreover, the gathered data can be processed in place. Only results can then be transmitted to the cloud to reduce the required bandwidth or minimize redundant information submitted. 
+    \item Cloud nodes: it stores the information for the machine learning training of the flood prediction model, a task which is typically delegated to the cloud datacentre because of the availability of powerful computational resources, such as specialized GPUs.
+\end{itemize}
 
-% Each Docker container consists of one or more separate processes, whereas each Wasm instance is contained within the same V8 process. This provides a Wasm-based solution the advantage of warmer caches and reduced context switch penalties, creating better potential for speedup when concurrently executing multiple serverless functions. Although in general, a container's overhead may be acceptable for long-running applications, this overhead quickly proves an impediment to meeting the low-latency demands of serving emerging IoT applications.
+On the other hand, the machine learning inference can happen on each node of the system. On normal operational conditions, the inference could be executed on the cloud to provide more accurate results. However, when an incident happens and the Internet connection is lost, the edge nodes must be ready to provide the analysis locally. In some cases, it may additionally be reasonable to execute the prediction on the measuring node themselves, assuming enough hardware capability. Such execution would achieve the lowest latency in critical scenarios. As a result, the computation must be capable of flowing dynamically in the continuum space.
 
-% Wasm's primary advantage over container-based solutions is the absence of a large cold start penalty. There are two reasons for this advantage. First, container runtimes such as Docker incur a large amount of overhead in ensuring their support for containers is as broad as possible.
+\subsection{Evaluation of WebAssembly for microcontrollers}
 
-% The Sledge runtime decouples the heavy-weight function linking and loading process from function instantiation process.
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-wasmi-2}
+\caption{Comparison of Wasm size (KiB) and Rust source size (KiB) \label{fig:b-wasmi-2}}
+\end{figure}
 
-% Many of the existing Wasm runtimes can exhibit significant overhead in properly sandboxing code.
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-wasmi-3}
+\caption{Comparison of Wasm size (KiB) and C dynamic library size (KiB) \label{fig:b-wasmi-3}}
+\end{figure}
 
-% We must provide a way for our solution to limit an application's execution time and maximum memory usage. In container-based platforms, this resource control is achieved via the Linux control groups feature. This feature allows one or more processes to be organized into groups that have their resources monitored and limited by the kernel. Maximum Memory Usage: current runtimes rely on WebAssembly's JavaScript API to perform this memory creation operation. The WebAssembly.Memory() API function allows us to set initial and maximum sizes for the linear memory to be created. Execution Time: nope.
+Fig. \ref{fig:b-wasmi-2} and Fig. \ref{fig:b-wasmi-3} present a comparison of the sizes of different Wasm binaries compiled from the Polybench \cite{polybench} modules. The Polybench benchmark suite offers relevant functions to embedded systems as it includes common matrix and statistical operations.
 
-% The use of WebAssembly in a serverless platform should not require application developers an undue amount of work in porting their existing code to the new runtime. Currently, support for many popular programming languages (e.g., C\#, Go, Python, Java) is in active development across numerous open-source projects.
+Fig. \ref{fig:b-wasmi-2} offers a direct comparison of binary size and source size. However, comparing with source code is rarely meaningful due to factors including the widespread use of conditional compilation and complex build systems. The purpose is to achieve an initial grasp of the Wasm binary size. The author has attempted to control for these effects by configuring the Rust toolchain to reasonable defaults. The compiler is configured to rely on LLVM to optimize the resulting code for code size. The toolchain also uses LLVM's link-time optimization (LTO) to ensure further size optimisation.
 
-% Creating several new programs and adapting existing popular libraries for use in WebAssembly, the amount of manual work involved was minimal.
+Once the compilation process is done, the result is a self-contained, sandboxed Wasm binary file ready for deployment onto the continuum.
 
-% There is an underlying issue with implementing network servers: there is no multi-threading support in WebAssembly - which means that a server running in WebAssembly is either going to be single-threaded, or its implementation would have to be significantly more complex (see Node.js's event loop ). At the same time, there is a WebAssembly threads proposal that would define operations for handling atomic memory access across threads, but it is only at stage 2 of the Wasm standardization process.
+The results show how the final Wasm binary size has no predictable correlation to the source size, despite being usually about 2x larger, with some exceptions. Modules like "correlation" show a significant increase in the Wasm size relative to source code lines. Such a variety of differences depends on the source code's specific instructions and the toolchain configuration. Notably, loops, inlined function and math functions can result in substantial differences in the output size because of the different optimisation techniques the compiler may take. Such unpredictability means that the Wasm toolchain is not immune to the compilers' famous idiosyncrasy, and developers must be careful always to check the final output.
 
-% \subsubsection{Wasm for microcontrollers}
+The author has also chosen the C dynamic library size as a more meaningful comparison since it is a close alternative to Wasm binary files. Both outputs have been compiled using the same LLVM toolchain and with the same optimisation flags. In such a case, the results undeniably favour the Wasm binary format as the C dynamic lib is often many times larger. The author has even removed some of the Polybench modules (namely \emph{cholesky, lu, ludcmp, nussinov, symm, syr2k, syrk, and trisolv}), which had a significantly larger C dynamic library size of 1.5MB (compared to about 5-10KiB in Wasm), which would make the other modules in the chart visually hard to evaluate. The comparison of Wasm files to containers would be even more favouring the former, as containers package a whole operative system filesystem. Even the smallest image base, "Alpine Linux Mini Root Filesystem", has an additional size of about 5.5MB uncompressed.
 
-% We use STM32F767ZIT6, a Cortex-M7 based microcontroller for evaluation of wasmi. It runs at 168MHz,128kB SRAM, and 5121KiB flash.
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-wasmi-4}
+\caption{Comparison of Wasm interpreter performance and Rust native performance \label{fig:b-wasmi-4}}
+\end{figure}
 
-% Linear memory is dynamically sized. It is extended in increments of a 64KiB page size. 
+Fig. \ref{fig:b-wasmi-4} offers an overview of the Wasm interpreter's execution performance on the STM32F407 microcontroller. Each Polybench benchmark has been run 15 times, following the same methodology described in \cite{wasm3-performance}. The results show a dramatic slowdown compared to the Rust native alternative, with a factor of 100-400 times. Such results are discouraging for the idea of using Wasm interpreters on microcontrollers to support dynamic reconfiguration.
 
-% Running SFI on resource-constrained microcontrollers presents a number of challenges.
+However, it is fair to note that the Wasm interpreter wasmi \cite{wasmi} was adapted to work on embedded devices and was not meant to design highly constrained devices. wasmi is developed by Parity, a blockchain company, and is thus used to offer a deterministic sandboxed execution context. As a result, execution performance is not paramount, unfortunately. The alternative interpreter wasm3, implemented in the C language, shows a much more minor execution penalty, in the order of 30-60x slower than native \cite{ewasm}. Thus, it is reasonable to believe that future efforts may allow a comparable result for the Rust-built wasmi interpreter. Nevertheless, 30x times execution over time can still arguably deter the usage of interpreters in microcontrollers. Future work should also provide a benchmark with respect to other popular interpreted languages like Lua, Python, and JavaScript.
 
-% \begin{itemize}
-%     \item Memory consumption. Wasm's 64 KiB pages are too large for microcontrollers that often have between 16-256 KiB SRAM. \cite{ewasm} implementation departs from the standard by allowing byte-granularity, 1 KiB page-granularity
-%     \item Performance. Though the bounds checking on linear memory and the indirect checking of function pointer invocations are necessary for proper isolation, they add overhead over non-sandboxed code.
-%     \item Assumed ISA features. Wasm specifically is a 32-bit virtual architecture and supports floating-point, but not all Cortex-Ms do. In such cases, floating-point emulation is broadly deployed.
-% \end{itemize}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-wasmi-1}
+\caption{Comparison of Wasm size (KiB) and heap overhead (KiB) \label{fig:b-wasmi-1}}
+\end{figure}
 
-% \subsection{Rust}
+As an additional benchmark, the author has evaluated the heap overhead of interpreting Wasm on microcontrollers. Fig. \ref{fig:b-wasmi-1} presents a significant increase in the heap usage with respect to the Wasm size. However, the most crucial concern is that such a heap increase is not predictable. Such unpredictability does not come in favour of the usage of WebAssembly on microcontrollers, as embedded devices have extremely limited resources and must have predictable behaviours to ensure proper real-time execution. Such deficiency is an intrinsic issue with interpreters, as the code instructions and execution data structures must be stored in heap memory. This behaviour contrasts with the binary executables that can save and access instructions and read-only data on the more capable flash storage. Writable data is saved in the stack instead, and it can be calculated with accuracy in many production-grade toolchains like C and Ada.
 
-% Code generation is done via Rust macros 41 detailed in the advanced features part of the Rust book. Macros are what is known as metaprogramming, which essentially is writing code that manipulates code. 
+Generally speaking, running Wasm on resource-constrained microcontrollers has also presented other challenges.
 
-% The downside to implementing a macro instead of a function is that macro definitions are more complex than function definitions because you're writing Rust code that writes Rust code. Due to this indirection, macro definitions are generally more difficult to read, understand, and maintain than function definitions.
+\begin{itemize}
+    \item Memory consumption: Wasm's 64 KiB pages are too large for microcontrollers that often have between 16-256 KiB SRAM. Dynamic allocation is a common requirement even for embedded systems. However, Wasm specifies that the sandbox should expand the memory by 64KiB chunks, which is not granular enough for constrained embedded systems. As a consequence, the wasmi interpreter has been modified to allocate non-standard pages of 16KiB. Otherwise, it would have been impossible to execute any benchmark on the STM32F407 microcontroller, as additional heap space is required for the interpreter's internal structures and the Wasm instructions themselves. There is a need for a Wasm embedded standard that supports smaller granularity of memory pages;
+    \item Performance: although the bounds checking on linear memory and the indirect checking of function pointer invocations are necessary for proper isolation, they add overhead over non-sandboxed code. The authors in \cite{ewasm} provide a deep evaluation of different SFI alternatives in WebAssembly;
+    \item Assumed ISA features. Wasm specifically is a 32-bit virtual architecture and supports floating-point, but not all Cortex-Ms do. In such cases, floating-point emulation must be provided by the programmer. In Rust, this solution is typically accomplished utilising the \emph{libm} library, a port of MUSL's libm containing the most popular math operations. MUSL is a lightweight alternative to the conventional libc and employed as an alternative in Alpine Linux. However, the Rust ecosystem is less mature and complete on this matter compared to the C version, and the many floating-point functions may still be missing in the port. 
+\end{itemize}
 
-% The tooling for debugging rust macros are not easy to use, even though tools like cargo-expand 42 significantly improves the situation. It produces the expanded output of the macro, meaning that the code passed to the compiler can be inspected in order to verify correct operation.
+\subsection{Evaluation of CoAP for microcontrollers}
 
-% \subsection{RTIC}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-coap-1}
+\caption{Average response time for concurrent CoAP requests \label{fig:b-coap-1}}
+\end{figure}
 
-% RTFM implements best-effort scheduling based on static task priorities. For static analysis under Rate Monotonic scheduling, minimum inter-arrival is assumed to be larger or equal to the deadline of the task.
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-coap-2}
+\caption{Number of dropped packets as concurrency increases \label{fig:b-coap-2}}
+\end{figure}
 
-% Static analysis and in particular, Worst-Case Execution Time (WCET) and stack usage analyses are required components of the certification process of safety-critical software. Due to their age and popularity, plenty of C and C++ tooling exists for static analysis: from sanitizers that find data races and memory bugs in software to static stack usage analysis tools that find the worst-case stack usage of an application. Only a handful of these tools, namely sanitizers, can be used on Rust programs.
+Fig. \ref{fig:b-coap-1} and Fig. \ref{fig:b-coap-2} present the experimental evaluation of the CoAP implementation in Rust. The STM32F407 is equipped with a LAN8720 ETH 10/100Mbs module connected to the microcontroller via cheap jumper wires. On the software stack, the device offers a CoAP server running on the RTIC runtime. Such a server is put under stress by firing concurrent requests from a machine connected to the same network, and the test is repeated 15 times. As expected, the response times increase as the number of concurrent requests rises. However, such escalation of response time is not exponential and presents a good smoother curve. The standard deviation range is also significantly large, as the embedded device cannot provide timely responses. Further experiments should compare the CoAP server with an equivalent HTTP or MQTT server running on the same RTIC runtime.
 
-% To indicate that these pointers need special attention from the programmer, the language has the concept of unsafe operations. Unsafe operations cannot be proven to be memory safe by the compiler; the programmer must manually verify that they are indeed memory safe. This makes them easy to spot and facilitates the process of auditing Rust code for memory bugs.
+On a different note, the number of dropped packets dramatically increases as the concurrency grows. Such behaviour is expected, and the experimental logs provide a plausible rationale. As the number of concurrent requests increases, the microcontroller network buffers cannot cope with the volume, and the packets are even truncated before being parsed. A deeper analysis should check whether the issue can be solved by allocating more buffer space or, on the contrary, is a hardware-related limit. Admittedly, the hardware network connection via jumper wires is not the most robust solution.
 
-% When writing embedded Rust code, only a subset of the standard library is available: the core library.
+\subsection{Evaluation of Wasm as virtualisation technology}
 
-% One can adopt a custom allocator, e.g. heapless which is fallible by construction (allowing the user to directly face OOM upfront, thus allowing system availability to be maintained, even if the allocator runs out of resources.
+The following benchmarks measure how long it takes to create and boot a Wasm-based Pod, how the memory scales as the number of running Pods and concurrent instantiation increase, and how both of these compare to containers. The benchmark is a simple DateTime application that logs the current system time upon creation and goes into sleep. By going to sleep, the Pod does not complete, and the resources remain allocated. The log is later retrieved using the Kubernetes API to calculate the boot time. 
 
-% The problem that can arise with this layout is that the stack can grow too large and collide into the heap. This situation is called a stack overflow, or stack overrun.
+Wasm Pods run on Krustlet \cite{krustlet}, whereas container Pods are scheduler on the K3s \cite{k3s} Kubelet. Krustlet (a Kubernetes-rust-kubelet) is an experimental implementation of the Kubelet APIs that supports Wasm as virtualisation technology. It is designed to run as a Kubernetes Kubelet. Therefore, it listens to the Kubernetes API event stream for new Pods and runs them under a WASI-based runtime (notably, Wasmtime \cite{wasmtime}).
 
-% cargo-call-stack is a Cargo subcommand that performs whole program stack usage analysis of a Rust application and produces a DOT file that contains the call graph of the program where each node in the call graph is annotated with its individual stack usage and cumulative (worst-case) stack usage.
+On the other hand, K3s is a fully certified Kubernetes distribution geared towards resource-constrained environments backed by the Rancher company. As the Kubernetes community started seeing real demand for orchestration on edge, the Rancher team decided to make it a first-class open-source project. K3s is implemented in Go and packaged as a single binary of about 50MB in binary size. It bundles everything needed to run Kubernetes, including the container runtime (namely containerd \cite{containerd}), a Container Network Interface implementation (Flannel \cite{flannel}), a DNS server (CoreDNS \cite{coredns}), and a simple ingress load balancer (Traefik \cite{traefik}). The OS dependencies are also minimal and well supported by all the modern Linux kernels.
 
-% if things go wrong and the documentation does not specify how things are done, many developers turn directly to the code for understanding the implementation details. As discussed previously, understanding and then debugging Rust macros is one major roadblock many get dissuaded by due to the general complexity.
+Krustlet has been customised to measure the time it starts to instantiate the Pod's necessary Wasm runtime. On the other hand, K3s and Kubernetes do not provide tools explicitly meant to obtain such value, and the author does not have the Go knowledge to modify and re-compile K3s. As a result, the start time is collected from the Kubernetes Pod metrics, which provides the time at which the Kubelet receives the request to provision the container. The provision request is followed by the container image's pull and then instantiation of the container itself. To avoid incurring the additional image pull time, the author explicitly sets the Pod configuration to use the cached image and ensure that the Kubelet always has such cache. Lastly, the granularity of this start time metric is only up to seconds.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-krustlet-1}
+\caption{Average boot time for concurrent Wasm Pods \label{fig:b-krustlet-1}}
+\end{figure}
+
+Fig. \ref{fig:b-krustlet-1} shows the average boot time, along with the standard deviation, of both the Kubernetes Pods containing Wasm binaries and the conventional Pods containing containers. The benchmark concurrently deploys the Pods and repeats the process 15 times. Pods are not deleted between iterations so that the memory utilisation as the number of running Pods increases is also collected.
+
+The experimental results show that a Wasm-based virtualisation strategy incurs less boot time. However, the more mature container Kubelet presents a more linear curve and minor standard deviation as the number of concurrent deployments increases. Because efficiency concurrency is essential as much as a fast boot time, there is no clear winner. Nevertheless, such preliminary results are encouraging the adoption of Wasm as an alternative to the container technology since efficiency is not a paramount design goal in the early implementations of Krustlet and Wasmtime. Future versions will probably provide even more competitive results.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-krustlet-2}
+\caption{Average memory usage of concurrent Wasm Pods \label{fig:b-krustlet-2}}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-krustlet-3}
+\caption{Average memory usage of concurrent K3s Kubelet Pods \label{fig:b-krustlet-3}}
+\end{figure}
+
+Fig. \ref{fig:b-krustlet-2} and Fig. \ref{fig:b-krustlet-3} offer an overview of the memory overhead of the two different virtualisation solutions. The memory utilisation has been tracked using the Linux \emph{pmap} utility, which allows the analysis of the system memory allocated by a process granularly. In Krustlet's case, the task is trivial as Wasm modules run in the same process as the host, and only additional Pods can significantly increase the heap memory, as Rust is not garbage collected. On the contrary, K3s instantiates a process for each new container. It is much more difficult to evaluate each Pod's memory cost, as the Go language uses the heap for every aspect. Therefore, in the latter case, we resort to measuring the system memory using the Linux \emph{free} program. Fortunately, since the author uses Alpine Linux with a minimal configuration to support just enough to run Kubernetes, the system measurements are relatively free from other processes' contamination.
+
+In such a comparison, Wasm Pods are the winners in memory usage per Pod unit, but the K3s Kubelet can achieve higher total memory utilisation. Notably, the K3s Kubelet can completely use the available memory until the machine cannot even function properly. On the other hand, the Krustlet node fails to allocate new Pods even when there is sufficient memory space. The allocation results in Out Of Memory error, and the node is still completely functional. To the best of the author's knowledge, the potential cause is the Rust vector allocation strategy, which doubles the capacity when its current limit is reached. As a result, when Krustlet's heap reaches about 256MB, the process demands the kernel an additional 512MB of space. Such demand cannot be met, and the Rust runtime returns an Out Of Memory error. Further analysis of the Wasmtime implementation is needed to validate this hypothesis. 
+
+On a different note, as Go is a garbage-collected language, the heap utilisation is highly unpredictable. The Go Garbage Collector (GC) uses a pacer to determine when to trigger the next GC cycle \cite{go-gc}. Pacing is modelled like a control problem where it is trying to find the right time to trigger a GC cycle to hit the target heap size goal. Go’s default pacer will try to trigger a GC cycle every time the heap size doubles. The net result is that the K3s shows an increasing memory usage even during idle periods, as it processes the ordinary Kubernetes operations to maintain functionality. Besides, as the GC kicks in only when the heap size doubles, the hardware memory is underutilised. The freeable memory should be used for running additional pods, achieving better Pod packing. Such efficiency is crucial for edge nodes that have already limited hardware capabilities but must support multiple workloads. This consideration is another point favouring the adoption of the Rust language to develop the continuum infrastructure.
+
+Lastly, in both technologies, the memory overhead per Pod is relatively constant. However, the Wasm Pod incurs approximately 2x-3x less overhead, allowing more efficient packing of applications on the same machine. For example, the Raspberry Pi 3B+ can support up to 80 Wasm Pods and still have 500MB of free memory (although no more Pods can be allocated). In contrast, the K3s Kubelet achieves maximum memory utilisation of about 55 container Pods, and the entire node becomes completely unresponsive. The author believes that such results pledge to favour Krustlet, as the premature Out Of Memory error can be fixed on later Wasmtime versions. In contrast, the container overhead is already the state of the art of a decade of research in container technologies.
+
+\begin{table}
+\caption{Memory usage of Kubernetes on edge Raspberry Pi}
+\begin{tabular}{|l|l|}
+\hline
+Software stack & Idle memory usage \\
+\hline
+Alpine Linux 3.12.1 & ~50MB \\
+Alpine Linux + K3s master & ~304MB \\
+Alpine Linux + K3s agent & ~110MB \\
+Alpine Linux + Krustlet & ~120MB \\
+\hline
+\end{tabular}
+\label{tab1}
+\end{table}
+
+\subsection{Evaluation of Wasm for Machine Learning}
+
+In the field of machine learning, numerical precision matters. WASM natively supports floating-point arithmetic, whereas other popular machine learning backends like WebGL requires hardware extensions. Not all devices support this extension, which means a GPU-accelerated machine learning is not supported on some devices (e.g. older mobile devices which can run Wasm instead).
+
+Moreover, GPU drivers can be hardware-specific and different devices can have precision problems. On iOS, 32-bit floats are not supported on the GPU. Consequently, TensorFlow \cite{tensorflow}, the popular machine learning library developed by the Google Brain team, falls back to 16-bit floats, causing precision problems. In WASM, computation always happens in 32-bit floats and thus have precision parity across all devices. Such numerical predictability is also paramount in blockchain applications, as proved by Parity's interest in WebAssembly \cite{parity-wasm}.
+
+The author has compiled the flood prediction model to Wasm, and Fig. \ref{fig:b-krustlet-4} evaluates the model's response time with increasing concurrency. The flood prediction model is a conventional Deep Neural Network constituted by three dense layers of 32, 16 and 1 units. The model has been trained on the cloud using the traditional machine learning framework Keras \cite{keras}. Keras provides a Python interface for artificial neural networks on top of the TensorFlow library.
+
+As of the time of writing, TensorFlow provides a WebAssembly (WASM) backend for both the browser and Node.js \cite{tf-wasm}. However, the library itself cannot be easily compiled to WebAssembly yet, to the best of the author's knowledge. As a result, the trained Keras model is saved to the ONNX  \cite{onnx}standard format and executed by the \emph{tract} library \cite{tract}. tract is a Rust neural network inference library that can read Tensorflow or ONNX models and run data through them. It also supports compilation to Wasm as a target. The resulting Wasm module exports a public function through which Krustlet can pass the model inputs. 
+
+At the time of writing, it has not been possible to implement a web server directly on top of the inference model and compile the application to Wasm. There is an underlying issue with implementing network servers with Wasm as there is neither complete network nor multi-threading support yet.
+
+First, the current WebAssembly System Interface (WASI) standard only contains a few methods for working with sockets, namely \emph{sock\_recv}, \emph{sock\_send}, and \emph{sock\_shutdown}, that are not enough for complete networking support. Adding support for connecting to sockets is fundamental to allow Wasm modules to connect to web servers, databases, or any service. As a workaround, this thesis has implemented the capability to invoke functions in Wasm Pods on top of the Kubernetes \emph{exec} API \cite{k8s-exec}, which is however designed to execute commands in a running container from the Kubernetes command line, and it is an undocumented interface.
+
+Second, the lack of concurrency primitives means that a server running in WebAssembly is single-threaded, or its implementation has to be significantly more complex (e.g. Node.js's event loop). This limitation severely narrows the workload capabilities of the server. The WASM spec recently got a thread and atomics proposal with the goal to speed up multi-threaded applications. The proposal is still in the early stage, meant to seed a future Working Group, and it is only implemented under the experimental flag in web browsers.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/b-krustlet-4}
+\caption{Latency of the Wasm flood prediction model with varying concurrency \label{fig:b-krustlet-4}}
+\end{figure}
+
+Fig. \ref{fig:b-krustlet-4} illustrates the flood prediction response times within a Wasm Pod, in the same fashion of serverless functions. As expected, the response times increase linearly with varying concurrency. Because the WASI standard does not support multi-threading, the requests are completed sequentially.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-\textcolor{blue}{TODO}
+This thesis has presented a computing continuum vision and the challenges that the industrial and academic community will face implementing such a paradigm. The author has also presented an effort to suggest a potential architecture for the infrastructure and implemented a Proof of Concept of such architecture based on the technologies available at the time of writing. Such POC has been applied to a real-world use case of flood prediction as well. The net result is a working prototype based on the presented architectural and software concepts. The implementation is publicly available on GitHub \cite{fedra-thesis}. 
+
+In the author's view, we are clearly at a convergence point after the last decades of technological advances. The computation must be free to flow in the continuum between the ends of the network. However, a significant number of challenges (§\ref{sec:challenges}) lie ahead, and an even greater effort from all the stakeholders is required.
+
+The WebAssembly standard is a potential enabling technology for the realisation of the continuum, but it is still in its infancy. As shown by the experimental results, WebAssembly is mainly suited for pure computational functions. The lack of multi-threading and a mature network interface severely limit the space of real-world applications. Most of the production use cases of WebAssembly involve pure computation scenarios, typically machine learning and relatively simple serverless functions. Other projects like wasmcloud \cite{wasmcloud} (previously named wasCC) try to overcome the API limitations by providing custom system capabilities, to the detriment of the platform-independency feature of WebAssembly, unfortunately.
+
+However, it is undeniable that the Wasm bytecode format has attracted interest from multiple parties like Cloudflare, Fastly, and Parity, despite WebAssembly was initially conceived for efficient execution in a browser context. These commercial companies are interested in its performance, portability and sandboxing capabilities for different scopes than browser execution. Other companies, namely Mozilla, Intel, Red Hat and Fastly again, have joined the efforts to the birth of the Bytecode Alliance \cite{bytecode-alliance}. As stated by the members, the official goal of the alliance is to "establish a capable, secure platform that allows application developers and service providers to confidently run untrusted code, on any infrastructure, for any operating system or device, leveraging decades of experience doing so inside web browsers."
+
+Seeing such public announces from notorious industry leaders may bring excitement at first, but it is hard to state if such commitment is real or just a side project between many. In August 2020, Mozilla laid off most of its employees \cite{mozilla-lies-off}, notably the whole Wasm team and a large slice of the Rust core team. Many developers have been employed by other companies interested in Rust and Wasm, e.g. Fastly and Amazon. However, it is hard to tell if they will be able to maintain the commitment. For example, active development of wasm-bindgen \cite{wasm-bindgen} has ceased, even though wasm-bindgen is the most popular tool for high-level interaction between Wasm and the JavaScript browser runtime.
+
+This evident interest pattern but lack of financial and stable support from commercial companies is typical in WebAssembly and Rust. Companies are still gaining interest in hiring Rust developers \cite{aws-rust} to modernise their existing infrastructure rather than committing to new technologies like WebAssembly. For example, despite Intel being part of the Bytecode Alliance and author of a Wasm runtime for microcontrollers (wasm-micro-runtime \cite{wasm-micro-runtime}), there has not been progressing in discussing and proposing memory pages smaller than 64KiB in the WebAssembly standard, despite the issue being well-known for years \cite{wasm-64}.
+
+Microsoft has been notably providing more financial support compared to the other cloud providers. The development of both the Krustlet project and the Akri project is lead by developers of the Deis Labs team \cite{deislabs}, whose members maintain several vital projects in the cloud community (notably Helm, the package manager for Kubernetes). As a result, the future perspective for Krustlet and Akri is brighter than other projects like wasm-bindgen. Both projects are still highly immature, but they are expressive in depicting the future direction of Wasm and Kubernetes as critical technologies of the computing continuum.
+
+Results show that Wasm-based Pods in Krustlet incur fixed low overhead in memory usage and can offer competitive boot times compared to more mature container solutions. The outcome is intriguing as these technologies (Krustlet and Wasmtime) are still in their infancy. Therefore performance or resource optimisation is not paramount.
+
+Throughout this thesis, Rust has been a constant underlying technology in every aspect of the infrastructure. In the author's view, when there is a need to push the boundaries of application, be it compute, memory, or IO, there is no substitute for lifting the hood, understanding the low-level behaviours, and figuring out how to run efficiently and safely. The Rust language offers a precious language built with such requirements in mind.
+
+As a concluding note, although the proposed architecture and the related technologies are still very immature, they open up a set of exciting opportunities for the continuum's realisation, which the author plans to investigate further in his future work.
