@@ -15,8 +15,8 @@ use stm32f4xx_hal as hal;
 
 static ETH_PENDING: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
 
-static mut RX_RING: Lazy<[RingEntry<RxDescriptor>; 8]> = Lazy::new(Default::default);
-static mut TX_RING: Lazy<[RingEntry<TxDescriptor>; 2]> = Lazy::new(Default::default);
+static mut RX_RING: Lazy<[RingEntry<RxDescriptor>; 15]> = Lazy::new(Default::default);
+static mut TX_RING: Lazy<[RingEntry<TxDescriptor>; 5]> = Lazy::new(Default::default);
 static mut ETH: OnceCell<Eth<'static, 'static>> = OnceCell::new();
 
 static mut IP_ADDRS: Lazy<[IpCidr; 1]> = Lazy::new(|| {
@@ -34,8 +34,8 @@ static mut SOCKETS_STORAGE: [Option<SocketSetItem>; 2] = [None, None];
 
 static mut SERVER_RX_METADATA_BUFFER: [UdpPacketMetadata; 10] = [UdpPacketMetadata::EMPTY; 10];
 static mut SERVER_TX_METADATA_BUFFER: [UdpPacketMetadata; 10] = [UdpPacketMetadata::EMPTY; 10];
-static mut SERVER_RX_PAYLOAD_BUFFER: [u8; 128] = [0; 128];
-static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 128] = [0; 128]; // Should be enough for CoAP
+static mut SERVER_RX_PAYLOAD_BUFFER: [u8; 20248] = [0; 20248];
+static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 2048] = [0; 2048]; // Should be enough for CoAP
 
 static mut SOCKETS: OnceCell<SocketSet<'static, 'static, 'static>> = OnceCell::new();
 static mut SERVER_HANDLE: OnceCell<SocketHandle> = OnceCell::new();
