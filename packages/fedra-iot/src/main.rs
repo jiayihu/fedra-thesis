@@ -129,7 +129,7 @@ mod app {
         });
     }
 
-    #[task(resources = [runtime, coap_server], capacity = 1, priority = 2)]
+    #[task(resources = [runtime, coap_server], capacity = 3, priority = 1)]
     fn server(cx: server::Context) {
         let mut runtime = cx.resources.runtime;
         let mut coap_server = cx.resources.coap_server;
@@ -176,7 +176,7 @@ mod app {
         })
     }
 
-    #[task(capacity = 2, priority = 4)]
+    #[task(capacity = 2, priority = 1)]
     fn socket(_: socket::Context) {
         let ready = network::check_socket_readiness();
 

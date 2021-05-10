@@ -15,8 +15,8 @@ use stm32f4xx_hal as hal;
 
 static ETH_PENDING: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
 
-static mut RX_RING: Lazy<[RingEntry<RxDescriptor>; 15]> = Lazy::new(Default::default);
-static mut TX_RING: Lazy<[RingEntry<TxDescriptor>; 5]> = Lazy::new(Default::default);
+static mut RX_RING: Lazy<[RingEntry<RxDescriptor>; 5]> = Lazy::new(Default::default);
+static mut TX_RING: Lazy<[RingEntry<TxDescriptor>; 15]> = Lazy::new(Default::default);
 static mut ETH: OnceCell<Eth<'static, 'static>> = OnceCell::new();
 
 static mut IP_ADDRS: Lazy<[IpCidr; 1]> = Lazy::new(|| {
@@ -26,19 +26,17 @@ static mut IP_ADDRS: Lazy<[IpCidr; 1]> = Lazy::new(|| {
     [ip_addr]
 });
 static mut NEIGHBOUR_STORAGE: [Option<(IpAddress, Neighbor)>; 16] = [None; 16];
-static mut NET: OnceCell<
-    EthernetInterface<'static, 'static, 'static, &'static mut Eth<'static, 'static>>,
-> = OnceCell::new();
+static mut NET: OnceCell<EthernetInterface<&'static mut Eth<'static, 'static>>> = OnceCell::new();
 
-static mut SOCKETS_STORAGE: [Option<SocketSetItem>; 2] = [None, None];
+static mut SOCKETS_STORAGE: [Option<SocketSetItem>; 1] = [None];
 
 static mut SERVER_RX_METADATA_BUFFER: [UdpPacketMetadata; 10] = [UdpPacketMetadata::EMPTY; 10];
 static mut SERVER_TX_METADATA_BUFFER: [UdpPacketMetadata; 10] = [UdpPacketMetadata::EMPTY; 10];
-static mut SERVER_RX_PAYLOAD_BUFFER: [u8; 20248] = [0; 20248];
-static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 2048] = [0; 2048]; // Should be enough for CoAP
+static mut SERVER_RX_PAYLOAD_BUFFER: [u8; 128] = [0; 128];
+static mut SERVER_TX_PAYLOAD_BUFFER: [u8; 1024] = [0; 1024]; // Should be enough for CoAP
 
-static mut SOCKETS: OnceCell<SocketSet<'static, 'static, 'static>> = OnceCell::new();
-static mut SERVER_HANDLE: OnceCell<SocketHandle> = OnceCell::new();
+static mut SOCKETS: OnceCell<SocketSet<'static>> = OnceCell::new();
+static mut SOCKET_HANDLE: OnceCell<SocketHandle> = OnceCell::new();
 
 pub struct EthPeripherals {
     pub gpioa: hal::gpio::gpioa::Parts,
@@ -117,7 +115,7 @@ pub fn create_sockets() {
         let server_handle = sockets.add(server_socket);
 
         SOCKETS.set(sockets).ok().unwrap();
-        SERVER_HANDLE.set(server_handle).ok().unwrap();
+        SOCKET_HANDLE.set(server_handle).ok().unwrap();
     }
 }
 
@@ -151,8 +149,8 @@ where
 
     unsafe {
         let sockets = SOCKETS.get_mut().expect("SOCKETS not initialized");
-        let server_handle = SERVER_HANDLE.get().expect("SERVER_HANDLE not initialized");
-        let mut socket = sockets.get::<UdpSocket>(*server_handle);
+        let socket_handle = SOCKET_HANDLE.get().expect("SOCKET_HANDLE not initialized");
+        let mut socket = sockets.get::<UdpSocket>(*socket_handle);
 
         if !socket.is_open() {
             socket
@@ -183,12 +181,12 @@ pub fn send(endpoint: IpEndpoint, data: &[u8]) {
     unsafe {
         let net = NET.get_mut().expect("NET not initialized");
         let sockets = SOCKETS.get_mut().expect("SOCKETS not initialized");
-        let client_handle = SERVER_HANDLE.get().expect("SERVER_HANDLE not initialized");
+        let socket_handle = SOCKET_HANDLE.get().expect("SOCKET_HANDLE not initialized");
         let time = time::now();
 
         {
             // Socket is already binded to port 5683
-            let mut socket = sockets.get::<UdpSocket>(*client_handle);
+            let mut socket = sockets.get::<UdpSocket>(*socket_handle);
 
             if !socket.can_send() {
                 log::error!("Cannot send on the UDP socket");
