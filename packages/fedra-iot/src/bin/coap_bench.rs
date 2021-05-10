@@ -12,7 +12,6 @@ use cortex_m_rt::{exception, ExceptionFrame};
 #[rtic::app(
     device = stm32f4xx_hal::stm32,
     peripherals = true,
-    monotonic = rtic::cyccnt::CYCCNT,
     dispatchers = [EXTI1, EXTI2]
 )]
 mod app {
@@ -27,16 +26,14 @@ mod app {
     }
 
     #[init]
-    fn init(cx: init::Context) -> init::LateResources {
+    fn init(cx: init::Context) -> (init::LateResources, init::Monotonics) {
         fedra_iot::logger::init_logger();
         memory::setup_heap();
 
-        let mut cp: rtic::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
         let rcc = dp.RCC.constrain();
         let tim2 = dp.TIM2;
 
-        time::setup_cycle_counter(&mut cp);
         let clocks = time::setup_clocks(rcc, tim2);
 
         let eth_p = network::EthPeripherals {
@@ -53,7 +50,7 @@ mod app {
 
         let coap_server = coap_server::CoapServer::default();
 
-        init::LateResources { coap_server }
+        (init::LateResources { coap_server }, init::Monotonics())
     }
 
     #[idle(resources = [])]

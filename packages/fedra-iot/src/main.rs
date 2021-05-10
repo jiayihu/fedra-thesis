@@ -12,23 +12,26 @@ use cortex_m_rt::{exception, ExceptionFrame};
 #[rtic::app(
     device = stm32f4xx_hal::stm32,
     peripherals = true,
-    monotonic = rtic::cyccnt::CYCCNT,
-    dispatchers = [EXTI1, EXTI2, EXTI3]
+    dispatchers = [EXTI1, EXTI2, EXTI3, EXTI4]
 )]
 mod app {
     use alloc::string::ToString;
     use coap_lite::{ContentFormat, RequestType as Method, ResponseType as Status};
+    use dwt_systick_monotonic::DwtSystick;
     use fedra_iot::{coap_server, memory, network, sample, time, wasm_host};
     use hal::prelude::*;
     use hal::rng::Rng;
-    use rtic::cyccnt::U32Ext;
+    use rtic::time::duration::Seconds;
     use stm32f4xx_hal as hal;
     use wasm_host::WasmHost;
 
     const PERIOD: u32 = 160_000_000;
 
     // Relative offset of task activation after initial elaboration
-    const ACTIVATION_OFFSET: u32 = PERIOD;
+    const ACTIVATION_OFFSET: u32 = 1; //1s
+
+    #[monotonic(binds = SysTick, default = true)]
+    type MyMono = DwtSystick<160_000_000>;
 
     #[resources]
     struct Resources {
@@ -43,16 +46,16 @@ mod app {
     }
 
     #[init]
-    fn init(cx: init::Context) -> init::LateResources {
+    fn init(cx: init::Context) -> (init::LateResources, init::Monotonics) {
         fedra_iot::logger::init_logger();
         memory::setup_heap();
 
-        let mut cp: rtic::Peripherals = cx.core;
+        let mut cp: rtic::export::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
         let rcc = dp.RCC.constrain();
         let tim2 = dp.TIM2;
 
-        time::setup_cycle_counter(&mut cp);
+        let mono = DwtSystick::new(&mut cp.DCB, cp.DWT, cp.SYST, PERIOD);
         let clocks = time::setup_clocks(rcc, tim2);
 
         let rand_source = dp.RNG.constrain(clocks.clone());
@@ -75,14 +78,17 @@ mod app {
         let runtime = wasm_host::Runtime::default();
         host.setup_default().expect("Could not setup the WAST Host");
 
-        rainfall::schedule(cx.start + ACTIVATION_OFFSET.cycles()).unwrap();
+        rainfall::spawn_after(Seconds(ACTIVATION_OFFSET)).unwrap();
 
-        init::LateResources {
-            host,
-            runtime,
-            coap_server,
-            rand_source,
-        }
+        (
+            init::LateResources {
+                host,
+                runtime,
+                coap_server,
+                rand_source,
+            },
+            init::Monotonics(mono),
+        )
     }
 
     #[idle(resources = [])]
@@ -92,7 +98,7 @@ mod app {
 
     #[task(resources = [host, runtime, rand_source], priority = 5)]
     fn rainfall(cx: rainfall::Context) {
-        rainfall::schedule(cx.scheduled + (PERIOD * 5).cycles()).unwrap();
+        rainfall::spawn_after(Seconds(5_u32)).unwrap();
 
         let host: &mut WasmHost = cx.resources.host;
         let mut runtime = cx.resources.runtime;

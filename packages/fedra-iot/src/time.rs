@@ -10,12 +10,6 @@ use stm32f4xx_hal as hal;
 static TIME: Mutex<Cell<u64>> = Mutex::new(Cell::new(0));
 static TIMER2: Mutex<RefCell<Option<Timer<TIM2>>>> = Mutex::new(RefCell::new(None));
 
-pub fn setup_cycle_counter(cp: &mut rtic::Peripherals) {
-    cp.DCB.enable_trace();
-    cortex_m::peripheral::DWT::unlock();
-    cp.DWT.enable_cycle_counter();
-}
-
 pub fn setup_clocks(rcc: hal::rcc::Rcc, tim2: TIM2) -> hal::rcc::Clocks {
     let clocks = rcc
         .cfgr

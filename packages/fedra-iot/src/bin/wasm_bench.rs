@@ -12,7 +12,6 @@ use cortex_m_rt::{exception, ExceptionFrame};
 #[rtic::app(
     device = stm32f4xx_hal::stm32,
     peripherals = true,
-    monotonic = rtic::cyccnt::CYCCNT,
     dispatchers = [EXTI1]
 )]
 mod app {
@@ -29,42 +28,25 @@ mod app {
     struct Resources {}
 
     #[init]
-    fn init(cx: init::Context) -> init::LateResources {
+    fn init(cx: init::Context) -> (init::LateResources, init::Monotonics) {
         fedra_iot::logger::init_logger();
         memory::setup_heap();
 
-        let mut cp: rtic::Peripherals = cx.core;
         let dp: hal::stm32::Peripherals = cx.device;
         let rcc = dp.RCC.constrain();
         let tim2 = dp.TIM2;
 
-        time::setup_cycle_counter(&mut cp);
         let _clocks = time::setup_clocks(rcc, tim2);
 
         run::spawn().unwrap();
 
-        init::LateResources {}
+        (init::LateResources {}, init::Monotonics())
     }
 
     #[idle(resources = [])]
     fn idle(_cx: idle::Context) -> ! {
         super::nop_loop();
     }
-
-    // #[task]
-    // fn run(_cx: run::Context) {
-    //     let mut times = [0_u64; 15];
-
-    //     for i in 0..15 {
-    //         let now = time::now();
-    //         polybench::trmm::bench();
-    //         let elapsed = time::now() - now;
-    //         times[i] = elapsed;
-    //     }
-
-    //     let average = times.iter().fold(0, |acc, x| acc + x) / 15;
-    //     log::info!("average execution time: {}", average);
-    // }
 
     #[task]
     fn run(_cx: run::Context) {
