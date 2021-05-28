@@ -13,7 +13,7 @@ Thus, it is natural that as consumers, we want our Internet-capable devices (e.g
 
 Besides, our capacity for collecting data is expanding dramatically. Nevertheless, our ability to manage, manipulate, and analyse this data to transform it into information and act upon it has not kept the pace \cite{computing-in-continuum}. Data sources and the size of the generated information are growing exponentially. They have outpaced the Internet ability to transport this data in a reliable and timely manner to the cloud. IoT applications demand a short response time, involve private data, and produce a large quantity of data which could be a heavy load for the network transport layer. Cloud computing and Internet infrastructure are not capable of supporting these applications and their exploding multitude.
 
-\begin{figure*}[h]
+\begin{figure*}[ht]
 \centering
 \includegraphics[width=\textwidth]{figures/continuum}
 \caption{Pictorial view of the continuum of computing \label{fig:continuum}}
@@ -70,7 +70,7 @@ As stated before, highly distributed networks are the most effective architectur
 
 Unfortunately, inter-network data communication is neither an efficient nor reliable operation and can be adversely affected by a number of factors.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/traceroute}
 \caption{Traceroute virtualisation of an IP packet reaching google.com \label{fig:traceroute}. The left green nodes are the source nodes and travel throught to the extreme right, where servers are located in datacentres. Source \cite{traceroute-google}.}
@@ -173,7 +173,7 @@ SOA is built around services designed to work in an orchestrated manner to modul
 
 The first generation of SOA architectures defined daunting and nebulous requirements for services (e.g., discoverability and service contracts) \cite{microservices-today}, which hindered the adoption of the model. Microservices are the second iteration, introduced as a solution for the gaps in the SOA approach.
 
-The microservices approach divides applications into more granular components by distributing them into small self-contained services. Each service implements and attends to separate business functions and capabilities to maintain independence from other services. They are mainly deployed in an automated manner, through a container (more on that in §\ref{sec: virtualisation}), and communication happens through REST APIs \cite{rest}, therefore making the impact of the programming language insignificant.
+The microservices approach divides applications into more granular components by distributing them into small self-contained services. Each service implements and attends to separate business functions and capabilities to maintain independence from other services. They are mainly deployed in an automated manner, through a container (more on that in §\ref{sec:virtualisation}), and communication happens through REST APIs \cite{rest}, therefore making the impact of the programming language insignificant.
 
 In terms of the continuum, a SOA realised through the \emph{as-a-service} model allows consumers to be only concerned with what they want to do and accomplish, and providers with how that could be done and provided to the user. A successful interface establishment between those two actors can lead to minimal direct consumer interaction with the provider's infrastructure, allowing complete control to the provider and no cost of ownership for the former.
 
@@ -248,7 +248,7 @@ Overall, cloud, IoT services, and applications are nowadays typically conceived 
 
 In cloud computing, users program their code and deploy them on the cloud. The cloud provider is the one in charge to decide where the computing is conducted in a cloud. Users have only partial knowledge of how the application runs. This easiness is one of the benefits of cloud computing: the infrastructure is transparent to the user. Usually, the program is written in the programming language the developer is most familiar with and between a limited selection (e.g. JavaScript, Java, Python, .NET). The application is then compiled for a specific target platform (typically x86\_64 GNU Linux) since the program only runs in the cloud.
 
-As mentioned before in Section §\ref{sec: virtualisation}, cloud developers typically use containers spawned from images that include everything needed to run them. This package includes code, libraries, settings, and system tools. More importantly, these images can be constructed from minimal filesystem layers, and read-only layers can be shared notably the base OS layer. Images hence are lightweight and use considerably less space than VMs. They offer benefits to developers in terms of ease of deployment, testing, and composition. Notably, they can be used to capture a development environment known to work for each application revision and share this environment among a team of developers. Organisations are widely using containers to deploy their increasingly diverse workloads to the cloud datacentres.
+As mentioned before in Section §\ref{sec:virtualisation}, cloud developers typically use containers spawned from images that include everything needed to run them. This package includes code, libraries, settings, and system tools. More importantly, these images can be constructed from minimal filesystem layers, and read-only layers can be shared notably the base OS layer. Images hence are lightweight and use considerably less space than VMs. They offer benefits to developers in terms of ease of deployment, testing, and composition. Notably, they can be used to capture a development environment known to work for each application revision and share this environment among a team of developers. Organisations are widely using containers to deploy their increasingly diverse workloads to the cloud datacentres.
 
 However, in edge computing and by extension in the continuum, the nodes have diverse platforms. The diversity of CPU architectures (namely x86\_64, ARM32, ARM64, and RISC-V) give programmers a hard time compiling for the different platforms. The nodes' runtime differs from each other, and the programmers face considerable difficulties in writing a service that may be deployed in the continuum paradigm.
 
@@ -335,7 +335,7 @@ From the previous points, it is clear that the design goals of RESTful web syste
 \subsection{Open Service Broker}
 \label{sec:osb}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/osb}
 \caption{The Open Service Broker architecture \label{fig:osb}}
@@ -352,7 +352,7 @@ However, the actual value of the broker API is in abstracting service-specific l
 \subsection{Kubernetes}
 \label{sec:kubernetes}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/kubernetes}
 \caption{The Kubernetes architecture \label{fig:kubernetes}. Source \cite{k8s-architecture}.}
@@ -373,7 +373,7 @@ Finally, Kubernetes is also designed with multitenancy in mind, compared to Dock
 \subsubsection{Akri}
 \label{sec:akri}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/akri}
 \caption{The Akri architecture \label{fig:akri}}
@@ -402,7 +402,7 @@ As many distributed monitoring applications are usually read-only during their o
 \subsection{CoAP}
 \label{sec:coap}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/coap}
 \caption{The REST architecture enhanced with CoAP \label{fig:coap}. Source \cite{coap}.}
@@ -429,7 +429,7 @@ However, the HTTP client-initiated interaction model may be unsuited for many ev
 \subsection{WebAssembly}
 \label{sec:webassembly}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/webassembly}
 \caption{WebAssembly stack machine \label{fig:webassembly}.}
@@ -465,7 +465,7 @@ With that being said, the design goals of WebAssembly strongly advocate for its 
 
 Despite the name WebAssembly, there has been a significant effort in the last years in adopting Wasm for native execution, as it is a portable target for the compilation of various high-level languages. Wasm standard does not necessarily make browser-specific assumptions, and there has been substantial work to standardize the WebAssembly System Interface (WASI) to run Wasm outside the browser. To the best of the author's knowledge, the original design goals assumed a browser-based execution context. Nevertheless, such goals fit perfectly to the continuum's needs, where the web is the infrastructure upon which applications and services are deployed. On this matter, browsers are very much akin to an Operative System for client web applications, and WebAssembly is thus unsurprisingly being adopted on conventional OSes. Native execution and browser execution share many problems, like isolation, portability and interoperability, to name just a few.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/portability}
 \caption{WebAssembly is a portable binary format \label{fig:portability}.}
@@ -533,7 +533,7 @@ The infrastructure layer is composed of data and computational resources. The da
 
 To support a genuinely ubiquitous system where services are everywhere and anywhere the end-user is, for instance, following the movements across geographical zones, further architectural considerations have to be made. As an example, a federation layer may fit as a solution. The federation layer would be responsible for orchestrating the geographically distributed resources composing the underlying infrastructure. However, this thesis will not explore such a federation layer, and it is left as an open research question of future works on the continuum.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/architecture}
 \caption{Reference architecture \label{fig:architecture}}
@@ -599,13 +599,13 @@ On the other hand, the machine learning inference can happen on each node of the
 
 \subsection{Evaluation of WebAssembly for microcontrollers}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-wasmi-2}
 \caption{Comparison of Wasm size (KiB) and Rust source size (KiB) \label{fig:b-wasmi-2}}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-wasmi-3}
 \caption{Comparison of Wasm size (KiB) and C dynamic library size (KiB) \label{fig:b-wasmi-3}}
@@ -621,7 +621,7 @@ The results show how the final Wasm binary size has no predictable correlation t
 
 The author has also chosen the C dynamic library size as a more meaningful comparison since it is a close alternative to Wasm binary files. Both outputs have been compiled using the same LLVM toolchain and with the same optimisation flags. In such a case, the results undeniably favour the Wasm binary format as the C dynamic lib is often many times larger. The author has even removed some of the Polybench modules (namely \emph{cholesky, lu, ludcmp, nussinov, symm, syr2k, syrk, and trisolv}), which had a significantly larger C dynamic library size of 1.5MB (compared to about 5-10KiB in Wasm), which would make the other modules in the chart visually hard to evaluate. The comparison of Wasm files to containers would be even more favouring the former, as containers package a whole operative system filesystem. Even the smallest image base, "Alpine Linux Mini Root Filesystem", has an additional size of about 5.5MB uncompressed.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-wasmi-4}
 \caption{Comparison of Wasm interpreter performance and Rust native performance \label{fig:b-wasmi-4}}
@@ -631,7 +631,7 @@ Fig. \ref{fig:b-wasmi-4} offers an overview of the Wasm interpreter's execution 
 
 However, it is fair to note that the Wasm interpreter wasmi \cite{wasmi} was adapted to work on embedded devices and was not meant to design highly constrained devices. wasmi is developed by Parity, a blockchain company, and is thus used to offer a deterministic sandboxed execution context. As a result, execution performance is not paramount, unfortunately. The alternative interpreter wasm3, implemented in the C language, shows a much more minor execution penalty, in the order of 30-60x slower than native \cite{ewasm}. Thus, it is reasonable to believe that future efforts may allow a comparable result for the Rust-built wasmi interpreter. Nevertheless, 30x times execution over time can still arguably deter the usage of interpreters in microcontrollers. Future work should also provide a benchmark with respect to other popular interpreted languages like Lua, Python, and JavaScript.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-wasmi-1}
 \caption{Comparison of Wasm size (KiB) and heap overhead (KiB) \label{fig:b-wasmi-1}}
@@ -649,13 +649,13 @@ Generally speaking, running Wasm on resource-constrained microcontrollers has al
 
 \subsection{Evaluation of CoAP for microcontrollers}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-coap-1}
 \caption{Average response time for concurrent CoAP requests \label{fig:b-coap-1}}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-coap-2}
 \caption{Number of dropped packets as concurrency increases \label{fig:b-coap-2}}
@@ -675,7 +675,7 @@ On the other hand, K3s is a fully certified Kubernetes distribution geared towar
 
 Krustlet has been customised to measure the time it starts to instantiate the Pod's necessary Wasm runtime. On the other hand, K3s and Kubernetes do not provide tools explicitly meant to obtain such value, and the author does not have the Go knowledge to modify and re-compile K3s. As a result, the start time is collected from the Kubernetes Pod metrics, which provides the time at which the Kubelet receives the request to provision the container. The provision request is followed by the container image's pull and then instantiation of the container itself. To avoid incurring the additional image pull time, the author explicitly sets the Pod configuration to use the cached image and ensure that the Kubelet always has such cache. Lastly, the granularity of this start time metric is only up to seconds.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-krustlet-1}
 \caption{Average boot time for concurrent Wasm Pods \label{fig:b-krustlet-1}}
@@ -685,13 +685,13 @@ Fig. \ref{fig:b-krustlet-1} shows the average boot time, along with the standard
 
 The experimental results show that a Wasm-based virtualisation strategy incurs less boot time. However, the more mature container Kubelet presents a more linear curve and minor standard deviation as the number of concurrent deployments increases. Because efficiency concurrency is essential as much as a fast boot time, there is no clear winner. Nevertheless, such preliminary results are encouraging the adoption of Wasm as an alternative to the container technology since efficiency is not a paramount design goal in the early implementations of Krustlet and Wasmtime. Future versions will probably provide even more competitive results.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-krustlet-2}
 \caption{Average memory usage of concurrent Wasm Pods \label{fig:b-krustlet-2}}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-krustlet-3}
 \caption{Average memory usage of concurrent K3s Kubelet Pods \label{fig:b-krustlet-3}}
@@ -736,7 +736,7 @@ First, the current WebAssembly System Interface (WASI) standard only contains a 
 
 Second, the lack of concurrency primitives means that a server running in WebAssembly is single-threaded, or its implementation has to be significantly more complex (e.g. Node.js's event loop). This limitation severely narrows the workload capabilities of the server. The WASM spec recently got a thread and atomics proposal with the goal to speed up multi-threaded applications. The proposal is still in the early stage, meant to seed a future Working Group, and it is only implemented under the experimental flag in web browsers.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/b-krustlet-4}
 \caption{Latency of the Wasm flood prediction model with varying concurrency \label{fig:b-krustlet-4}}
