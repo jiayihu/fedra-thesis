@@ -2,7 +2,7 @@ const coap = require('coap');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
-const HOST = '224.0.1.187';
+const HOST = '192.168.1.126';
 const PORT = 5683;
 
 const argv = yargs(hideBin(process.argv))
